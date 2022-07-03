@@ -1,0 +1,40 @@
+@forward "breakpoints";
+
+body,
+html,
+#app {
+  height: 100%;
+}
+
+html {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  position: relative;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+.container {
+  // 576px
+  max-width: 38.4rem;
+  margin: 0 auto;
+}
+
+/* @media screen and (min-width: $tablet-min) {
+
+  .container {
+    // 1090px
+    max-width: 66.133333rem;
+  }
+}
+
+@media screen and (min-width: $desktop-min) {
+
+  .container {
+    // 1280px;
+    max-width: 85.333333rem;
+  }
+} */
