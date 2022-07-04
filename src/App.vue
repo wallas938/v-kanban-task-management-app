@@ -3,13 +3,9 @@ import { RouterLink, RouterView } from "vue-router";
 </script>
 
 <template>
-  <input type="text" />
+  <ktm-dropdown></ktm-dropdown>
 </template>
 
-<style lang="scss">
-@use "sass/layout/_index.scss" as l;
-
-input {
-  @include l.ktm-input;
-}
+<style lang="scss" scoped>
+@use "sass/colors" as c;
 </style>
