@@ -2,6 +2,14 @@
 import { RouterLink, RouterView } from "vue-router";
 </script>
 
-<template></template>
+<template>
+  <input type="text" />
+</template>
 
-<style></style>
+<style lang="scss">
+@use "sass/layout/_index.scss" as l;
+
+input {
+  @include l.ktm-input;
+}
+</style>

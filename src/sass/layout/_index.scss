@@ -1,16 +1,67 @@
-@use 'colors'as c;
-@use 'typography'as t;
-@use 'helpers/functions'as f;
+@use '../colors'as c;
+@use '../typography'as t;
+@use '../helpers/functions'as f;
 
-@mixin app-button {
-  background-color: c.$Red;
-  border-radius: 6px;
+/* BUTTON CLASS */
+
+@mixin ktm-button {
+  border-radius: 20px;
   border: none;
-  color: c.$PureWhite;
-  @include t.bodyMedium;
+  cursor: pointer;
+}
+
+@mixin ktm-btn-primary {
+  background-color: c.$MainPurple;
+  color: c.$White;
 
   &:hover {
-    background-color: c.$PureWhite;
-    color: c.$SemiDarkBlue;
+    background-color: c.$MainPurpleHover;
   }
 }
+
+@mixin ktm-btn-destructive {
+  background-color: c.$Red;
+  color: c.$White;
+  &:hover {
+    background-color: c.$RedHover;
+  }
+}
+
+@mixin ktm-btn-secondary-light {
+  background-color: rgba($color: c.$MainPurple, $alpha: .1);
+  color: c.$MainPurple;
+  &:hover {
+    background-color: rgba($color: c.$MainPurple, $alpha: .25);
+  }
+}
+
+
+@mixin ktm-btn-secondary-dark {
+  background-color: c.$White;
+  color: c.$MainPurple;
+}
+
+/* BUTTON CLASS */
+
+/* INPUT CLASS */
+
+@mixin ktm-input {
+  border: 1px solid rgba($color: c.$MediumDark, $alpha: .25);
+  @include t.bodyLarge;
+  padding: f.toRem(8, 12) f.toRem(16, 12) f.toRem(9, 12) f.toRem(16, 12);
+  width: 100%;
+  &:focus {
+    outline: none;
+    border: 1px solid c.$Red !important;
+  }
+}
+
+@mixin ktm-input-light {
+  color: c.$Black;
+}
+
+@mixin ktm-input-dark {
+  color: c.$White;
+}
+
+/* INPUT CLASS */
