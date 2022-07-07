@@ -1,5 +1,5 @@
 <template>
-  <div class="root dark-mode">
+  <div class="root">
     <div class="status" :class="{ 'status--active': isOpen }" @click="toggle">
       <span>
         <slot>{{ currentStatus }}</slot>
