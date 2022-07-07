@@ -1,18 +1,86 @@
 <template>
   <div class="root dark-mode">
-    <div class="status">
+    <div class="status" :class="{ 'status--active': isOpen }" @click="toggle">
       <span>
-        <slot>Doing</slot>
+        <slot>{{ currentStatus }}</slot>
       </span>
     </div>
-    <ul class="columns">
-      <li>Todo</li>
-      <li>Doing</li>
-      <li>Done</li>
-    </ul>
+    <transition-group>
+      <ul v-if="isOpen" class="columns">
+        <li
+          @click="onSelectStatus(name)"
+          v-for="(name, index) in columnNames"
+          :key="index"
+        >
+          {{ name }}
+        </li>
+      </ul>
+    </transition-group>
   </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { computed, ref } from "vue";
+
+const currentStatus = ref("");
+const isOpen = ref(false);
+
+const props: any = defineProps({
+  columnNames: {
+    type: Object as () => string[],
+    default: [],
+    required: true,
+  },
+  currentColumn: {
+    type: String,
+    default: null,
+    required: false,
+  },
+});
+/* verify if a currentStatus already exists (in edit mode) */
+initStatus();
+
+const emits = defineEmits<{
+  (e: "select", name: string): void;
+}>();
+
+function toggle() {
+  isOpen.value = !isOpen.value;
+}
+
+function updateStatus(status: string) {
+  currentStatus.value = status;
+}
+
+function onSelectStatus(columnName: string) {
+  emits("select", columnName);
+  updateStatus(columnName);
+  toggle();
+}
+
+function initStatus() {
+  if (props.currentColumn?.toString().trim()) {
+    currentStatus.value = props.currentColumn;
+    return;
+  }
+  currentStatus.value = props.columnNames[0];
+}
+
+/* 
+  Add this function to the component that will wrap the KTMDropdown
+  it returns from a Column array only names
+
+  const getColumnNames = computed(() =>
+  cols.value.map((col: Column) => col.name)
+
+//Template
+  <ktm-dropdown
+    @select="onSelectColumn"
+    :columnNames="getColumnNames"
+    :currentColumn="''"
+  ></ktm-dropdown>
+); 
+*/
+</script>
 <style lang="scss" scoped>
 @use "../../sass/colors" as c;
 @use "../../sass/typography" as t;
@@ -89,5 +157,17 @@
       color: c.$MediumDark;
     }
   }
+}
+
+/* Dropdown Animation */
+.v-enter-active,
+.v-leave-active {
+  transition: all 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 </style>
