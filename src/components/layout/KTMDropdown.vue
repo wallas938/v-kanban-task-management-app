@@ -1,5 +1,5 @@
 <template>
-  <div class="root">
+  <div class="dropdown dropdown--dark-mode">
     <div class="status" :class="{ 'status--active': isOpen }" @click="toggle">
       <span>
         <slot>{{ currentStatus }}</slot>
@@ -85,14 +85,13 @@ function initStatus() {
 @use "../../sass/colors" as c;
 @use "../../sass/typography" as t;
 @use "../../sass/helpers/functions" as f;
-.root {
+.dropdown {
   cursor: pointer;
-
+  position: relative;
   .status {
     position: relative;
     border-radius: 4px;
     height: f.toRem(40, 12);
-    margin-bottom: f.toRem(7, 12);
     padding: f.toRem(8, 12) f.toRem(16.75, 12) f.toRem(16, 12) f.toRem(9, 12);
     &--active {
       border: 1px solid rgba($color: c.$MainPurple, $alpha: 1);
@@ -108,7 +107,10 @@ function initStatus() {
   }
 
   .columns {
+    position: absolute;
     border-radius: 4px;
+    top: f.toRem(47, 12);
+    width: 100%;
     padding: f.toRem(16, 12);
     & > li {
       @include t.bodyLarge;
@@ -119,7 +121,7 @@ function initStatus() {
   }
 }
 
-.light-mode {
+.dropdown--light-mode {
   .status {
     background-color: c.$White;
     border: 1px solid rgba($color: c.$MainPurple, $alpha: 0.25);
@@ -134,15 +136,15 @@ function initStatus() {
   .columns {
     background-color: c.$White;
     & > li {
-      color: c.$MediumDark;
+      color: c.$MediumGrey;
     }
   }
 }
 
-.dark-mode {
+.dropdown--dark-mode {
   .status {
     background-color: c.$VeryDarkGrey;
-    border: 1px solid rgba($color: c.$MediumDark, $alpha: 0.25);
+    border: 1px solid rgba($color: c.$MediumGrey, $alpha: 0.25);
     &--active {
       border: 1px solid rgba($color: c.$MainPurple, $alpha: 1);
     }
@@ -154,7 +156,7 @@ function initStatus() {
   .columns {
     background-color: c.$VeryDarkGrey;
     & > li {
-      color: c.$MediumDark;
+      color: c.$MediumGrey;
     }
   }
 }

@@ -298,9 +298,9 @@ const show = ref(false);
 
 <template>
   <!-- Ajouter un wrapper pour l'animation de la modal -->
-  <button @click="show = !show">CLICK</button>
+  <!-- <button @click="show = !show">CLICK</button> -->
   <Teleport to="body">
-    <ktm-modal :show="show"></ktm-modal>
+    <ktm-modal :show="true"></ktm-modal>
   </Teleport>
 </template>
 

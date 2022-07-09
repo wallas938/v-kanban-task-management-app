@@ -46,7 +46,7 @@
 /* INPUT CLASS */
 
 @mixin ktm-input {
-  border: 1px solid rgba($color: c.$MediumDark, $alpha: .25);
+  border: 1px solid rgba($color: c.$MediumGrey, $alpha: .25);
   @include t.bodyLarge;
   padding: f.toRem(8, 12) f.toRem(16, 12) f.toRem(9, 12) f.toRem(16, 12);
   width: 100%;

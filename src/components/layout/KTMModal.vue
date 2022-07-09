@@ -2,60 +2,27 @@
   <!-- Ajouter ce qu'il faut pour l'animation -->
   <Transition name="modal">
     <div v-if="show" class="modal">
-      <div class="modal__backdrop">
-        <div class="modal__content dark-mode">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita
-            quasi exercitationem molestiae et a veritatis ab praesentium hic
-            quaerat dolorum! Cumque eos hic quasi id! Magnam dolores incidunt
-            eligendi fugiat?
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita
-            quasi exercitationem molestiae et a veritatis ab praesentium hic
-            quaerat dolorum! Cumque eos hic quasi id! Magnam dolores incidunt
-            eligendi fugiat?
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita
-            quasi exercitationem molestiae et a veritatis ab praesentium hic
-            quaerat dolorum! Cumque eos hic quasi id! Magnam dolores incidunt
-            eligendi fugiat?
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita
-            quasi exercitationem molestiae et a veritatis ab praesentium hic
-            quaerat dolorum! Cumque eos hic quasi id! Magnam dolores incidunt
-            eligendi fugiat?
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita
-            quasi exercitationem molestiae et a veritatis ab praesentium hic
-            quaerat dolorum! Cumque eos hic quasi id! Magnam dolores incidunt
-            eligendi fugiat?
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita
-            quasi exercitationem molestiae et a veritatis ab praesentium hic
-            quaerat dolorum! Cumque eos hic quasi id! Magnam dolores incidunt
-            eligendi fugiat?
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita
-            quasi exercitationem molestiae et a veritatis ab praesentium hic
-            quaerat dolorum! Cumque eos hic quasi id! Magnam dolores incidunt
-            eligendi fugiat?
-          </p>
-        </div>
+      <div class="modal__backdrop" @click="clicked"></div>
+      <div class="modal__content modal--dark-mode">
+        <ktm-task-detail></ktm-task-detail>
+
       </div>
     </div>
   </Transition>
 </template>
 <script lang="ts" setup>
+import type { Task } from "@/model";
 import { computed, ref } from "vue";
+import KtmTaskDetail from "../KtmTaskDetail.vue";
+
 const props = defineProps({
   show: Boolean,
 });
+
+function clicked() {
+  console.log("test");
+}
+
 </script>
 <style lang="scss" scoped>
 @use "../../sass/colors" as c;
@@ -69,6 +36,7 @@ const props = defineProps({
   left: 0;
   right: 0;
   bottom: 0;
+  transition: all 0.5 ease-in-out;
 
   &__backdrop {
     height: 100%;
@@ -82,9 +50,9 @@ const props = defineProps({
     background-color: rgba($color: #000000, $alpha: 0.5);
   }
 
-  &__backdrop > &__content {
+  &__content {
     position: relative;
-    position: fixed;
+
     z-index: 999;
     top: 50%;
     left: 50%;
@@ -99,11 +67,10 @@ const props = defineProps({
     }
   }
 }
-
-.light-mode {
+.modal--light-mode {
   background-color: c.$White;
 }
-.dark-mode {
+.modal--dark-mode {
   background-color: c.$DarkGrey;
 }
 
