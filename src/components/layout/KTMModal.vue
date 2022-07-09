@@ -5,6 +5,7 @@
       <div class="modal__backdrop" @click="clicked"></div>
       <div class="modal__content modal--dark-mode">
         <ktm-task-detail></ktm-task-detail>
+
       </div>
     </div>
   </Transition>
@@ -21,6 +22,7 @@ const props = defineProps({
 function clicked() {
   console.log("test");
 }
+
 </script>
 <style lang="scss" scoped>
 @use "../../sass/colors" as c;
@@ -35,6 +37,7 @@ function clicked() {
   right: 0;
   bottom: 0;
   transition: all 0.5 ease-in-out;
+
   &__backdrop {
     height: 100%;
     position: fixed;
@@ -49,6 +52,7 @@ function clicked() {
 
   &__content {
     position: relative;
+
     z-index: 999;
     top: 50%;
     left: 50%;
@@ -63,17 +67,18 @@ function clicked() {
     }
   }
 }
-
 .modal--light-mode {
   background-color: c.$White;
 }
 .modal--dark-mode {
   background-color: c.$DarkGrey;
 }
+
 /* Dropdown Animation */
 .modal-enter-from {
   opacity: 0;
 }
+
 .modal-leave-to {
   opacity: 0;
 }
