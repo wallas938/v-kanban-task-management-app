@@ -292,9 +292,17 @@ const cols = ref([
     ],
   },
 ]);
+
+const show = ref(false);
 </script>
 
-<template></template>
+<template>
+  <!-- Ajouter un wrapper pour l'animation de la modal -->
+  <!-- <button @click="show = !show">CLICK</button> -->
+  <Teleport to="body">
+    <ktm-modal :show="true"></ktm-modal>
+  </Teleport>
+</template>
 
 <style lang="scss" scoped>
 @use "sass/colors" as c;
