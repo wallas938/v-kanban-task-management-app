@@ -46,13 +46,13 @@
 /* INPUT CLASS */
 
 @mixin ktm-input {
+  border-radius: 4px;
   border: 1px solid rgba($color: c.$MediumGrey, $alpha: .25);
   @include t.bodyLarge;
   padding: f.toRem(8, 12) f.toRem(16, 12) f.toRem(9, 12) f.toRem(16, 12);
-  width: 100%;
   &:focus {
     outline: none;
-    border: 1px solid c.$Red !important;
+    border: 1px solid c.$MainPurple;
   }
 }
 

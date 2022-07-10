@@ -4,8 +4,8 @@
     <div v-if="show" class="modal">
       <div class="modal__backdrop" @click="clicked"></div>
       <div class="modal__content modal--dark-mode">
-        <ktm-task-detail></ktm-task-detail>
-
+        <!-- <ktm-task-detail></ktm-task-detail> -->
+        <ktm-task-form></ktm-task-form>
       </div>
     </div>
   </Transition>
@@ -14,6 +14,7 @@
 import type { Task } from "@/model";
 import { computed, ref } from "vue";
 import KtmTaskDetail from "../KtmTaskDetail.vue";
+import KtmTaskForm from "../KtmTaskForm.vue";
 
 const props = defineProps({
   show: Boolean,
@@ -22,7 +23,6 @@ const props = defineProps({
 function clicked() {
   console.log("test");
 }
-
 </script>
 <style lang="scss" scoped>
 @use "../../sass/colors" as c;
