@@ -143,7 +143,7 @@ function initStatus() {
 
 .dropdown--dark-mode {
   .status {
-    background-color: c.$VeryDarkGrey;
+    background-color: c.$DarkGrey;
     border: 1px solid rgba($color: c.$MediumGrey, $alpha: 0.25);
     &--active {
       border: 1px solid rgba($color: c.$MainPurple, $alpha: 1);
