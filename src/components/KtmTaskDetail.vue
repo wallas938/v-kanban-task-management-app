@@ -78,6 +78,7 @@ import { computed, ref } from "vue";
 import type { Subtask, Task } from "@/model";
 import KTMDropdown from "@/components/layout/KTMDropdown.vue";
 
+//to replace with the current task state
 const task = ref<Task>({
   title:
     "Research pricing points of various competitors and trial different business models",
