@@ -2,7 +2,7 @@
   <!-- Ajouter ce qu'il faut pour l'animation -->
   <Transition name="modal">
     <div v-if="show" class="modal">
-      <div class="modal__backdrop" @click="clicked"></div>
+      <div class="modal__backdrop"></div>
       <div class="modal__content modal--dark-mode">
         <!-- <ktm-task-detail></ktm-task-detail> -->
         <ktm-task-form></ktm-task-form>
@@ -11,18 +11,11 @@
   </Transition>
 </template>
 <script lang="ts" setup>
-import type { Task } from "@/model";
-import { computed, ref } from "vue";
-import KtmTaskDetail from "../KtmTaskDetail.vue";
 import KtmTaskForm from "../KtmTaskForm.vue";
 
 const props = defineProps({
   show: Boolean,
 });
-
-function clicked() {
-  console.log("test");
-}
 </script>
 <style lang="scss" scoped>
 @use "../../sass/colors" as c;
