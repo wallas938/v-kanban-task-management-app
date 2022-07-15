@@ -5,13 +5,14 @@
       <div class="modal__backdrop"></div>
       <div class="modal__content modal--dark-mode">
         <!-- <ktm-task-detail></ktm-task-detail> -->
-        <ktm-task-form></ktm-task-form>
+        <!-- <ktm-task-form></ktm-task-form> -->
+        <ktm-board-form></ktm-board-form>
       </div>
     </div>
   </Transition>
 </template>
 <script lang="ts" setup>
-import KtmTaskForm from "../KtmTaskForm.vue";
+import KtmBoardForm from "../KtmBoardForm.vue";
 
 const props = defineProps({
   show: Boolean,
