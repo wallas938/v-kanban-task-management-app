@@ -183,7 +183,7 @@ const textAreaPlaceholder = computed(() => {
   return "e.g. It’s always good to take a break. This 15 minute break will  recharge the batteries a little.";
 });
 const checkFormValidity = computed(() => {
-  if (titleMeta.valid && DescriptionMeta.valid && getSubtaskValidity()) {
+  if (titleMeta.valid && DescriptionMeta.valid && getSubtasksValidity()) {
     return true;
   }
   return false;
@@ -218,7 +218,7 @@ function updateFieldValidity(value: string, index: number) {
   }
   invalidateFieldState(index);
 }
-function getSubtaskValidity(): boolean {
+function getSubtasksValidity(): boolean {
   return subtasks.value.every(
     (subtask) => subtask.validity === FieldValidity.VALID
   );
