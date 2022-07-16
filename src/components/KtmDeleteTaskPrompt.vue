@@ -1,9 +1,9 @@
 <template>
-  <div class="delete-board-prompt delete-board-prompt--light-mode">
-    <h1>Delete This board?</h1>
+  <div class="delete-task-prompt delete-task-prompt--dark-mode">
+    <h1>Delete This task?</h1>
     <p>
-      Are you sure you want to delete the ‘Platform Launch’ board? This action
-      will remove all columns and tasks and cannot be reversed.
+      Are you sure you want to delete the ‘Build settings UI’ task and its
+      subtasks? This action cannot be reversed.
     </p>
     <div class="cta">
       <button class="delete">Delete</button>
@@ -19,7 +19,7 @@
 @use "../sass/mixins" as m;
 @use "../sass/layout/index" as l;
 
-.delete-board-prompt {
+.delete-task-prompt {
   h1,
   p {
     margin-bottom: f.toRem(24, 12);
@@ -51,7 +51,7 @@
   }
 }
 
-.delete-board-prompt--light-mode {
+.delete-task-prompt--light-mode {
   .cta {
     .cancel {
       @include l.ktm-btn-secondary-light;
@@ -59,7 +59,7 @@
   }
 }
 
-.delete-board-prompt--dark-mode {
+.delete-task-prompt--dark-mode {
   .cta {
     .cancel {
       @include l.ktm-btn-secondary-dark;
@@ -68,7 +68,7 @@
 }
 
 @include m.breakpoint-up(medium) {
-  .delete-board-prompt {
+  .delete-task-prompt {
     .cta {
       display: flex;
       flex-direction: row;
