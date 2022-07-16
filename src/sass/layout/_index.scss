@@ -5,7 +5,7 @@
 /* BUTTON CLASS */
 
 @mixin ktm-button {
-  border-radius: 20px;
+  border-radius: f.toRem(20, 12);
   border: none;
   cursor: pointer;
 }
