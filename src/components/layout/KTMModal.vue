@@ -3,16 +3,17 @@
   <Transition name="modal">
     <div v-if="show" class="modal">
       <div class="modal__backdrop"></div>
-      <div class="modal__content modal--dark-mode">
+      <div class="modal__content modal--light-mode">
         <!-- <ktm-task-detail></ktm-task-detail> -->
         <!-- <ktm-task-form></ktm-task-form> -->
-        <ktm-board-form></ktm-board-form>
+        <!-- <ktm-board-form></ktm-board-form> -->
+        <ktm-delete-board-prompt></ktm-delete-board-prompt>
       </div>
     </div>
   </Transition>
 </template>
 <script lang="ts" setup>
-import KtmBoardForm from "../KtmBoardForm.vue";
+import KtmDeleteBoardPrompt from "../KtmDeleteBoardPrompt.vue";
 
 const props = defineProps({
   show: Boolean,
