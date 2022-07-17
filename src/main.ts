@@ -7,6 +7,7 @@ import router from "./router";
 /* Global Styles */
 import "./sass/_reset.scss";
 import "./sass/_global.scss";
+import "./sass/helpers/_class.scss";
 
 /* Base Components */
 import KTMDropdown from "./components/layout/KTMDropdown.vue";
