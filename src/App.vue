@@ -293,6 +293,7 @@ const cols = ref([
 ]);
 
 const show = ref(false);
+const boards = ref([]);
 </script>
 
 <template>
@@ -364,6 +365,15 @@ const show = ref(false);
         </button>
       </div>
     </header>
+    <main>
+      <aside class="boards-nav hide-for-mobile"></aside>
+      <section class="boards">
+        <div class="no-boards">
+          <h1>This board is empty. Create a new column to get started.</h1>
+          <button>+ Add New column</button>
+        </div>
+      </section>
+    </main>
   </div>
 </template>
 
@@ -426,10 +436,34 @@ const show = ref(false);
         background-color: transparent;
       }
     }
-  }
 
-  button {
-    border: none;
+    button {
+      border: none;
+    }
+  }
+  main {
+    .no-boards {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: f.toRem(211, 12) f.toRem(16, 12);
+
+      h1 {
+        @include t.largeHeading;
+        color: c.$MediumGrey;
+        text-align: center;
+        margin-bottom: f.toRem(25, 12);
+      }
+
+      button {
+        @include l.ktm-button;
+        @include l.ktm-btn-primary;
+        @include t.mediumHeading;
+        border-radius: f.toRem(24, 12);
+        padding: f.toRem(15, 12) f.toRem(18, 12) f.toRem(14, 12) f.toRem(17, 12);
+      }
+    }
   }
 }
 .home-page--light-mode {
@@ -453,9 +487,9 @@ const show = ref(false);
   }
 }
 .home-page--dark-mode {
+  background-color: c.$VeryDarkGrey;
   header {
     background-color: c.$DarkGrey;
-
     .brand {
       span {
         color: c.$White;
@@ -535,6 +569,17 @@ const show = ref(false);
         align-items: center;
         button {
           background-color: transparent;
+        }
+      }
+    }
+
+    main {
+      .no-boards {
+        padding-left: f.toRem(24, 12);
+        padding-right: f.toRem(24, 12);
+
+        h1 {
+          margin-bottom: f.toRem(24, 12);
         }
       }
     }
