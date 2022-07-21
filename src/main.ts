@@ -12,10 +12,10 @@ import "./sass/helpers/_class.scss";
 /* Base Components */
 import KTMDropdown from "./components/layout/KTMDropdown.vue";
 import KTMModal from "./components/layout/KTMModal.vue";
-
+const pinia = createPinia();
 const app = createApp(App);
 
-app.use(createPinia());
+app.use(pinia);
 app.use(router);
 
 app.component("ktm-dropdown", KTMDropdown);

@@ -1,7 +1,16 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import KTMHeader from "./components/layout/KTMHeader.vue";
 import KTMSidebar from "./components/layout/KTMSidebar.vue";
+import { useLayoutStore } from "./stores/layout";
+import { ThemeMode } from "@/model";
+
+const layout = useLayoutStore();
+const themeMode = computed(() => {
+  return layout.getThemeMode === ThemeMode.DARK
+    ? "home-page--dark-mode"
+    : "home-page--light-mode";
+});
 const cols = ref([
   {
     name: "Todo",
@@ -314,7 +323,7 @@ function onShowSidebar() {
     <ktm-modal :show="showModal"></ktm-modal>
   </Teleport>
   <!-- MODALS -->
-  <div class="home-page home-page--dark-mode">
+  <div class="home-page" :class="themeMode">
     <!-- HEADER -->
     <KTMHeader />
     <!-- HEADER -->
@@ -359,6 +368,7 @@ function onShowSidebar() {
 @use "sass/helpers/_functions.scss" as f;
 
 .home-page {
+  transition: all 0.5s ease-in-out;
   height: 100%;
   main {
     position: relative;

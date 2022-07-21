@@ -1,5 +1,5 @@
 <template>
-  <div class="board-form board-form--dark-mode">
+  <div class="board-form" :class="themeMode">
     <h1>{{ formTitle }}</h1>
     <form @submit.prevent="onSubmit">
       <div
@@ -96,6 +96,15 @@
 import { computed, ref, unref } from "vue";
 import { PaletteColor, type Board } from "@/model";
 import { useField, useForm } from "vee-validate";
+import { ThemeMode } from "@/model";
+import { useLayoutStore } from "@/stores/layout";
+const layout = useLayoutStore();
+
+const themeMode = computed(() => {
+  return layout.getThemeMode === ThemeMode.DARK
+    ? "board-form--dark-mode"
+    : "board-form--light-mode";
+});
 enum FieldState {
   PENDING = "PENDING",
   DIRTY = "DIRTY",
@@ -367,6 +376,7 @@ function onSubmit() {
 @use "../sass/layout/index" as l;
 
 .board-form {
+  transition: all 0.5s ease-in-out;
   h1 {
     @include t.largeHeading;
     margin-bottom: f.toRem(24, 12);

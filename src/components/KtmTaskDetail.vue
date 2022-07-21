@@ -1,5 +1,5 @@
 <template>
-  <div class="task task--dark-mode">
+  <div class="task" :class="themeMode">
     <div class="top">
       <h1 class="task__title">{{ task?.title }}</h1>
       <div class="actions">
@@ -76,8 +76,15 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import type { Subtask, Task } from "@/model";
-import KTMDropdown from "@/components/layout/KTMDropdown.vue";
+import { ThemeMode } from "@/model";
+import { useLayoutStore } from "@/stores/layout";
 
+const layout = useLayoutStore();
+const themeMode = computed(() => {
+  return layout.getThemeMode === ThemeMode.DARK
+    ? "task--dark-mode"
+    : "task--light-mode";
+});
 //to replace with the current task state
 const task = ref<Task>({
   title:
@@ -128,6 +135,7 @@ const subtasksText = computed(() => {
 @use "../sass/helpers/functions" as f;
 @use "../sass/mixins" as m;
 .task {
+  transition: all 0.5s ease-in-out;
   background-color: transparent;
 
   .top {

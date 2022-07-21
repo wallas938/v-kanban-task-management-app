@@ -1,5 +1,5 @@
 <template>
-  <div class="delete-task-prompt delete-task-prompt--dark-mode">
+  <div class="delete-task-prompt" :class="themeMode">
     <h1>Delete This task?</h1>
     <p>
       Are you sure you want to delete the ‘Build settings UI’ task and its
@@ -11,7 +11,18 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ThemeMode } from "@/model";
+import { useLayoutStore } from "@/stores/layout";
+import { computed } from "vue";
+
+const layout = useLayoutStore();
+const themeMode = computed(() => {
+  return layout.getThemeMode === ThemeMode.DARK
+    ? "delete-task-prompt--dark-mode"
+    : "delete-task-prompt--light-mode";
+});
+</script>
 <style lang="scss" scoped>
 @use "../sass/colors" as c;
 @use "../sass/typography" as t;
@@ -20,6 +31,7 @@
 @use "../sass/layout/index" as l;
 
 .delete-task-prompt {
+  transition: all 0.5s ease-in-out;
   h1,
   p {
     margin-bottom: f.toRem(24, 12);

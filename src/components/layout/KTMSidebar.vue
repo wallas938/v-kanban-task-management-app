@@ -1,5 +1,5 @@
 <template>
-  <aside class="sidebar sidebar--dark-mode hide-for-mobile">
+  <aside class="sidebar hide-for-mobile" :class="themeMode">
     <h2>ALL BOARD (3)</h2>
     <div class="sidebar-content">
       <nav>
@@ -45,7 +45,11 @@
       <div class="cta">
         <div class="theme-switch">
           <img :src="lightIcon" alt="light-icon" />
-          <div class="switch switch--light">
+          <div
+            @click="toggle"
+            class="switch switch--light"
+            :class="switchCirclePosition"
+          >
             <span class="circle"></span>
           </div>
           <img :src="darkIcon" alt="light-icon" />
@@ -66,6 +70,9 @@
 <script lang="ts" setup>
 import lightIcon from "../../assets/icon-light-theme.svg";
 import darkIcon from "../../assets/icon-dark-theme.svg";
+import { useLayoutStore } from "@/stores/layout";
+import { ThemeMode } from "@/model";
+import { computed } from "vue";
 
 const emits = defineEmits<{
   (e: "hide-sidebar"): void;
@@ -73,6 +80,24 @@ const emits = defineEmits<{
 
 function hideSidebar() {
   emits("hide-sidebar");
+}
+
+const layout = useLayoutStore();
+
+const themeMode = computed(() => {
+  return layout.getThemeMode === ThemeMode.DARK
+    ? "sidebar--dark-mode"
+    : "sidebar--light-mode";
+});
+
+const switchCirclePosition = computed(() => {
+  return layout.getThemeMode === ThemeMode.DARK
+    ? "switch--dark"
+    : "switch--light";
+});
+
+function toggle() {
+  layout.toggle();
 }
 </script>
 <style lang="scss" scoped>
@@ -83,6 +108,7 @@ function hideSidebar() {
 @use "../../sass/helpers/_functions.scss" as f;
 
 .sidebar {
+  transition: all 0.5s ease-in-out;
   width: f.toRem(261, 12);
   padding: f.toRem(31, 12) 0 f.toRem(96, 12) 0;
   display: flex;
@@ -106,6 +132,7 @@ function hideSidebar() {
     justify-content: space-between;
     nav {
       > ul > li {
+        transition: all 0.2s ease-in-out;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -143,6 +170,7 @@ function hideSidebar() {
       padding-left: f.toRem(13, 12);
       padding-right: f.toRem(12, 12);
       .theme-switch {
+        transition: all 0.5s ease-in-out;
         border-radius: f.toRem(6, 12);
         display: flex;
         align-items: center;
@@ -154,15 +182,17 @@ function hideSidebar() {
         }
 
         .switch {
+          transition: all 0.2s ease-in-out;
           cursor: pointer;
+          position: relative;
           width: f.toRem(40, 12);
           height: f.toRem(20, 12);
           border-radius: f.toRem(12, 12);
           background-color: c.$MainPurple;
-          display: flex;
-          align-items: center;
           padding: f.toRem(3, 12);
           .circle {
+            transition: all 0.2s ease-in-out;
+            position: absolute;
             width: f.toRem(14, 12);
             height: f.toRem(14, 12);
             background-color: c.$White;
@@ -175,15 +205,20 @@ function hideSidebar() {
         }
 
         .switch--light {
-          justify-content: flex-start;
+          .circle {
+            transform: translateX(0);
+          }
         }
 
         .switch--dark {
-          justify-content: flex-end;
+          .circle {
+            transform: translateX(20px);
+          }
         }
       }
 
       .hide-sidebar {
+        transition: all 0.2s ease-in-out;
         position: absolute;
         bottom: f.toRem(-64, 12);
         padding: f.toRem(14, 12) f.toRem(94, 12) f.toRem(14, 12) f.toRem(24, 12);

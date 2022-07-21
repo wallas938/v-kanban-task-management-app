@@ -3,7 +3,7 @@
   <Transition name="modal">
     <div v-if="show" class="modal">
       <div class="modal__backdrop"></div>
-      <div class="modal__content modal--dark-mode">
+      <div class="modal__content" :class="themeMode">
         <!-- <ktm-task-detail></ktm-task-detail> -->
         <!-- <ktm-task-form></ktm-task-form> -->
         <!-- <ktm-board-form></ktm-board-form> -->
@@ -14,8 +14,17 @@
   </Transition>
 </template>
 <script lang="ts" setup>
+import { useLayoutStore } from "@/stores/layout";
+import { computed } from "vue";
+import { ThemeMode } from "@/model";
 import KtmDeleteTaskPrompt from "../KtmDeleteTaskPrompt.vue";
+const layout = useLayoutStore();
 
+const themeMode = computed(() => {
+  return layout.getThemeMode === ThemeMode.DARK
+    ? "modal--dark-mode"
+    : "modal--light-mode";
+});
 const props = defineProps({
   show: Boolean,
 });
@@ -26,6 +35,7 @@ const props = defineProps({
 @use "../../sass/helpers/functions" as f;
 @use "../../sass/mixins" as m;
 .modal {
+  transition: all 0.5s ease-in-out;
   z-index: 998;
   position: fixed;
   top: 0;

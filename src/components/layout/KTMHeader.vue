@@ -1,5 +1,5 @@
 <template>
-  <header class="ktm-header ktm-header--dark-mode">
+  <header class="ktm-header" :class="themeMode">
     <div class="brand">
       <a class="logo">
         <img :src="logo" alt="platform launch logo" />
@@ -63,7 +63,18 @@
   </header>
 </template>
 <script lang="ts" setup>
+import { computed } from "vue";
+import { ThemeMode } from "@/model";
 import logo from "../../assets/logo-mobile.svg";
+import { useLayoutStore } from "@/stores/layout";
+
+const layout = useLayoutStore();
+
+const themeMode = computed(() => {
+  return layout.getThemeMode === ThemeMode.DARK
+    ? "ktm-header--dark-mode"
+    : "ktm-header--light-mode";
+});
 </script>
 <style lang="scss" scoped>
 @use "../../sass/colors" as c;
@@ -72,6 +83,7 @@ import logo from "../../assets/logo-mobile.svg";
 @use "../../sass/layout/_index.scss" as l;
 @use "../../sass/helpers/_functions.scss" as f;
 .ktm-header {
+  transition: all 0.5s ease-in-out;
   display: grid;
   align-items: center;
   grid-template-columns:
