@@ -22,7 +22,10 @@ export enum PaletteColor {
   /* CULTURED = "f8f9faff",
   CULTURED_2 = "e9ecefff", */
 }
-
+export enum ThemeMode {
+  LIGHT = "LIGHT",
+  DARK = "DARK",
+}
 export interface Board {
   name: string;
   columns: Column[];

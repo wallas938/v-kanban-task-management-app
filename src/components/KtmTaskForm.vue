@@ -1,5 +1,5 @@
 <template>
-  <div class="task-form task-form--dark-mode">
+  <div class="task-form" :class="themeMode">
     <h1>{{ formTitle }}</h1>
     <form @submit.prevent="onSubmit">
       <div
@@ -96,6 +96,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ThemeMode } from "@/model";
+import { useLayoutStore } from "@/stores/layout";
 import { computed, ref, unref } from "vue";
 import { useField, useForm, Field } from "vee-validate";
 import type { Subtask, Task } from "@/model";
@@ -109,6 +111,13 @@ enum FieldValidity {
   VALID = "VALID",
   INVALID = "INVALID",
 }
+
+const layout = useLayoutStore();
+const themeMode = computed(() => {
+  return layout.getThemeMode === ThemeMode.DARK
+    ? "task-form--dark-mode"
+    : "task-form--light-mode";
+});
 
 // Define a validation schema
 const taskSchema = {
@@ -273,6 +282,7 @@ function onSubmit() {
 @use "../sass/layout/index" as l;
 
 .task-form {
+  transition: all 0.5s ease-in-out;
   h1 {
     @include t.largeHeading;
     margin-bottom: f.toRem(24, 12);

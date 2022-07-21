@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown dropdown--dark-mode">
+  <div class="dropdown" :class="themeMode">
     <div class="status" :class="{ 'status--active': isOpen }" @click="toggle">
       <span>
         <slot>{{ currentStatus }}</slot>
@@ -20,6 +20,16 @@
 </template>
 <script lang="ts" setup>
 import { computed, ref } from "vue";
+import { ThemeMode } from "@/model";
+import { useLayoutStore } from "@/stores/layout";
+
+const layout = useLayoutStore();
+
+const themeMode = computed(() => {
+  return layout.getThemeMode === ThemeMode.DARK
+    ? "dropdown--dark-mode"
+    : "dropdown--light-mode";
+});
 
 const currentStatus = ref("");
 const isOpen = ref(false);
@@ -64,28 +74,13 @@ function initStatus() {
   }
   currentStatus.value = props.columnNames[0];
 }
-
-/* 
-  Add this function to the component that will wrap the KTMDropdown
-  it returns from a Column array only names
-
-  const getColumnNames = computed(() =>
-  cols.value.map((col: Column) => col.name)
-
-//Template
-  <ktm-dropdown
-    @select="onSelectColumn"
-    :columnNames="getColumnNames"
-    :currentColumn="''"
-  ></ktm-dropdown>
-); 
-*/
 </script>
 <style lang="scss" scoped>
 @use "../../sass/colors" as c;
 @use "../../sass/typography" as t;
 @use "../../sass/helpers/functions" as f;
 .dropdown {
+  transition: all 0.5s ease-in-out;
   cursor: pointer;
   position: relative;
   .status {
