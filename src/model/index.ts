@@ -26,6 +26,10 @@ export enum ThemeMode {
   LIGHT = "LIGHT",
   DARK = "DARK",
 }
+
+export enum Modal {
+  MODAL_BOARD_NAV = "MODAL BOARD NAV",
+}
 export interface Board {
   name: string;
   columns: Column[];

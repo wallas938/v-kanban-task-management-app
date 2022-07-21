@@ -1,14 +1,15 @@
 <template>
   <!-- Ajouter ce qu'il faut pour l'animation -->
   <Transition name="modal">
-    <div v-if="show" class="modal">
-      <div class="modal__backdrop"></div>
-      <div class="modal__content" :class="themeMode">
+    <div v-if="show" class="modal modal--for-mobile">
+      <div class="modal__backdrop backdrop--for-mobile"></div>
+      <div class="modal__content content--for-mobile" :class="themeMode">
         <!-- <ktm-task-detail></ktm-task-detail> -->
         <!-- <ktm-task-form></ktm-task-form> -->
         <!-- <ktm-board-form></ktm-board-form> -->
         <!-- <ktm-delete-board-prompt></ktm-delete-board-prompt> -->
-        <ktm-delete-task-prompt></ktm-delete-task-prompt>
+        <!-- <ktm-delete-task-prompt></ktm-delete-task-prompt> -->
+        <ktm-mobile-board-nav></ktm-mobile-board-nav>
       </div>
     </div>
   </Transition>
@@ -17,7 +18,7 @@
 import { useLayoutStore } from "@/stores/layout";
 import { computed } from "vue";
 import { ThemeMode } from "@/model";
-import KtmDeleteTaskPrompt from "../KtmDeleteTaskPrompt.vue";
+import KtmMobileBoardNav from "../KtmMobileBoardNav.vue";
 const layout = useLayoutStore();
 
 const themeMode = computed(() => {
@@ -44,6 +45,14 @@ const props = defineProps({
   bottom: 0;
   transition: all 0.5 ease-in-out;
 
+  &.modal--for-mobile {
+    top: f.toRem(0, 12); // REVOIR
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: all 0.5 ease-in-out;
+  }
+
   &__backdrop {
     height: 100%;
     position: fixed;
@@ -58,7 +67,6 @@ const props = defineProps({
 
   &__content {
     position: relative;
-
     z-index: 999;
     top: 50%;
     left: 50%;
@@ -70,6 +78,33 @@ const props = defineProps({
     @include m.breakpoint-up(medium) {
       padding: f.toRem(32, 12);
       width: f.toRem(480, 12);
+    }
+  }
+
+  &__backdrop.backdrop--for-mobile {
+    height: 100%;
+    position: fixed;
+    z-index: 997;
+    top: f.toRem(64, 12);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    mix-blend-mode: normal;
+    background-color: rgba($color: #000000, $alpha: 0.5);
+  }
+
+  &__content.content--for-mobile {
+    position: relative;
+    z-index: 999;
+    top: f.toRem(80, 12);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0 f.toRem(13, 12) 0 0;
+    width: f.toRem(264, 12);
+    border-radius: 8px;
+    transition: all 0.5s ease;
+    @include m.breakpoint-up(medium) {
+      padding: unset;
     }
   }
 }
