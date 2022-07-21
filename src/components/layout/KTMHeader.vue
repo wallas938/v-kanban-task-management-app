@@ -22,7 +22,10 @@
     </div>
     <div class="board-name">
       <h1>Platform Launch</h1>
-      <button class="nav-board-btn hide-for-tablet-and-desktop">
+      <button
+        @click="showMobileBoardNav"
+        class="nav-board-btn hide-for-tablet-and-desktop"
+      >
         <svg width="10" height="7" xmlns="http://www.w3.org/2000/svg">
           <path
             stroke="#635FC7"
@@ -64,7 +67,7 @@
 </template>
 <script lang="ts" setup>
 import { computed } from "vue";
-import { ThemeMode } from "@/model";
+import { ThemeMode, Modal } from "@/model";
 import logo from "../../assets/logo-mobile.svg";
 import { useLayoutStore } from "@/stores/layout";
 
@@ -75,6 +78,10 @@ const themeMode = computed(() => {
     ? "ktm-header--dark-mode"
     : "ktm-header--light-mode";
 });
+
+function showMobileBoardNav() {
+  layout.setCurrentModal(Modal.MODAL_BOARD_NAV);
+}
 </script>
 <style lang="scss" scoped>
 @use "../../sass/colors" as c;
