@@ -53,7 +53,7 @@
       </button>
     </div>
     <div class="board-action">
-      <button>
+      <button @click="showAction">
         <svg width="5" height="20" xmlns="http://www.w3.org/2000/svg">
           <g fill="#828FA3" fill-rule="evenodd">
             <circle cx="2.308" cy="2.308" r="2.308" />
@@ -63,7 +63,7 @@
         </svg>
       </button>
       <Transition>
-        <div class="board-action__modal">
+        <div v-if="showActionModal" class="board-action__modal">
           <p>Edit Board</p>
           <p>Delete Board</p>
         </div>
@@ -72,12 +72,13 @@
   </header>
 </template>
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { ThemeMode, Modal } from "@/model";
 import logo from "../../assets/logo-mobile.svg";
 import { useLayoutStore } from "@/stores/layout";
 
 const layout = useLayoutStore();
+const showActionModal = ref(false);
 
 const themeMode = computed(() => {
   return layout.getThemeMode === ThemeMode.DARK
@@ -87,6 +88,9 @@ const themeMode = computed(() => {
 
 function showMobileBoardNav() {
   layout.setCurrentModal(Modal.MODAL_BOARD_NAV);
+}
+function showAction() {
+  showActionModal.value = !showActionModal.value;
 }
 </script>
 <style lang="scss" scoped>
@@ -252,6 +256,17 @@ function showMobileBoardNav() {
       color: c.$White;
     }
   }
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 @include m.breakpoint-up(medium) {
