@@ -1,15 +1,15 @@
 <template>
   <!-- Ajouter ce qu'il faut pour l'animation -->
   <Transition name="modal">
-    <div v-if="show" class="modal modal--for-mobile">
-      <div class="modal__backdrop backdrop--for-mobile"></div>
-      <div class="modal__content content--for-mobile" :class="themeMode">
+    <div v-if="show" class="modal">
+      <div class="modal__backdrop"></div>
+      <div class="modal__content" :class="themeMode">
         <!-- <ktm-task-detail></ktm-task-detail> -->
         <!-- <ktm-task-form></ktm-task-form> -->
         <!-- <ktm-board-form></ktm-board-form> -->
         <!-- <ktm-delete-board-prompt></ktm-delete-board-prompt> -->
         <!-- <ktm-delete-task-prompt></ktm-delete-task-prompt> -->
-        <ktm-mobile-board-nav></ktm-mobile-board-nav>
+        <!-- <ktm-mobile-board-nav></ktm-mobile-board-nav> -->
       </div>
     </div>
   </Transition>
