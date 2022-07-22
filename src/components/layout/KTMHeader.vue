@@ -21,12 +21,19 @@
       </svg>
     </div>
     <div class="board-name">
-      <h1>Platform Launch</h1>
+      <h1>{{ currentBoard }}</h1>
       <button
         @click="showMobileBoardNav"
         class="nav-board-btn hide-for-tablet-and-desktop"
       >
-        <svg width="10" height="7" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          :class="{
+            'chevron--rotated': currentModal === Modal.BOARD_NAV_MODAL,
+          }"
+          width="10"
+          height="7"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             stroke="#635FC7"
             stroke-width="2"
@@ -76,18 +83,30 @@ import { computed, ref } from "vue";
 import { ThemeMode, Modal } from "@/model";
 import logo from "../../assets/logo-mobile.svg";
 import { useLayoutStore } from "@/stores/layout";
+import { useBoardStore } from "@/stores/board";
 
-const layout = useLayoutStore();
+const layoutStore = useLayoutStore();
+const boardStore = useBoardStore();
 const showActionModal = ref(false);
 
 const themeMode = computed(() => {
-  return layout.getThemeMode === ThemeMode.DARK
+  return layoutStore.getThemeMode === ThemeMode.DARK
     ? "ktm-header--dark-mode"
     : "ktm-header--light-mode";
 });
 
+/* COMUTED */
+const currentModal = computed(() => layoutStore.getCurrentModal);
+const boards = computed(() => boardStore.getBoards);
+const currentBoard = computed(() => {
+  if (boardStore.getCurrentBoard.name) {
+    return boardStore.getCurrentBoard.name;
+  }
+  return "No Board found";
+});
+/* COMUTED */
 function showMobileBoardNav() {
-  layout.setCurrentModal(Modal.MODAL_BOARD_NAV);
+  layoutStore.setCurrentModal(Modal.BOARD_NAV_MODAL);
 }
 function showAction() {
   showActionModal.value = !showActionModal.value;
@@ -128,6 +147,14 @@ function showAction() {
 
     button {
       background-color: transparent;
+    }
+
+    svg {
+      transition: all 0.5s ease-in-out;
+    }
+
+    .chevron--rotated {
+      transform: rotateZ(180deg);
     }
   }
   .new-task {

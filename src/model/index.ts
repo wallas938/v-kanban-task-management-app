@@ -27,8 +27,25 @@ export enum ThemeMode {
   DARK = "DARK",
 }
 
+export enum FieldState {
+  PENDING = "PENDING",
+  DIRTY = "DIRTY",
+}
+
+export enum FieldValidity {
+  VALID = "VALID",
+  INVALID = "INVALID",
+}
+
+export enum FormState {
+  EDITION = "EDITION",
+  CREATION = "CREATION",
+}
+
 export enum Modal {
-  MODAL_BOARD_NAV = "MODAL BOARD NAV",
+  NO_MODAL = "NO_MODAL",
+  BOARD_NAV_MODAL = "BOARD NAV MODAL",
+  BOARD_FORM_MODAL = "BOARD FORM MODAL",
 }
 export interface Board {
   name: string;

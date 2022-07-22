@@ -1,37 +1,20 @@
 <template>
   <aside class="sidebar hide-for-mobile" :class="themeMode">
-    <h2>ALL BOARD (3)</h2>
+    <h2>ALL BOARDS ({{ boards.length }})</h2>
     <div class="sidebar-content">
       <nav>
+        <!-- USE 'board--active' class -->
         <ul>
-          <li class="board">
+          <li v-for="(board, index) in boards" :key="index" class="board">
             <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M0 2.889A2.889 2.889 0 0 1 2.889 0H13.11A2.889 2.889 0 0 1 16 2.889V13.11A2.888 2.888 0 0 1 13.111 16H2.89A2.889 2.889 0 0 1 0 13.111V2.89Zm1.333 5.555v4.667c0 .859.697 1.556 1.556 1.556h6.889V8.444H1.333Zm8.445-1.333V1.333h-6.89A1.556 1.556 0 0 0 1.334 2.89V7.11h8.445Zm4.889-1.333H11.11v4.444h3.556V5.778Zm0 5.778H11.11v3.11h2a1.556 1.556 0 0 0 1.556-1.555v-1.555Zm0-7.112V2.89a1.555 1.555 0 0 0-1.556-1.556h-2v3.111h3.556Z"
                 fill="#828FA3"
               />
             </svg>
-            <span>Platform Launch</span>
+            <span>{{ board.name }}</span>
           </li>
-          <li class="board">
-            <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M0 2.889A2.889 2.889 0 0 1 2.889 0H13.11A2.889 2.889 0 0 1 16 2.889V13.11A2.888 2.888 0 0 1 13.111 16H2.89A2.889 2.889 0 0 1 0 13.111V2.89Zm1.333 5.555v4.667c0 .859.697 1.556 1.556 1.556h6.889V8.444H1.333Zm8.445-1.333V1.333h-6.89A1.556 1.556 0 0 0 1.334 2.89V7.11h8.445Zm4.889-1.333H11.11v4.444h3.556V5.778Zm0 5.778H11.11v3.11h2a1.556 1.556 0 0 0 1.556-1.555v-1.555Zm0-7.112V2.89a1.555 1.555 0 0 0-1.556-1.556h-2v3.111h3.556Z"
-                fill="#828FA3"
-              />
-            </svg>
-            <span>Marketing Plan</span>
-          </li>
-          <li class="board board--active">
-            <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M0 2.889A2.889 2.889 0 0 1 2.889 0H13.11A2.889 2.889 0 0 1 16 2.889V13.11A2.888 2.888 0 0 1 13.111 16H2.89A2.889 2.889 0 0 1 0 13.111V2.89Zm1.333 5.555v4.667c0 .859.697 1.556 1.556 1.556h6.889V8.444H1.333Zm8.445-1.333V1.333h-6.89A1.556 1.556 0 0 0 1.334 2.89V7.11h8.445Zm4.889-1.333H11.11v4.444h3.556V5.778Zm0 5.778H11.11v3.11h2a1.556 1.556 0 0 0 1.556-1.555v-1.555Zm0-7.112V2.89a1.555 1.555 0 0 0-1.556-1.556h-2v3.111h3.556Z"
-                fill="#828FA3"
-              />
-            </svg>
-            <span>Roadmap</span>
-          </li>
-          <li class="new-board">
+          <li class="new-board" @click="createBoard">
             <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M0 2.889A2.889 2.889 0 0 1 2.889 0H13.11A2.889 2.889 0 0 1 16 2.889V13.11A2.888 2.888 0 0 1 13.111 16H2.89A2.889 2.889 0 0 1 0 13.111V2.89Zm1.333 5.555v4.667c0 .859.697 1.556 1.556 1.556h6.889V8.444H1.333Zm8.445-1.333V1.333h-6.89A1.556 1.556 0 0 0 1.334 2.89V7.11h8.445Zm4.889-1.333H11.11v4.444h3.556V5.778Zm0 5.778H11.11v3.11h2a1.556 1.556 0 0 0 1.556-1.555v-1.555Zm0-7.112V2.89a1.555 1.555 0 0 0-1.556-1.556h-2v3.111h3.556Z"
@@ -71,8 +54,9 @@
 import lightIcon from "../../assets/icon-light-theme.svg";
 import darkIcon from "../../assets/icon-dark-theme.svg";
 import { useLayoutStore } from "@/stores/layout";
-import { ThemeMode } from "@/model";
+import { Modal, ThemeMode } from "@/model";
 import { computed } from "vue";
+import { useBoardStore } from "@/stores/board";
 
 const emits = defineEmits<{
   (e: "hide-sidebar"): void;
@@ -82,22 +66,28 @@ function hideSidebar() {
   emits("hide-sidebar");
 }
 
-const layout = useLayoutStore();
+const layoutStore = useLayoutStore();
+const boardStore = useBoardStore();
 
+const boards = computed(() => boardStore.getBoards);
 const themeMode = computed(() => {
-  return layout.getThemeMode === ThemeMode.DARK
+  return layoutStore.getThemeMode === ThemeMode.DARK
     ? "sidebar--dark-mode"
     : "sidebar--light-mode";
 });
 
 const switchCirclePosition = computed(() => {
-  return layout.getThemeMode === ThemeMode.DARK
+  return layoutStore.getThemeMode === ThemeMode.DARK
     ? "switch--dark"
     : "switch--light";
 });
 
 function toggle() {
-  layout.toggle();
+  layoutStore.toggle();
+}
+
+function createBoard() {
+  layoutStore.setCurrentModal(Modal.BOARD_FORM_MODAL);
 }
 </script>
 <style lang="scss" scoped>
