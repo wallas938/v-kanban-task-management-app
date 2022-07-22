@@ -303,7 +303,7 @@ const cols = ref([
 ]);
 
 const showSidebar = ref(true);
-const showModal = ref(true);
+const showModal = ref(false);
 const boards = ref([]);
 
 function onHideSidebar() {

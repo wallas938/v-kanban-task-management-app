@@ -62,6 +62,12 @@
           </g>
         </svg>
       </button>
+      <Transition>
+        <div class="board-action__modal">
+          <p>Edit Board</p>
+          <p>Delete Board</p>
+        </div>
+      </Transition>
     </div>
   </header>
 </template>
@@ -145,6 +151,35 @@ function showMobileBoardNav() {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+
+    &__modal {
+      position: absolute;
+      z-index: 998;
+      border-radius: 8px;
+      top: f.toRem(37, 12);
+      right: 0;
+      width: f.toRem(162, 12);
+      height: f.toRem(94, 12);
+      padding: f.toRem(16, 12);
+      box-shadow: 0px 10px 20px rgba(54, 78, 126, 0.25);
+      border-radius: 8px;
+    }
+
+    &__modal > p {
+      @include t.bodyLarge;
+      cursor: pointer;
+    }
+
+    &__modal > p:first-child {
+      margin-bottom: f.toRem(16, 12);
+      color: c.$MediumGrey;
+    }
+
+    &__modal > p:last-child {
+      color: c.$Red;
+    }
+
     button {
       background-color: transparent;
     }
@@ -176,6 +211,15 @@ function showMobileBoardNav() {
       color: c.$White;
     }
   }
+  .board-action {
+    &__modal {
+      background-color: c.$White;
+    }
+
+    button {
+      background-color: transparent;
+    }
+  }
 }
 .ktm-header--dark-mode {
   background-color: c.$DarkGrey;
@@ -190,6 +234,16 @@ function showMobileBoardNav() {
   .board-name {
     h1 {
       color: c.$White;
+    }
+  }
+
+  .board-action {
+    &__modal {
+      background-color: c.$VeryDarkGrey;
+    }
+
+    button {
+      background-color: transparent;
     }
   }
 
@@ -252,6 +306,13 @@ function showMobileBoardNav() {
       display: flex;
       justify-content: center;
       align-items: center;
+
+      &__modal {
+        width: f.toRem(192, 12);
+        top: f.toRem(78, 12);
+        bottom: f.toRem(0, 12);
+        right: f.toRem(24, 12);
+      }
       button {
         background-color: transparent;
       }
@@ -286,6 +347,10 @@ function showMobileBoardNav() {
     }
     .board-action {
       grid-area: board-action;
+
+      &__modal {
+        top: f.toRem(90, 12);
+      }
     }
   }
 }
