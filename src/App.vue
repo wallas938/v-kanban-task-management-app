@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 import KTMHeader from "./components/layout/KTMHeader.vue";
 import KTMSidebar from "./components/layout/KTMSidebar.vue";
 import { useLayoutStore } from "./stores/layout";
-import { ThemeMode } from "@/model";
+import { Modal, ThemeMode } from "@/model";
 
 const layout = useLayoutStore();
 const themeMode = computed(() => {
@@ -303,9 +303,11 @@ const cols = ref([
 ]);
 
 const showSidebar = ref(true);
-const showModal = ref(false);
 const boards = ref([]);
 
+const isModalActif = computed(() => {
+  return layout.getCurrentModal !== Modal.NO_MODAL;
+});
 function onHideSidebar() {
   showSidebar.value = false;
 }
@@ -320,7 +322,7 @@ function onShowSidebar() {
   <!-- <button @click="show = !show">CLICK</button> -->
   <!-- MODALS -->
   <Teleport to="body">
-    <ktm-modal :show="showModal"></ktm-modal>
+    <ktm-modal :show="isModalActif"></ktm-modal>
   </Teleport>
   <!-- MODALS -->
   <div class="home-page" :class="themeMode">

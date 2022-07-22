@@ -94,10 +94,11 @@
 </template>
 <script lang="ts" setup>
 import { computed, ref, unref } from "vue";
-import { PaletteColor, type Board } from "@/model";
+import { FormState, Modal, PaletteColor, type Board } from "@/model";
 import { useField, useForm } from "vee-validate";
-import { ThemeMode } from "@/model";
+import { ThemeMode, FieldState, FieldValidity } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
+import { useBoardStore } from "@/stores/board";
 const layout = useLayoutStore();
 
 const themeMode = computed(() => {
@@ -105,16 +106,9 @@ const themeMode = computed(() => {
     ? "board-form--dark-mode"
     : "board-form--light-mode";
 });
-enum FieldState {
-  PENDING = "PENDING",
-  DIRTY = "DIRTY",
-}
+const boardStore = useBoardStore();
+const boardFormMode = computed(() => layout.getBoardFormState);
 
-enum FieldValidity {
-  VALID = "VALID",
-  INVALID = "INVALID",
-}
-const boardFormMode = ref("edit"); // to replace with the same state
 const board = ref<Board>({
   name: "Platform Launch",
   columns: [
@@ -273,11 +267,17 @@ checkFormMode();
 
 // Computed
 const formTitle = computed(() =>
-  boardFormMode.value === "add" ? "Add New Board" : "Edit Board"
+  layout.getBoardFormState === FormState.CREATION
+    ? "Add New Board"
+    : "Edit Board"
 );
+
 const submitBtnText = computed(() =>
-  boardFormMode.value === "add" ? "Create New Task" : "Save Changes"
+  layout.getBoardFormState === FormState.CREATION
+    ? "Create New Task"
+    : "Save Changes"
 );
+
 const checkFormValidity = computed(() => {
   if (boardNameMeta.valid && getColumnsValidity()) {
     return true;
@@ -287,7 +287,7 @@ const checkFormValidity = computed(() => {
 
 // Functions
 function checkFormMode() {
-  if (boardFormMode.value === "edit") setFormValues();
+  if (layout.getBoardFormState === FormState.EDITION) setFormValues();
 }
 function setFormValues() {
   if (board.value) {
@@ -354,8 +354,8 @@ function onDeleteColumn(index: number) {
   }
 }
 function onSubmit() {
-  const name = unref(boardName);
-  const newColumn = ref({
+  const name = boardName.value as string;
+  const newBoard: Board = {
     name,
     columns: [...columns.value].map((col) => {
       return {
@@ -364,8 +364,9 @@ function onSubmit() {
         tasks: [],
       };
     }),
-  });
-  console.log(newColumn.value); // Register the new task into the right state
+  };
+  boardStore.addNewBoard(newBoard);
+  layout.setCurrentModal(Modal.NO_MODAL);
 }
 </script>
 <style lang="scss" scoped>
@@ -462,7 +463,7 @@ function onSubmit() {
     }
   }
 
-  .field--error {
+  .field.field--error {
     position: relative;
 
     &::after {
@@ -480,7 +481,7 @@ function onSubmit() {
     }
   }
 
-  .column-field--error {
+  .column.column-field--error {
     position: relative;
 
     &::after {
@@ -516,7 +517,7 @@ function onSubmit() {
     @include l.ktm-btn-secondary-light;
   }
 
-  .submit > .create-borad {
+  .submit > .create-board {
     @include l.ktm-btn-primary;
   }
 

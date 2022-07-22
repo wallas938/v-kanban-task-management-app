@@ -1,36 +1,18 @@
 <template>
   <div class="mobile-board-nav hide-for-tablet-and-desktop" :class="themeMode">
-    <h2>ALL BOARDS (3)</h2>
+    <h2>ALL BOARDS ({{ boards.length }})</h2>
     <nav>
       <ul>
-        <li class="board">
+        <li v-for="(board, index) in boards" :key="index" class="board">
           <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M0 2.889A2.889 2.889 0 0 1 2.889 0H13.11A2.889 2.889 0 0 1 16 2.889V13.11A2.888 2.888 0 0 1 13.111 16H2.89A2.889 2.889 0 0 1 0 13.111V2.89Zm1.333 5.555v4.667c0 .859.697 1.556 1.556 1.556h6.889V8.444H1.333Zm8.445-1.333V1.333h-6.89A1.556 1.556 0 0 0 1.334 2.89V7.11h8.445Zm4.889-1.333H11.11v4.444h3.556V5.778Zm0 5.778H11.11v3.11h2a1.556 1.556 0 0 0 1.556-1.555v-1.555Zm0-7.112V2.89a1.555 1.555 0 0 0-1.556-1.556h-2v3.111h3.556Z"
               fill="#828FA3"
             />
           </svg>
-          <span>Platform Launch</span>
+          <span>{{ board.name }}</span>
         </li>
-        <li class="board">
-          <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M0 2.889A2.889 2.889 0 0 1 2.889 0H13.11A2.889 2.889 0 0 1 16 2.889V13.11A2.888 2.888 0 0 1 13.111 16H2.89A2.889 2.889 0 0 1 0 13.111V2.89Zm1.333 5.555v4.667c0 .859.697 1.556 1.556 1.556h6.889V8.444H1.333Zm8.445-1.333V1.333h-6.89A1.556 1.556 0 0 0 1.334 2.89V7.11h8.445Zm4.889-1.333H11.11v4.444h3.556V5.778Zm0 5.778H11.11v3.11h2a1.556 1.556 0 0 0 1.556-1.555v-1.555Zm0-7.112V2.89a1.555 1.555 0 0 0-1.556-1.556h-2v3.111h3.556Z"
-              fill="#828FA3"
-            />
-          </svg>
-          <span>Marketing Plan</span>
-        </li>
-        <li class="board board--active">
-          <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M0 2.889A2.889 2.889 0 0 1 2.889 0H13.11A2.889 2.889 0 0 1 16 2.889V13.11A2.888 2.888 0 0 1 13.111 16H2.89A2.889 2.889 0 0 1 0 13.111V2.89Zm1.333 5.555v4.667c0 .859.697 1.556 1.556 1.556h6.889V8.444H1.333Zm8.445-1.333V1.333h-6.89A1.556 1.556 0 0 0 1.334 2.89V7.11h8.445Zm4.889-1.333H11.11v4.444h3.556V5.778Zm0 5.778H11.11v3.11h2a1.556 1.556 0 0 0 1.556-1.555v-1.555Zm0-7.112V2.89a1.555 1.555 0 0 0-1.556-1.556h-2v3.111h3.556Z"
-              fill="#828FA3"
-            />
-          </svg>
-          <span>Roadmap</span>
-        </li>
-        <li class="new-board">
+        <li class="new-board" @click="createBoard">
           <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M0 2.889A2.889 2.889 0 0 1 2.889 0H13.11A2.889 2.889 0 0 1 16 2.889V13.11A2.888 2.888 0 0 1 13.111 16H2.89A2.889 2.889 0 0 1 0 13.111V2.89Zm1.333 5.555v4.667c0 .859.697 1.556 1.556 1.556h6.889V8.444H1.333Zm8.445-1.333V1.333h-6.89A1.556 1.556 0 0 0 1.334 2.89V7.11h8.445Zm4.889-1.333H11.11v4.444h3.556V5.778Zm0 5.778H11.11v3.11h2a1.556 1.556 0 0 0 1.556-1.555v-1.555Zm0-7.112V2.89a1.555 1.555 0 0 0-1.556-1.556h-2v3.111h3.556Z"
@@ -60,25 +42,33 @@
 import lightIcon from "../assets/icon-light-theme.svg";
 import darkIcon from "../assets/icon-dark-theme.svg";
 import { computed } from "vue";
-import { ThemeMode } from "@/model";
+import { Modal, ThemeMode } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
+import { useBoardStore } from "@/stores/board";
 
-const layout = useLayoutStore();
+const layoutStore = useLayoutStore();
+const boardStore = useBoardStore();
 
 const themeMode = computed(() => {
-  return layout.getThemeMode === ThemeMode.DARK
+  return layoutStore.getThemeMode === ThemeMode.DARK
     ? "mobile-board-nav--dark-mode"
     : "mobile-board-nav--light-mode";
 });
 
 const switchCirclePosition = computed(() => {
-  return layout.getThemeMode === ThemeMode.DARK
+  return layoutStore.getThemeMode === ThemeMode.DARK
     ? "switch--dark"
     : "switch--light";
 });
 
+const boards = computed(() => boardStore.getBoards);
+
 function toggle() {
-  layout.toggle();
+  layoutStore.toggle();
+}
+
+function createBoard() {
+  layoutStore.setCurrentModal(Modal.BOARD_FORM_MODAL);
 }
 </script>
 <style lang="scss" scoped>
@@ -88,10 +78,12 @@ function toggle() {
 @use "../sass/mixins" as m;
 
 .mobile-board-nav {
+  border-radius: f.toRem(8, 12);
   transition: all 0.5s ease-in-out;
   padding: f.toRem(16, 12) 0;
   display: flex;
   flex-direction: column;
+  box-shadow: 0px 10px 20px rgba(54, 78, 126, 0.25);
   h2 {
     padding-left: f.toRem(24, 12);
     font-size: f.toRem(12, 12);
@@ -193,6 +185,7 @@ function toggle() {
   }
 }
 .mobile-board-nav--light-mode {
+  background-color: c.$White;
   @include m.breakpoint-up(medium) {
     background-color: c.$White;
     border-right: 1px solid c.$LinesLight;
@@ -214,6 +207,7 @@ function toggle() {
   }
 }
 .mobile-board-nav--dark-mode {
+  background-color: c.$DarkGrey;
   @include m.breakpoint-up(medium) {
     background-color: c.$DarkGrey;
     border-right: 1px solid c.$LinesDark;

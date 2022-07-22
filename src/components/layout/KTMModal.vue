@@ -1,15 +1,24 @@
 <template>
   <!-- Ajouter ce qu'il faut pour l'animation -->
   <Transition name="modal">
-    <div v-if="show" class="modal">
-      <div class="modal__backdrop"></div>
-      <div class="modal__content" :class="themeMode">
+    <div v-if="show" class="modal" :class="themeMode">
+      <div class="modal__backdrop" @click="hideModal"></div>
+      <div
+        class="modal__content"
+        :class="{
+          'content--for-mobile': currentModal === Modal.BOARD_NAV_MODAL,
+        }"
+      >
+        <ktm-board-form
+          v-if="currentModal === Modal.BOARD_FORM_MODAL"
+        ></ktm-board-form>
         <!-- <ktm-task-detail></ktm-task-detail> -->
         <!-- <ktm-task-form></ktm-task-form> -->
-        <!-- <ktm-board-form></ktm-board-form> -->
         <!-- <ktm-delete-board-prompt></ktm-delete-board-prompt> -->
         <!-- <ktm-delete-task-prompt></ktm-delete-task-prompt> -->
-        <!-- <ktm-mobile-board-nav></ktm-mobile-board-nav> -->
+        <ktm-mobile-board-nav
+          v-if="currentModal === Modal.BOARD_NAV_MODAL"
+        ></ktm-mobile-board-nav>
       </div>
     </div>
   </Transition>
@@ -19,16 +28,24 @@ import { useLayoutStore } from "@/stores/layout";
 import { computed } from "vue";
 import { ThemeMode } from "@/model";
 import KtmMobileBoardNav from "../KtmMobileBoardNav.vue";
+import KtmBoardForm from "../KtmBoardForm.vue";
+import { Modal } from "@/model";
 const layout = useLayoutStore();
+const props = defineProps({
+  show: Boolean,
+});
 
 const themeMode = computed(() => {
+  console.log(layout.getThemeMode === ThemeMode.DARK);
+
   return layout.getThemeMode === ThemeMode.DARK
     ? "modal--dark-mode"
     : "modal--light-mode";
 });
-const props = defineProps({
-  show: Boolean,
-});
+const currentModal = computed(() => layout.getCurrentModal);
+function hideModal() {
+  layout.setCurrentModal(Modal.NO_MODAL);
+}
 </script>
 <style lang="scss" scoped>
 @use "../../sass/colors" as c;
@@ -45,14 +62,6 @@ const props = defineProps({
   bottom: 0;
   transition: all 0.5 ease-in-out;
 
-  &.modal--for-mobile {
-    top: f.toRem(0, 12); // REVOIR
-    left: 0;
-    right: 0;
-    bottom: 0;
-    transition: all 0.5 ease-in-out;
-  }
-
   &__backdrop {
     height: 100%;
     position: fixed;
@@ -67,6 +76,7 @@ const props = defineProps({
 
   &__content {
     position: relative;
+    border-radius: 8px;
     z-index: 999;
     top: 50%;
     left: 50%;
@@ -81,38 +91,25 @@ const props = defineProps({
     }
   }
 
-  &__backdrop.backdrop--for-mobile {
-    height: 100%;
-    position: fixed;
-    z-index: 997;
-    top: f.toRem(64, 12);
-    left: 0;
-    right: 0;
-    bottom: 0;
-    mix-blend-mode: normal;
-    background-color: rgba($color: #000000, $alpha: 0.5);
-  }
-
   &__content.content--for-mobile {
-    position: relative;
-    z-index: 999;
     top: f.toRem(80, 12);
-    left: 50%;
     transform: translateX(-50%);
-    padding: 0 f.toRem(13, 12) 0 0;
+    padding: unset;
     width: f.toRem(264, 12);
-    border-radius: 8px;
-    transition: all 0.5s ease;
     @include m.breakpoint-up(medium) {
       padding: unset;
     }
   }
 }
 .modal--light-mode {
-  background-color: c.$White;
+  .modal__content {
+    background-color: c.$White;
+  }
 }
 .modal--dark-mode {
-  background-color: c.$DarkGrey;
+  .modal__content {
+    background-color: c.$DarkGrey;
+  }
 }
 
 /* Dropdown Animation */

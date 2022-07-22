@@ -1,14 +1,17 @@
-import { ThemeMode, Modal } from "@/model";
+import { ThemeMode, Modal, FormState } from "@/model";
 import { defineStore } from "pinia";
 
 export const useLayoutStore = defineStore({
   id: "layout",
   state: () => ({
     themeMode: ThemeMode.LIGHT,
-    currentModal: "",
+    currentModal: Modal.NO_MODAL,
+    boardFormState: FormState.CREATION,
   }),
   getters: {
-    getThemeMode: (state) => state.themeMode,
+    getThemeMode: ({ themeMode }) => themeMode,
+    getCurrentModal: ({ currentModal }) => currentModal,
+    getBoardFormState: ({ boardFormState }) => boardFormState,
   },
   actions: {
     toggle() {
@@ -17,6 +20,9 @@ export const useLayoutStore = defineStore({
     },
     setCurrentModal(modal: Modal) {
       this.currentModal = modal;
+    },
+    setBoardFormState(state: FormState) {
+      this.boardFormState = state;
     },
   },
 });
