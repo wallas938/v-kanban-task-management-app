@@ -99,10 +99,10 @@ const themeMode = computed(() => {
 const currentModal = computed(() => layoutStore.getCurrentModal);
 const boards = computed(() => boardStore.getBoards);
 const currentBoard = computed(() => {
-  if (boardStore.getCurrentBoard.name) {
+  if (boardStore.getCurrentBoard) {
     return boardStore.getCurrentBoard.name;
   }
-  return "No Board found";
+  return "No Board Selected";
 });
 /* COMUTED */
 function showMobileBoardNav() {
