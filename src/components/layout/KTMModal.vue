@@ -35,13 +35,11 @@ const props = defineProps({
   show: Boolean,
 });
 
-const themeMode = computed(() => {
-  console.log(layout.getThemeMode === ThemeMode.DARK);
-
-  return layout.getThemeMode === ThemeMode.DARK
+const themeMode = computed(() =>
+  layout.getThemeMode === ThemeMode.DARK
     ? "modal--dark-mode"
-    : "modal--light-mode";
-});
+    : "modal--light-mode"
+);
 const currentModal = computed(() => layout.getCurrentModal);
 function hideModal() {
   layout.setCurrentModal(Modal.NO_MODAL);
