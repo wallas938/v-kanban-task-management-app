@@ -44,7 +44,10 @@
       </button>
     </div>
     <div class="new-task">
-      <button>
+      <button
+        :disabled="boardStore.getBoards.length < 1"
+        :class="{ 'new-task--disabled': boardStore.getBoards.length < 1 }"
+      >
         <svg
           class="hide-for-tablet-and-desktop"
           width="12"
@@ -60,7 +63,7 @@
       </button>
     </div>
     <div class="board-action">
-      <button @click="showAction">
+      <button @click="toggleActionModal">
         <svg width="5" height="20" xmlns="http://www.w3.org/2000/svg">
           <g fill="#828FA3" fill-rule="evenodd">
             <circle cx="2.308" cy="2.308" r="2.308" />
@@ -70,9 +73,12 @@
         </svg>
       </button>
       <Transition>
-        <div v-if="showActionModal" class="board-action__modal">
+        <div
+          v-if="showActionModal && boardStore.getBoards.length >= 1"
+          class="board-action__modal"
+        >
           <p>Edit Board</p>
-          <p>Delete Board</p>
+          <p @click="deleteCurrentBoard">Delete Board</p>
         </div>
       </Transition>
     </div>
@@ -88,29 +94,35 @@ import { useBoardStore } from "@/stores/board";
 const layoutStore = useLayoutStore();
 const boardStore = useBoardStore();
 const showActionModal = ref(false);
-
+const currentBoardIndex = computed(() => boardStore.getCurrentBoardIndex);
 const themeMode = computed(() => {
   return layoutStore.getThemeMode === ThemeMode.DARK
     ? "ktm-header--dark-mode"
     : "ktm-header--light-mode";
 });
 
-/* COMUTED */
+/* COMPUTED */
 const currentModal = computed(() => layoutStore.getCurrentModal);
-const boards = computed(() => boardStore.getBoards);
 const currentBoard = computed(() => {
   if (boardStore.getCurrentBoard) {
     return boardStore.getCurrentBoard.name;
   }
   return "No Board Selected";
 });
-/* COMUTED */
+/* COMPUTED */
+
+/* FUNCTIONS */
 function showMobileBoardNav() {
   layoutStore.setCurrentModal(Modal.BOARD_NAV_MODAL);
 }
-function showAction() {
+function toggleActionModal() {
   showActionModal.value = !showActionModal.value;
 }
+function deleteCurrentBoard() {
+  boardStore.deleteCurrentBoard(currentBoardIndex.value);
+  toggleActionModal();
+}
+/* FUNCTIONS */
 </script>
 <style lang="scss" scoped>
 @use "../../sass/colors" as c;
@@ -174,7 +186,8 @@ function showAction() {
     }
 
     button.new-task--disabled {
-      background-color: c.$MainPurpleHover;
+      background-color: c.$MediumGrey;
+      color: rgba($color: c.$White, $alpha: 0.25);
     }
   }
   .board-action {

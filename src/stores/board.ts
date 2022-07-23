@@ -9,10 +9,9 @@ export const useBoardStore = defineStore({
     currentBoardIndex: 0,
   }),
   getters: {
-    getBoards: ({ boards }) => boards,
-    getCurrentBoard: ({ currentBoardIndex, boards }) =>
-      boards[currentBoardIndex],
-    getCurrentBoardIndex: ({ currentBoardIndex }) => currentBoardIndex,
+    getBoards: (state) => state.boards,
+    getCurrentBoard: (state) => state.boards[state.currentBoardIndex],
+    getCurrentBoardIndex: (state) => state.currentBoardIndex,
   },
   actions: {
     addNewBoard(board: Board) {
@@ -21,6 +20,12 @@ export const useBoardStore = defineStore({
     },
     setCurrentBoard(index: number) {
       this.currentBoardIndex = index;
+    },
+    deleteCurrentBoard(index: number) {
+      this.boards = [...this.boards].filter(
+        (board: Board, idx: number) => idx !== index
+      );
+      this.currentBoardIndex = this.boards.length - 1;
     },
   },
 });
