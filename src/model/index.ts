@@ -46,6 +46,7 @@ export enum Modal {
   NO_MODAL = "NO_MODAL",
   BOARD_NAV_MODAL = "BOARD NAV MODAL",
   BOARD_FORM_MODAL = "BOARD FORM MODAL",
+  BOARD_DELETE_PROMPT = "BOARD DELETE PROMPT",
 }
 export interface Board {
   name: string;

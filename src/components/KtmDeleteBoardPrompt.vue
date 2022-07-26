@@ -2,26 +2,40 @@
   <div class="delete-board-prompt" :class="themeMode">
     <h1>Delete This board?</h1>
     <p>
-      Are you sure you want to delete the ‘Platform Launch’ board? This action
-      will remove all columns and tasks and cannot be reversed.
+      Are you sure you want to delete the ‘{{ currentBoard.name }}’ board? This
+      action will remove all columns and tasks and cannot be reversed.
     </p>
     <div class="cta">
-      <button class="delete">Delete</button>
-      <button class="cancel">Cancel</button>
+      <button class="delete" @click="deleteCurrentBoard">Delete</button>
+      <button class="cancel" @click="cancelDeletion">Cancel</button>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { ThemeMode } from "@/model";
+import { Modal, ThemeMode } from "@/model";
+import { useBoardStore } from "@/stores/board";
 import { useLayoutStore } from "@/stores/layout";
 import { computed } from "vue";
 
-const layout = useLayoutStore();
+const layoutStore = useLayoutStore();
+const boardStore = useBoardStore();
+const currentBoard = computed(() => boardStore.getCurrentBoard);
+const currentBoardIndex = computed(() => boardStore.getCurrentBoardIndex);
+/* COMPUTED */
 const themeMode = computed(() => {
-  return layout.getThemeMode === ThemeMode.DARK
+  return layoutStore.getThemeMode === ThemeMode.DARK
     ? "delete-board-prompt--dark-mode"
     : "delete-board-prompt--light-mode";
 });
+
+/* FUNCTIONS */
+function deleteCurrentBoard() {
+  boardStore.deleteCurrentBoard(currentBoardIndex.value);
+  layoutStore.setCurrentModal(Modal.NO_MODAL);
+}
+function cancelDeletion() {
+  layoutStore.setCurrentModal(Modal.NO_MODAL);
+}
 </script>
 <style lang="scss" scoped>
 @use "../sass/colors" as c;

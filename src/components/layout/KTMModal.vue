@@ -14,7 +14,9 @@
         ></ktm-board-form>
         <!-- <ktm-task-detail></ktm-task-detail> -->
         <!-- <ktm-task-form></ktm-task-form> -->
-        <!-- <ktm-delete-board-prompt></ktm-delete-board-prompt> -->
+        <ktm-delete-board-prompt
+          v-if="currentModal === Modal.BOARD_DELETE_PROMPT"
+        ></ktm-delete-board-prompt>
         <!-- <ktm-delete-task-prompt></ktm-delete-task-prompt> -->
         <ktm-mobile-board-nav
           v-if="currentModal === Modal.BOARD_NAV_MODAL"
@@ -28,6 +30,7 @@ import { useLayoutStore } from "@/stores/layout";
 import { computed } from "vue";
 import { ThemeMode } from "@/model";
 import KtmMobileBoardNav from "../KtmMobileBoardNav.vue";
+import KtmDeleteBoardPrompt from "../KtmDeleteBoardPrompt.vue";
 import KtmBoardForm from "../KtmBoardForm.vue";
 import { Modal } from "@/model";
 const layout = useLayoutStore();

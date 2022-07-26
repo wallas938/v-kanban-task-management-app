@@ -119,8 +119,10 @@ function toggleActionModal() {
   showActionModal.value = !showActionModal.value;
 }
 function deleteCurrentBoard() {
-  boardStore.deleteCurrentBoard(currentBoardIndex.value);
   toggleActionModal();
+  layoutStore.setCurrentModal(Modal.BOARD_DELETE_PROMPT);
+  /* boardStore.deleteCurrentBoard(currentBoardIndex.value);
+  toggleActionModal(); */
 }
 /* FUNCTIONS */
 </script>
