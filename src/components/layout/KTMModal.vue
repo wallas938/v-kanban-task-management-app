@@ -13,7 +13,9 @@
           v-if="currentModal === Modal.BOARD_FORM_MODAL"
         ></ktm-board-form>
         <!-- <ktm-task-detail></ktm-task-detail> -->
-        <!-- <ktm-task-form></ktm-task-form> -->
+        <ktm-task-form
+          v-if="currentModal === Modal.TASK_FORM_MODAL"
+        ></ktm-task-form>
         <ktm-delete-board-prompt
           v-if="currentModal === Modal.BOARD_DELETE_PROMPT"
         ></ktm-delete-board-prompt>
@@ -32,6 +34,7 @@ import { FormState, ThemeMode } from "@/model";
 import KtmMobileBoardNav from "../KtmMobileBoardNav.vue";
 import KtmDeleteBoardPrompt from "../KtmDeleteBoardPrompt.vue";
 import KtmBoardForm from "../KtmBoardForm.vue";
+import KtmTaskForm from "../KtmTaskForm.vue";
 import { Modal } from "@/model";
 const layout = useLayoutStore();
 const props = defineProps({
@@ -67,7 +70,6 @@ function resetAll() {
   right: 0;
   bottom: 0;
   transition: all 0.5 ease-in-out;
-
   &__backdrop {
     height: 100%;
     position: fixed;

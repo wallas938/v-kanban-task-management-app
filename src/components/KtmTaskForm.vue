@@ -78,7 +78,7 @@
         <!-- recuperer les vraix noms de columns dans le store -->
         <ktm-dropdown
           @select="onSelect"
-          :columnNames="['Todo', 'Doing', 'Done']"
+          :columnNames="boardColumnNames"
         ></ktm-dropdown>
       </div>
       <div class="submit">
@@ -96,11 +96,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ThemeMode } from "@/model";
+import { FormState, ThemeMode, type Column } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
 import { computed, ref, unref } from "vue";
 import { useField, useForm, Field } from "vee-validate";
 import type { Subtask, Task } from "@/model";
+import { useBoardStore } from "@/stores/board";
 
 enum FieldState {
   PENDING = "PENDING",
@@ -112,12 +113,38 @@ enum FieldValidity {
   INVALID = "INVALID",
 }
 
-const layout = useLayoutStore();
+const layoutStore = useLayoutStore();
+const boardStore = useBoardStore();
+
+/* COMPUTED */
+const boardColumnNames = computed(() =>
+  boardStore.getCurrentBoard.columns.map((col: Column) => col.name)
+);
+const formTitle = computed(() =>
+  taskFormState.value === FormState.CREATION ? "Add New Task" : "Edit Task"
+);
+const submitBtnText = computed(() =>
+  taskFormState.value === FormState.CREATION ? "Create Task" : "Save Changes"
+);
+const textAreaPlaceholder = computed(() => {
+  if (DescriptionMeta.dirty && !DescriptionMeta.valid) {
+    return "";
+  }
+  return "e.g. It’s always good to take a break. This 15 minute break will  recharge the batteries a little.";
+});
+const checkFormValidity = computed(() => {
+  if (titleMeta.valid && DescriptionMeta.valid && getSubtasksValidity()) {
+    return true;
+  }
+  return false;
+});
 const themeMode = computed(() => {
-  return layout.getThemeMode === ThemeMode.DARK
+  return layoutStore.getThemeMode === ThemeMode.DARK
     ? "task-form--dark-mode"
     : "task-form--light-mode";
 });
+const taskFormState = computed(() => layoutStore.getTaskFormState);
+/* COMPUTED */
 
 // Define a validation schema
 const taskSchema = {
@@ -135,26 +162,10 @@ useForm({
 
 //State
 const task = ref<Task>({
-  title:
-    "Research pricing points of various competitors and trial different business models",
-  description:
-    "We know what we're planning to build for version one. Now we need to finalise the first pricing model we'll use. Keep iterating the subtasks until we have a coherent proposition.",
-  status: "Doing",
-  subtasks: [
-    {
-      title: "Research competitor pricing and business models",
-      isCompleted: true,
-    },
-    {
-      title: "Outline a business model that works for our solution",
-      isCompleted: false,
-    },
-    {
-      title:
-        "Talk to potential customers about our proposed solution and ask for fair price expectancy",
-      isCompleted: false,
-    },
-  ],
+  title: "",
+  description: "",
+  status: "",
+  subtasks: [],
 });
 const { value: title, meta: titleMeta } = useField("title");
 const { value: description, meta: DescriptionMeta } = useField("description");
@@ -162,47 +173,27 @@ const { value: description, meta: DescriptionMeta } = useField("description");
 const subtasks = ref([
   {
     title: "",
-    isCompleted: true,
+    isCompleted: false,
     validity: FieldValidity.INVALID,
     state: FieldState.PENDING,
   },
   {
     title: "",
-    isCompleted: true,
+    isCompleted: false,
     validity: FieldValidity.INVALID,
     state: FieldState.PENDING,
   },
 ]);
 const status = ref("");
-const formMode = ref("edit"); // to replace with the same state
+const columnIndex = ref<number>(0);
 
 // Fields Initialization
 checkFormMode();
-// Computed
-const formTitle = computed(() =>
-  formMode.value === "add" ? "Add New Task" : "Edit Task"
-);
-const submitBtnText = computed(() =>
-  formMode.value === "add" ? "Create Task" : "Save Changes"
-);
-const textAreaPlaceholder = computed(() => {
-  if (DescriptionMeta.dirty && !DescriptionMeta.valid) {
-    return "";
-  }
-  return "e.g. It’s always good to take a break. This 15 minute break will  recharge the batteries a little.";
-});
-const checkFormValidity = computed(() => {
-  if (titleMeta.valid && DescriptionMeta.valid && getSubtasksValidity()) {
-    return true;
-  }
-  return false;
-});
 
 // Function
 function checkFormMode() {
-  if (formMode.value === "edit") setFormValues();
+  if (taskFormState.value === FormState.EDITION) setFormValues();
 }
-
 function setFormValues() {
   if (task.value) {
     title.value = task.value.title;
@@ -238,8 +229,9 @@ function validateFieldState(index: number) {
 function invalidateFieldState(index: number) {
   subtasks.value[index].validity = FieldValidity.INVALID;
 }
-function onSelect(newStatus: string) {
-  status.value = newStatus;
+function onSelect(newStatus: { columnName: string; columnIndex: number }) {
+  status.value = newStatus.columnName;
+  columnIndex.value = newStatus.columnIndex;
 }
 function onCreateSubtask() {
   subtasks.value.push({
@@ -257,9 +249,9 @@ function onDeleteSubtask(index: number) {
   }
 }
 function onSubmit() {
-  const t = unref(title);
-  const d = unref(description);
-  const task = ref({
+  const t = title.value as string;
+  const d = description.value as string;
+  const task: Task = {
     title: t,
     description: d,
     subtasks: [...subtasks.value].map((s) => {
@@ -269,8 +261,8 @@ function onSubmit() {
       };
     }),
     status: status.value,
-  });
-  console.log(task); // Register the new task into the right state
+  };
+  boardStore.addNewTask(task, columnIndex.value);
 }
 </script>
 

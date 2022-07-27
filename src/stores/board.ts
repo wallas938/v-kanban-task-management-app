@@ -1,4 +1,5 @@
 import { ThemeMode, Modal } from "@/model";
+import type { Task } from "@/model";
 import type { Board } from "@/model";
 import { defineStore } from "pinia";
 
@@ -22,18 +23,24 @@ export const useBoardStore = defineStore({
         ],
       },
     ] as Board[],
-    currentBoardIndex: 0 as number | null,
+    currentBoardIndex: 0,
   }),
   getters: {
     getBoards: (state) => state.boards,
-    getCurrentBoard: (state) =>
-      state.currentBoardIndex !== null && state.boards[state.currentBoardIndex],
+    getCurrentBoard: (state) => state.boards[state.currentBoardIndex],
     getCurrentBoardIndex: (state) => state.currentBoardIndex,
   },
   actions: {
     addNewBoard(board: Board) {
       this.boards = [...this.boards, board];
       this.currentBoardIndex = this.boards.length - 1;
+    },
+    addNewTask(task: Task, columnIndex: number) {
+      this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
+        ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
+        task,
+      ];
+      console.log(this.boards);
     },
     setCurrentBoard(index: number) {
       this.currentBoardIndex = index;
@@ -43,7 +50,7 @@ export const useBoardStore = defineStore({
         (board: Board, idx: number) => idx !== index
       );
       this.currentBoardIndex =
-        this.boards.length - 1 < 0 ? null : this.boards.length - 1;
+        this.boards.length - 1 < 0 ? 0 : this.boards.length - 1;
     },
     updateCurrentBoard(updatedBoard: Board) {
       this.boards = [...this.boards].map((board: Board, idx: number) => {
