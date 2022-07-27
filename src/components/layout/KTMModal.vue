@@ -28,7 +28,7 @@
 <script lang="ts" setup>
 import { useLayoutStore } from "@/stores/layout";
 import { computed } from "vue";
-import { ThemeMode } from "@/model";
+import { FormState, ThemeMode } from "@/model";
 import KtmMobileBoardNav from "../KtmMobileBoardNav.vue";
 import KtmDeleteBoardPrompt from "../KtmDeleteBoardPrompt.vue";
 import KtmBoardForm from "../KtmBoardForm.vue";
@@ -45,7 +45,12 @@ const themeMode = computed(() =>
 );
 const currentModal = computed(() => layout.getCurrentModal);
 function hideModal() {
+  resetAll();
+}
+
+function resetAll() {
   layout.setCurrentModal(Modal.NO_MODAL);
+  layout.setBoardFormState(FormState.CREATION);
 }
 </script>
 <style lang="scss" scoped>

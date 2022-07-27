@@ -77,7 +77,7 @@
           v-if="showActionModal && boardStore.getBoards.length >= 1"
           class="board-action__modal"
         >
-          <p>Edit Board</p>
+          <p @click="updateCurrentBoard">Edit Board</p>
           <p @click="deleteCurrentBoard">Delete Board</p>
         </div>
       </Transition>
@@ -86,7 +86,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { ThemeMode, Modal } from "@/model";
+import { ThemeMode, Modal, FormState } from "@/model";
 import logo from "../../assets/logo-mobile.svg";
 import { useLayoutStore } from "@/stores/layout";
 import { useBoardStore } from "@/stores/board";
@@ -121,8 +121,12 @@ function toggleActionModal() {
 function deleteCurrentBoard() {
   toggleActionModal();
   layoutStore.setCurrentModal(Modal.BOARD_DELETE_PROMPT);
-  /* boardStore.deleteCurrentBoard(currentBoardIndex.value);
-  toggleActionModal(); */
+}
+
+function updateCurrentBoard() {
+  toggleActionModal();
+  layoutStore.setBoardFormState(FormState.EDITION);
+  layoutStore.setCurrentModal(Modal.BOARD_FORM_MODAL);
 }
 /* FUNCTIONS */
 </script>
