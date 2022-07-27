@@ -7,11 +7,13 @@ export const useLayoutStore = defineStore({
     themeMode: ThemeMode.LIGHT,
     currentModal: Modal.NO_MODAL,
     boardFormState: FormState.CREATION,
+    taskFormState: FormState.CREATION,
   }),
   getters: {
     getThemeMode: ({ themeMode }) => themeMode,
     getCurrentModal: ({ currentModal }) => currentModal,
     getBoardFormState: ({ boardFormState }) => boardFormState,
+    getTaskFormState: ({ taskFormState }) => taskFormState,
   },
   actions: {
     toggle() {
@@ -23,6 +25,9 @@ export const useLayoutStore = defineStore({
     },
     setBoardFormState(state: FormState) {
       this.boardFormState = state;
+    },
+    setTaskFormState(state: FormState) {
+      this.taskFormState = state;
     },
   },
 });

@@ -8,7 +8,7 @@
     <transition-group>
       <ul v-if="isOpen" class="columns">
         <li
-          @click="onSelectStatus(name)"
+          @click="onSelectStatus(name, index)"
           v-for="(name, index) in columnNames"
           :key="index"
         >
@@ -50,7 +50,7 @@ const props: any = defineProps({
 initStatus();
 
 const emits = defineEmits<{
-  (e: "select", name: string): void;
+  (e: "select", columnMeta: object): void;
 }>();
 
 function toggle() {
@@ -61,8 +61,8 @@ function updateStatus(status: string) {
   currentStatus.value = status;
 }
 
-function onSelectStatus(columnName: string) {
-  emits("select", columnName);
+function onSelectStatus(columnName: string, columnIndex: number) {
+  emits("select", { columnName: columnName, columnIndex: columnIndex });
   updateStatus(columnName);
   toggle();
 }

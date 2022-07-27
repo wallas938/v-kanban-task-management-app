@@ -45,6 +45,7 @@
     </div>
     <div class="new-task">
       <button
+        @click="createNewTask"
         :disabled="boardStore.getBoards.length < 1"
         :class="{ 'new-task--disabled': boardStore.getBoards.length < 1 }"
       >
@@ -127,6 +128,11 @@ function updateCurrentBoard() {
   toggleActionModal();
   layoutStore.setBoardFormState(FormState.EDITION);
   layoutStore.setCurrentModal(Modal.BOARD_FORM_MODAL);
+}
+
+function createNewTask() {
+  showActionModal.value = false;
+  layoutStore.setCurrentModal(Modal.TASK_FORM_MODAL);
 }
 /* FUNCTIONS */
 </script>
