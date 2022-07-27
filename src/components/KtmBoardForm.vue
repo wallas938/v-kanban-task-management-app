@@ -99,110 +99,17 @@ import { useField, useForm } from "vee-validate";
 import { ThemeMode, FieldState, FieldValidity } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
 import { useBoardStore } from "@/stores/board";
-const layout = useLayoutStore();
+const layoutStore = useLayoutStore();
 
 const themeMode = computed(() => {
-  return layout.getThemeMode === ThemeMode.DARK
+  return layoutStore.getThemeMode === ThemeMode.DARK
     ? "board-form--dark-mode"
     : "board-form--light-mode";
 });
 const boardStore = useBoardStore();
-const boardFormMode = computed(() => layout.getBoardFormState);
+const boardFormMode = computed(() => layoutStore.getBoardFormState);
 
-const board = ref<Board>({
-  name: "Platform Launch",
-  columns: [
-    {
-      name: "Todo",
-      color: null,
-      tasks: [
-        {
-          title: "Plan Product Hunt launch",
-          description: "",
-          status: "Todo",
-          subtasks: [
-            {
-              title: "Find hunter",
-              isCompleted: false,
-            },
-            {
-              title: "Gather assets",
-              isCompleted: false,
-            },
-            {
-              title: "Draft product page",
-              isCompleted: false,
-            },
-            {
-              title: "Notify customers",
-              isCompleted: false,
-            },
-            {
-              title: "Notify network",
-              isCompleted: false,
-            },
-            {
-              title: "Launch!",
-              isCompleted: false,
-            },
-          ],
-        },
-        {
-          title: "Share on Show HN",
-          description: "",
-          status: "",
-          subtasks: [
-            {
-              title: "Draft out HN post",
-              isCompleted: false,
-            },
-            {
-              title: "Get feedback and refine",
-              isCompleted: false,
-            },
-            {
-              title: "Publish post",
-              isCompleted: false,
-            },
-          ],
-        },
-        {
-          title: "Write launch article to publish on multiple channels",
-          description: "",
-          status: "",
-          subtasks: [
-            {
-              title: "Write article",
-              isCompleted: false,
-            },
-            {
-              title: "Publish on LinkedIn",
-              isCompleted: false,
-            },
-            {
-              title: "Publish on Inndie Hackers",
-              isCompleted: false,
-            },
-            {
-              title: "Publish on Medium",
-              isCompleted: false,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      name: "Doing",
-      color: null,
-      tasks: [],
-    },
-    {
-      name: "Done",
-      color: null,
-      tasks: [],
-    },
-  ],
-});
+const board = computed(() => boardStore.getCurrentBoard);
 const columns = ref<
   {
     name: string;
@@ -267,13 +174,13 @@ checkFormMode();
 
 // Computed
 const formTitle = computed(() =>
-  layout.getBoardFormState === FormState.CREATION
+  layoutStore.getBoardFormState === FormState.CREATION
     ? "Add New Board"
     : "Edit Board"
 );
 
 const submitBtnText = computed(() =>
-  layout.getBoardFormState === FormState.CREATION
+  layoutStore.getBoardFormState === FormState.CREATION
     ? "Create New Task"
     : "Save Changes"
 );
@@ -287,7 +194,7 @@ const checkFormValidity = computed(() => {
 
 // Functions
 function checkFormMode() {
-  if (layout.getBoardFormState === FormState.EDITION) setFormValues();
+  if (layoutStore.getBoardFormState === FormState.EDITION) setFormValues();
 }
 function setFormValues() {
   if (board.value) {
@@ -365,8 +272,14 @@ function onSubmit() {
       };
     }),
   };
-  boardStore.addNewBoard(newBoard);
-  layout.setCurrentModal(Modal.NO_MODAL);
+
+  if (layoutStore.getBoardFormState === FormState.EDITION) {
+    boardStore.updateCurrentBoard(newBoard);
+  } else {
+    boardStore.addNewBoard(newBoard);
+  }
+  layoutStore.setCurrentModal(Modal.NO_MODAL);
+  layoutStore.setBoardFormState(FormState.CREATION);
 }
 </script>
 <style lang="scss" scoped>
