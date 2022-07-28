@@ -5,7 +5,7 @@ import KTMSidebar from "./components/layout/KTMSidebar.vue";
 import { useLayoutStore } from "./stores/layout";
 import { Modal, ThemeMode } from "@/model";
 import { useBoardStore } from "./stores/board";
-
+import KtmColumnList from "./components/KtmColumnList.vue";
 const layoutStore = useLayoutStore();
 const boardStore = useBoardStore();
 const showSidebar = ref(true);
@@ -19,7 +19,7 @@ const themeMode = computed(() => {
 });
 const noColumnsText = computed(() => {
   return boardStore.getBoards.length < 1
-    ? "Please add a Board before adding columns"
+    ? "Start creating a new Board"
     : "This board is empty. Create a new column to get started.";
 });
 const isModalActif = computed(() => {
@@ -33,6 +33,10 @@ function onHideSidebar() {
 
 function onShowSidebar() {
   showSidebar.value = true;
+}
+
+function createBoard() {
+  layoutStore.setCurrentModal(Modal.BOARD_FORM_MODAL);
 }
 </script>
 <template>
@@ -56,16 +60,13 @@ function onShowSidebar() {
       <!-- TABLET AND DESKTOP SIDEBAR -->
       <!-- BOARD CONTENT -->
       <section class="columns">
-        <div class="no-columns">
-          <h1>{{ noColumnsText }}</h1>
-          <button
-            class="create-column"
-            :disabled="boards.length < 1"
-            :class="{ 'create-column--disabled': boards.length < 1 }"
-          >
-            + Add New column
+        <div v-if="boardStore.getBoards.length < 1" class="no-columns">
+          <h1>You have no Boards avaiable, start creating a new Board</h1>
+          <button @click="createBoard" class="create-column">
+            + Add New Board
           </button>
         </div>
+        <KtmColumnList v-else />
       </section>
       <!-- BOARD CONTENT -->
       <!-- HIDDEN SIDEBAR -->
@@ -96,9 +97,11 @@ function onShowSidebar() {
 .home-page {
   transition: all 0.5s ease-in-out;
   height: 100%;
+  display: flex;
+  flex-direction: column;
   main {
     position: relative;
-
+    flex: 1;
     .no-columns {
       display: flex;
       flex-direction: column;
@@ -125,6 +128,12 @@ function onShowSidebar() {
         background-color: c.$MediumGrey;
         color: rgba($color: c.$White, $alpha: 0.25);
       }
+    }
+
+    .columns {
+      overflow: auto;
+      height: 100%;
+      padding: f.toRem(23, 12) f.toRem(16, 12);
     }
 
     .hidden-sidebar {
@@ -245,7 +254,8 @@ function onShowSidebar() {
       flex: 1;
       display: flex;
       .columns {
-        flex: 1;
+        width: 100%;
+        min-width: f.toRem(508, 12);
         .no-columns {
           padding: f.toRem(328, 12) f.toRem(24, 12) 0 f.toRem(24, 12);
           h1 {
