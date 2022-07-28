@@ -8,16 +8,22 @@ export const useBoardStore = defineStore({
   state: () => ({
     boards: [
       {
-        name: "a",
+        id: 1,
+        name: "Platform Launch",
         columns: [
           {
-            name: "b",
+            name: "Todo",
             color: "#cfbaf0ff",
             tasks: [],
           },
           {
-            name: "c",
+            name: "Doing",
             color: "#f72585ff",
+            tasks: [],
+          },
+          {
+            name: "Done",
+            color: "#b5179eff",
             tasks: [],
           },
         ],

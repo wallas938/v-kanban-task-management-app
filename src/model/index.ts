@@ -26,17 +26,14 @@ export enum ThemeMode {
   LIGHT = "LIGHT",
   DARK = "DARK",
 }
-
 export enum FieldState {
   PENDING = "PENDING",
   DIRTY = "DIRTY",
 }
-
 export enum FieldValidity {
   VALID = "VALID",
   INVALID = "INVALID",
 }
-
 export enum FormState {
   EDITION = "EDITION",
   CREATION = "CREATION",
@@ -50,23 +47,21 @@ export enum Modal {
   BOARD_DELETE_PROMPT = "BOARD DELETE PROMPT",
 }
 export interface Board {
+  id?: number;
   name: string;
   columns: Column[];
 }
-
 export interface Column {
   name: string;
   color: PaletteColor | null;
   tasks: Task[];
 }
-
 export interface Task {
   title: string;
   description: string;
   status: string;
   subtasks: Subtask[];
 }
-
 export interface Subtask {
   title: string;
   isCompleted: boolean;
