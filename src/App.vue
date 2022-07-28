@@ -58,6 +58,7 @@ function createBoard() {
         <KTMSidebar v-if="showSidebar" @hide-sidebar="onHideSidebar" />
       </Transition>
       <!-- TABLET AND DESKTOP SIDEBAR -->
+
       <!-- BOARD CONTENT -->
       <section class="columns">
         <div v-if="boardStore.getBoards.length < 1" class="no-columns">
@@ -69,6 +70,7 @@ function createBoard() {
         <KtmColumnList v-else />
       </section>
       <!-- BOARD CONTENT -->
+
       <!-- HIDDEN SIDEBAR -->
       <Transition name="hidden-sidebar">
         <div v-if="!showSidebar" @click="onShowSidebar" class="hidden-sidebar">
@@ -80,7 +82,6 @@ function createBoard() {
           </svg>
         </div>
       </Transition>
-
       <!-- HIDDEN SIDEBAR -->
     </main>
     <!-- MAIN -->

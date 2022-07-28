@@ -1,15 +1,25 @@
 <template>
   <div class="column-list" :class="themeMode">
-    <div class="column-item" v-for="item of 3">
+    <div
+      class="column-item"
+      v-for="(column, index) of board.columns"
+      :key="index"
+    >
       <div class="top">
-        <span class="column-color"></span>
-        <h3 class="column-name">Todo (4)</h3>
+        <span
+          class="column-color"
+          :style="{ backgroundColor: column.color ? column.color : '#CCC' }"
+        ></span>
+        <h3 class="column-name">
+          {{ column.name }} ({{ column.tasks.length }})
+        </h3>
       </div>
       <div class="task-list">
-        <ktm-task-item></ktm-task-item>
-        <ktm-task-item></ktm-task-item>
-        <ktm-task-item></ktm-task-item>
-        <ktm-task-item></ktm-task-item>
+        <ktm-task-item
+          :task="task"
+          v-for="(task, index) of column.tasks"
+          :key="task.id"
+        ></ktm-task-item>
       </div>
     </div>
   </div>
@@ -17,10 +27,14 @@
 <script lang="ts" setup>
 import { ThemeMode } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
+import { useBoardStore } from "@/stores/board";
 import { computed } from "vue";
 import KtmTaskItem from "./KtmTaskItem.vue";
 
 const layoutStore = useLayoutStore();
+const boardStore = useBoardStore();
+
+const board = computed(() => boardStore.getCurrentBoard);
 
 const themeMode = computed(() => {
   return layoutStore.getThemeMode === ThemeMode.DARK
@@ -48,7 +62,6 @@ const themeMode = computed(() => {
         width: f.toRem(15, 12);
         height: f.toRem(15, 12);
         border-radius: 100%;
-        background-color: greenyellow;
         margin-right: f.toRem(12, 12);
       }
 

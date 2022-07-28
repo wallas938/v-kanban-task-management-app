@@ -1,2 +1,8 @@
 TASKFORM -> 
     PERF: REVOIR LA DROPDOWN ?RALENTISSEMENT? 
+
+EDITBOARDFROM -> 
+    FETAURE: REVOIR MODIFICATION D'UN BOARD (reset de données deja existante ex tasks...)
+
+EDITBOARDFROM -> 
+    VIEW: FAIRE SCROLLER EN Y le contenu main de la home lorsque il y a trop de tasks
