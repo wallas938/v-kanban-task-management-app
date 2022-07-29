@@ -18,7 +18,7 @@
         <Transition>
           <div v-show="showMenu" class="menu">
             <p>Edit Task</p>
-            <p>Delete Task</p>
+            <p @click="deleteCurrentTask">Delete Task</p>
           </div>
         </Transition>
       </div>
@@ -66,7 +66,7 @@
       <div class="task__status">
         <h2>Current Status</h2>
         <ktm-dropdown
-          :columnNames="['Todo', 'Doing', 'Done']"
+          :columnNames="boardColumnNames"
           :currentColumn="task?.status"
         ></ktm-dropdown>
       </div>
@@ -75,7 +75,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import type { Subtask, Task } from "@/model";
+import { Modal, type Subtask, type Task } from "@/model";
 import { ThemeMode } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
 import { useBoardStore } from "@/stores/board";
@@ -90,6 +90,9 @@ const themeMode = computed(() => {
 });
 
 const task = computed(() => boardStore.getCurrentTask);
+const boardColumnNames = computed(() =>
+  boardStore.getCurrentBoard.columns.map((col) => col.name)
+);
 
 const showMenu = ref(false);
 
@@ -100,6 +103,11 @@ function checkSubtask(index: number) {
 
 function toggleMenu() {
   showMenu.value = !showMenu.value;
+}
+
+function deleteCurrentTask() {
+  layoutStore.setCurrentModal(Modal.NO_MODAL);
+  boardStore.deleteCurrentTask();
 }
 
 // Computed

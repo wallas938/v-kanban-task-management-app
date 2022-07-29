@@ -22,6 +22,10 @@ const props = defineProps({
     type: Object as () => Task,
     required: true,
   },
+  columnIndex: {
+    type: Number,
+    required: true,
+  },
 });
 /* COMPUTED */
 const themeMode = computed(() => {
@@ -38,7 +42,7 @@ const subtasksCompletedQuantity = computed(
 
 /* FUNCTIONS */
 function showDetail() {
-  boardStore.setCurrentTask(props.task.status, props.task.id);
+  boardStore.setCurrentTask(props.columnIndex, props.task.id);
   layoutStore.setCurrentModal(Modal.TASK_DETAIL_VIEW);
 }
 </script>

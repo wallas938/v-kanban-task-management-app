@@ -2,8 +2,8 @@
   <div class="column-list" :class="themeMode">
     <div
       class="column-item"
-      v-for="(column, index) of board.columns"
-      :key="index"
+      v-for="(column, columnIndex) of board.columns"
+      :key="columnIndex"
     >
       <div class="top">
         <span
@@ -17,6 +17,7 @@
       <div class="task-list">
         <ktm-task-item
           :task="task"
+          :columnIndex="columnIndex"
           v-for="(task, index) of column.tasks"
           :key="task.id"
         ></ktm-task-item>
