@@ -102,6 +102,7 @@ import { computed, ref, unref } from "vue";
 import { useField, useForm, Field } from "vee-validate";
 import type { Subtask, Task } from "@/model";
 import { useBoardStore } from "@/stores/board";
+import { v4 as uuid } from "uuid";
 
 enum FieldState {
   PENDING = "PENDING",
@@ -161,7 +162,13 @@ useForm({
 });
 
 //State
-const task = ref<Task>({
+const task = ref<{
+  id?: string;
+  title: string;
+  description: string;
+  status: string;
+  subtasks: Subtask[];
+}>({
   title: "",
   description: "",
   status: "",
@@ -236,7 +243,7 @@ function onSelect(newStatus: { columnName: string; columnIndex: number }) {
 function onCreateSubtask() {
   subtasks.value.push({
     title: "",
-    isCompleted: true,
+    isCompleted: false,
     validity: FieldValidity.INVALID,
     state: FieldState.PENDING,
   });
@@ -252,10 +259,13 @@ function onSubmit() {
   const t = title.value as string;
   const d = description.value as string;
   const task: Task = {
+    id: uuid(),
     title: t,
     description: d,
+    columnId: boardStore.getCurrentBoard.columns[columnIndex.value].id,
     subtasks: [...subtasks.value].map((s) => {
       return {
+        id: uuid(),
         title: s.title,
         isCompleted: s.isCompleted,
       };

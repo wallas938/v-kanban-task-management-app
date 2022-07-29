@@ -6,328 +6,9 @@ import { v4 as uuid } from "uuid";
 export const useBoardStore = defineStore({
   id: "board",
   state: () => ({
-    boards: [
-      {
-        id: uuid(),
-        name: "Platform Launch",
-        columns: [
-          {
-            id: uuid(),
-            name: "Todo",
-            color: "#cfbaf0ff",
-            tasks: [
-              {
-                id: "11",
-                title: "Build UI for onboarding flow",
-                description: "",
-                status: "Todo",
-                subtasks: [
-                  {
-                    title: "Sign up page",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "Sign in page",
-                    isCompleted: false,
-                  },
-                  {
-                    title: "Welcome page",
-                    isCompleted: false,
-                  },
-                ],
-              },
-              {
-                id: "12",
-                title: "Build UI for search",
-                description: "",
-                status: "Todo",
-                subtasks: [
-                  {
-                    title: "Search page",
-                    isCompleted: false,
-                  },
-                ],
-              },
-              {
-                id: "13",
-                title: "Build settings UI",
-                description: "",
-                status: "Todo",
-                subtasks: [
-                  {
-                    title: "Account page",
-                    isCompleted: false,
-                  },
-                  {
-                    title: "Billing page",
-                    isCompleted: false,
-                  },
-                ],
-              },
-              {
-                id: "14",
-                title: "QA and test all major user journeys",
-                description:
-                  "Once we feel version one is ready, we need to rigorously test it both internally and externally to identify any major gaps.",
-                status: "Todo",
-                subtasks: [
-                  {
-                    title: "Internal testing",
-                    isCompleted: false,
-                  },
-                  {
-                    title: "External testing",
-                    isCompleted: false,
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            id: uuid(),
-            name: "Doing",
-            color: "#f72585ff",
-            tasks: [
-              {
-                id: uuid(),
-                title: "Design settings and search pages",
-                description: "",
-                status: "Doing",
-                subtasks: [
-                  {
-                    title: "Settings - Account page",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "Settings - Billing page",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "Search page",
-                    isCompleted: false,
-                  },
-                ],
-              },
-              {
-                id: uuid(),
-                title: "Add account management endpoints",
-                description: "",
-                status: "Doing",
-                subtasks: [
-                  {
-                    title: "Upgrade plan",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "Cancel plan",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "Update payment method",
-                    isCompleted: false,
-                  },
-                ],
-              },
-              {
-                id: uuid(),
-                title: "Design onboarding flow",
-                description: "",
-                status: "Doing",
-                subtasks: [
-                  {
-                    title: "Sign up page",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "Sign in page",
-                    isCompleted: false,
-                  },
-                  {
-                    title: "Welcome page",
-                    isCompleted: false,
-                  },
-                ],
-              },
-              {
-                id: uuid(),
-                title: "Add search enpoints",
-                description: "",
-                status: "Doing",
-                subtasks: [
-                  {
-                    title: "Add search endpoint",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "Define search filters",
-                    isCompleted: false,
-                  },
-                ],
-              },
-              {
-                id: uuid(),
-                title: "Add authentication endpoints",
-                description: "",
-                status: "Doing",
-                subtasks: [
-                  {
-                    title: "Define user model",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "Add auth endpoints",
-                    isCompleted: false,
-                  },
-                ],
-              },
-              {
-                id: uuid(),
-                title:
-                  "Research pricing points of various competitors and trial different business models",
-                description:
-                  "We know what we're planning to build for version one. Now we need to finalise the first pricing model we'll use. Keep iterating the subtasks until we have a coherent proposition.",
-                status: "Doing",
-                subtasks: [
-                  {
-                    title: "Research competitor pricing and business models",
-                    isCompleted: true,
-                  },
-                  {
-                    title:
-                      "Outline a business model that works for our solution",
-                    isCompleted: false,
-                  },
-                  {
-                    title:
-                      "Talk to potential customers about our proposed solution and ask for fair price expectancy",
-                    isCompleted: false,
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            id: uuid(),
-            name: "Done",
-            color: "#b5179eff",
-            tasks: [
-              {
-                id: uuid(),
-                title: "Conduct 5 wireframe tests",
-                description:
-                  "Ensure the layout continues to make sense and we have strong buy-in from potential users.",
-                status: "Done",
-                subtasks: [
-                  {
-                    title: "Complete 5 wireframe prototype tests",
-                    isCompleted: true,
-                  },
-                ],
-              },
-              {
-                id: uuid(),
-                title: "Create wireframe prototype",
-                description:
-                  "Create a greyscale clickable wireframe prototype to test our asssumptions so far.",
-                status: "Done",
-                subtasks: [
-                  {
-                    title: "Create clickable wireframe prototype in Balsamiq",
-                    isCompleted: true,
-                  },
-                ],
-              },
-              {
-                id: uuid(),
-                title: "Review results of usability tests and iterate",
-                description:
-                  "Keep iterating through the subtasks until we're clear on the core concepts for the app.",
-                status: "Done",
-                subtasks: [
-                  {
-                    title:
-                      "Meet to review notes from previous tests and plan changes",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "Make changes to paper prototypes",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "Conduct 5 usability tests",
-                    isCompleted: true,
-                  },
-                ],
-              },
-              {
-                id: uuid(),
-                title:
-                  "Create paper prototypes and conduct 10 usability tests with potential customers",
-                description: "",
-                status: "Done",
-                subtasks: [
-                  {
-                    title: "Create paper prototypes for version one",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "Complete 10 usability tests",
-                    isCompleted: true,
-                  },
-                ],
-              },
-              {
-                id: uuid(),
-                title: "Market discovery",
-                description:
-                  "We need to define and refine our core product. Interviews will help us learn common pain points and help us define the strongest MVP.",
-                status: "Done",
-                subtasks: [
-                  {
-                    title: "Interview 10 prospective customers",
-                    isCompleted: true,
-                  },
-                ],
-              },
-              {
-                id: uuid(),
-                title: "Competitor analysis",
-                description: "",
-                status: "Done",
-                subtasks: [
-                  {
-                    title: "Find direct and indirect competitors",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "SWOT analysis for each competitor",
-                    isCompleted: true,
-                  },
-                ],
-              },
-              {
-                id: uuid(),
-                title: "Research the market",
-                description:
-                  "We need to get a solid overview of the market to ensure we have up-to-date estimates of market size and demand.",
-                status: "Done",
-                subtasks: [
-                  {
-                    title: "Write up research analysis",
-                    isCompleted: true,
-                  },
-                  {
-                    title: "Calculate TAM",
-                    isCompleted: true,
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ] as Board[],
+    boards: [] as Board[],
     currentBoardIndex: 0,
+    currentColumnIndex: 0,
     currentTask: {} as Task | undefined,
   }),
   getters: {
@@ -335,6 +16,7 @@ export const useBoardStore = defineStore({
     getCurrentBoard: (state) => state.boards[state.currentBoardIndex],
     getTaskBoard: (state) => state,
     getCurrentBoardIndex: (state) => state.currentBoardIndex,
+    getCurrentColumnIndex: (state) => state.currentColumnIndex,
     getCurrentTask: (state) => state.currentTask,
   },
   actions: {
@@ -351,10 +33,12 @@ export const useBoardStore = defineStore({
     setCurrentBoard(index: number) {
       this.currentBoardIndex = index;
     },
-    setCurrentTask(columnName: string, taskId: string) {
-      this.currentTask = this.boards[this.currentBoardIndex].columns
-        .find((column: Column) => column.name === columnName)
-        ?.tasks.find((task: Task) => task.id === taskId);
+    setCurrentTask(columnIndex: number, taskId: string) {
+      this.currentTask = this.boards[this.currentBoardIndex].columns[
+        columnIndex
+      ].tasks.find((task: Task) => task.id === taskId);
+
+      this.currentColumnIndex = columnIndex;
     },
     deleteCurrentBoard(index: number) {
       this.boards = [...this.boards].filter(
@@ -362,6 +46,17 @@ export const useBoardStore = defineStore({
       );
       this.currentBoardIndex =
         this.boards.length - 1 < 0 ? 0 : this.boards.length - 1;
+    },
+    deleteCurrentTask() {
+      this.boards[this.currentBoardIndex].columns[
+        this.currentColumnIndex
+      ].tasks = [...this.boards][this.currentBoardIndex].columns[
+        this.currentColumnIndex
+      ].tasks.filter(
+        (task: Task, idx: number) => task.id !== this.currentTask?.id
+      );
+
+      this.currentTask = {} as Task;
     },
     updateCurrentBoard(updatedBoard: Board) {
       this.boards = [...this.boards].map((board: Board, idx: number) => {
