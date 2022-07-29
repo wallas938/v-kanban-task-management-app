@@ -3,6 +3,7 @@ TASKFORM ->
 
 EDITBOARDFROM -> 
     FETAURE: REVOIR MODIFICATION D'UN BOARD (reset de données deja existante ex tasks...)
+    SOLUTION: AJOUTER IDs aux columns pour les rechercher efficacement !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 EDITBOARDFROM -> 
     VIEW: FAIRE SCROLLER EN Y le contenu main de la home lorsque il y a trop de tasks

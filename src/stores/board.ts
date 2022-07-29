@@ -1,16 +1,18 @@
 import { ThemeMode, Modal } from "@/model";
 import type { Board, Task, Column } from "@/model";
 import { defineStore } from "pinia";
+import { v4 as uuid } from "uuid";
 
 export const useBoardStore = defineStore({
   id: "board",
   state: () => ({
     boards: [
       {
-        id: 1,
+        id: uuid(),
         name: "Platform Launch",
         columns: [
           {
+            id: uuid(),
             name: "Todo",
             color: "#cfbaf0ff",
             tasks: [
@@ -82,11 +84,12 @@ export const useBoardStore = defineStore({
             ],
           },
           {
+            id: uuid(),
             name: "Doing",
             color: "#f72585ff",
             tasks: [
               {
-                id: "1",
+                id: uuid(),
                 title: "Design settings and search pages",
                 description: "",
                 status: "Doing",
@@ -106,7 +109,7 @@ export const useBoardStore = defineStore({
                 ],
               },
               {
-                id: "2",
+                id: uuid(),
                 title: "Add account management endpoints",
                 description: "",
                 status: "Doing",
@@ -126,7 +129,7 @@ export const useBoardStore = defineStore({
                 ],
               },
               {
-                id: "3",
+                id: uuid(),
                 title: "Design onboarding flow",
                 description: "",
                 status: "Doing",
@@ -146,7 +149,7 @@ export const useBoardStore = defineStore({
                 ],
               },
               {
-                id: "4",
+                id: uuid(),
                 title: "Add search enpoints",
                 description: "",
                 status: "Doing",
@@ -162,7 +165,7 @@ export const useBoardStore = defineStore({
                 ],
               },
               {
-                id: "5",
+                id: uuid(),
                 title: "Add authentication endpoints",
                 description: "",
                 status: "Doing",
@@ -178,7 +181,7 @@ export const useBoardStore = defineStore({
                 ],
               },
               {
-                id: "6",
+                id: uuid(),
                 title:
                   "Research pricing points of various competitors and trial different business models",
                 description:
@@ -204,11 +207,12 @@ export const useBoardStore = defineStore({
             ],
           },
           {
+            id: uuid(),
             name: "Done",
             color: "#b5179eff",
             tasks: [
               {
-                id: "111",
+                id: uuid(),
                 title: "Conduct 5 wireframe tests",
                 description:
                   "Ensure the layout continues to make sense and we have strong buy-in from potential users.",
@@ -221,7 +225,7 @@ export const useBoardStore = defineStore({
                 ],
               },
               {
-                id: "222",
+                id: uuid(),
                 title: "Create wireframe prototype",
                 description:
                   "Create a greyscale clickable wireframe prototype to test our asssumptions so far.",
@@ -234,7 +238,7 @@ export const useBoardStore = defineStore({
                 ],
               },
               {
-                id: "333",
+                id: uuid(),
                 title: "Review results of usability tests and iterate",
                 description:
                   "Keep iterating through the subtasks until we're clear on the core concepts for the app.",
@@ -256,7 +260,7 @@ export const useBoardStore = defineStore({
                 ],
               },
               {
-                id: "444",
+                id: uuid(),
                 title:
                   "Create paper prototypes and conduct 10 usability tests with potential customers",
                 description: "",
@@ -273,7 +277,7 @@ export const useBoardStore = defineStore({
                 ],
               },
               {
-                id: "555",
+                id: uuid(),
                 title: "Market discovery",
                 description:
                   "We need to define and refine our core product. Interviews will help us learn common pain points and help us define the strongest MVP.",
@@ -286,7 +290,7 @@ export const useBoardStore = defineStore({
                 ],
               },
               {
-                id: "666",
+                id: uuid(),
                 title: "Competitor analysis",
                 description: "",
                 status: "Done",
@@ -302,7 +306,7 @@ export const useBoardStore = defineStore({
                 ],
               },
               {
-                id: "777",
+                id: uuid(),
                 title: "Research the market",
                 description:
                   "We need to get a solid overview of the market to ensure we have up-to-date estimates of market size and demand.",
@@ -343,7 +347,6 @@ export const useBoardStore = defineStore({
         ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
         task,
       ];
-      console.log(this.boards);
     },
     setCurrentBoard(index: number) {
       this.currentBoardIndex = index;
@@ -367,7 +370,6 @@ export const useBoardStore = defineStore({
         }
         return board;
       });
-      console.log(this.boards);
     },
   },
 });
