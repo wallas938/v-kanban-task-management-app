@@ -12,7 +12,9 @@
         <ktm-board-form
           v-if="currentModal === Modal.BOARD_FORM_MODAL"
         ></ktm-board-form>
-        <!-- <ktm-task-detail></ktm-task-detail> -->
+        <ktm-task-detail
+          v-if="currentModal === Modal.TASK_DETAIL_VIEW"
+        ></ktm-task-detail>
         <ktm-task-form
           v-if="currentModal === Modal.TASK_FORM_MODAL"
         ></ktm-task-form>
@@ -35,6 +37,7 @@ import KtmMobileBoardNav from "../KtmMobileBoardNav.vue";
 import KtmDeleteBoardPrompt from "../KtmDeleteBoardPrompt.vue";
 import KtmBoardForm from "../KtmBoardForm.vue";
 import KtmTaskForm from "../KtmTaskForm.vue";
+import KtmTaskDetail from "../KtmTaskDetail.vue";
 import { Modal } from "@/model";
 const layout = useLayoutStore();
 const props = defineProps({

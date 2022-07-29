@@ -1,21 +1,46 @@
 <template>
-  <div class="task-item" :class="themeMode">
-    <h1>Build UI for onboarding flow</h1>
-    <small>0 of 3 subtasks</small>
+  <div class="task-item" :class="themeMode" @click="showDetail">
+    <h1>{{ task.title }}</h1>
+    <small
+      >{{ subtasksCompletedQuantity }} of
+      {{ task.subtasks.length }} subtasks</small
+    >
   </div>
 </template>
 <script setup lang="ts">
-import { ThemeMode } from "@/model";
+import { Modal, ThemeMode, type Subtask, type Task } from "@/model";
+import { useBoardStore } from "@/stores/board";
 import { useLayoutStore } from "@/stores/layout";
 import { computed } from "vue";
+import { number } from "yup";
 
 const layoutStore = useLayoutStore();
+const boardStore = useBoardStore();
 
+const props = defineProps({
+  task: {
+    type: Object as () => Task,
+    required: true,
+  },
+});
+/* COMPUTED */
 const themeMode = computed(() => {
   return layoutStore.getThemeMode === ThemeMode.DARK
     ? "task-item--dark-mode"
     : "task-item--light-mode";
 });
+
+const subtasksCompletedQuantity = computed(
+  () =>
+    props.task.subtasks.filter((subtask: Subtask) => subtask.isCompleted).length
+);
+/* COMPUTED */
+
+/* FUNCTIONS */
+function showDetail() {
+  boardStore.setCurrentTask(props.task.status, props.task.id);
+  layoutStore.setCurrentModal(Modal.TASK_DETAIL_VIEW);
+}
 </script>
 <style lang="scss" scoped>
 @use "../sass/mixins" as m;

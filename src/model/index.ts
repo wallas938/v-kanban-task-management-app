@@ -45,6 +45,7 @@ export enum Modal {
   BOARD_FORM_MODAL = "BOARD FORM MODAL",
   TASK_FORM_MODAL = "TASK FORM MODAL",
   BOARD_DELETE_PROMPT = "BOARD DELETE PROMPT",
+  TASK_DETAIL_VIEW = "TASK DETAIL VIEW",
 }
 export interface Board {
   id?: number;
@@ -57,6 +58,7 @@ export interface Column {
   tasks: Task[];
 }
 export interface Task {
+  id: string;
   title: string;
   description: string;
   status: string;

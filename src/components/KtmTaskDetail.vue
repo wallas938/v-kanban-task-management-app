@@ -67,7 +67,7 @@
         <h2>Current Status</h2>
         <ktm-dropdown
           :columnNames="['Todo', 'Doing', 'Done']"
-          :currentColumn="task.status"
+          :currentColumn="task?.status"
         ></ktm-dropdown>
       </div>
     </div>
@@ -78,36 +78,18 @@ import { computed, ref } from "vue";
 import type { Subtask, Task } from "@/model";
 import { ThemeMode } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
+import { useBoardStore } from "@/stores/board";
 
-const layout = useLayoutStore();
+const layoutStore = useLayoutStore();
+const boardStore = useBoardStore();
+
 const themeMode = computed(() => {
-  return layout.getThemeMode === ThemeMode.DARK
+  return layoutStore.getThemeMode === ThemeMode.DARK
     ? "task--dark-mode"
     : "task--light-mode";
 });
-//to replace with the current task state
-const task = ref<Task>({
-  title:
-    "Research pricing points of various competitors and trial different business models",
-  description:
-    "We know what we're planning to build for version one. Now we need to finalise the first pricing model we'll use. Keep iterating the subtasks until we have a coherent proposition.",
-  status: "Doing",
-  subtasks: [
-    {
-      title: "Research competitor pricing and business models",
-      isCompleted: true,
-    },
-    {
-      title: "Outline a business model that works for our solution",
-      isCompleted: false,
-    },
-    {
-      title:
-        "Talk to potential customers about our proposed solution and ask for fair price expectancy",
-      isCompleted: false,
-    },
-  ],
-});
+
+const task = computed(() => boardStore.getCurrentTask);
 
 const showMenu = ref(false);
 
@@ -122,11 +104,12 @@ function toggleMenu() {
 
 // Computed
 const subtasksText = computed(() => {
-  const competedTasks = task.value.subtasks.filter(
-    (subtask: Subtask) => subtask.isCompleted
-  ).length;
-
-  return `${competedTasks} of ${task.value.subtasks.length}`;
+  if (task.value) {
+    const competedTasks = task.value.subtasks.filter(
+      (subtask: Subtask) => subtask.isCompleted
+    ).length;
+    return `${competedTasks} of ${task.value.subtasks.length}`;
+  }
 });
 </script>
 <style lang="scss" scoped>
