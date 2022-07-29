@@ -99,6 +99,7 @@ import { useField, useForm } from "vee-validate";
 import { ThemeMode, FieldState, FieldValidity } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
 import { useBoardStore } from "@/stores/board";
+import { v4 as uuid } from "uuid";
 const layoutStore = useLayoutStore();
 
 const themeMode = computed(() => {
@@ -112,6 +113,7 @@ const boardFormMode = computed(() => layoutStore.getBoardFormState);
 const board = computed(() => boardStore.getCurrentBoard);
 const columns = ref<
   {
+    id?: string;
     name: string;
     color: PaletteColor | null;
     validity: FieldValidity;
@@ -201,6 +203,7 @@ function setFormValues() {
     boardName.value = board.value.name;
     columns.value = board.value.columns.map((column) => {
       return {
+        id: column.id,
         name: column.name,
         color: column.color,
         state: FieldState.PENDING,
@@ -262,21 +265,37 @@ function onDeleteColumn(index: number) {
 }
 function onSubmit() {
   const name = boardName.value as string;
-  const newBoard: Board = {
-    name,
-    columns: [...columns.value].map((col) => {
-      return {
-        name: col.name,
-        color: col.color,
-        tasks: [],
-      };
-    }),
-  };
 
-  if (layoutStore.getBoardFormState === FormState.EDITION) {
-    boardStore.updateCurrentBoard(newBoard);
-  } else {
+  if (layoutStore.getBoardFormState === FormState.CREATION) {
+    const newBoard: Board = {
+      id: uuid(),
+      name,
+      columns: [...columns.value].map((col, idx) => {
+        return {
+          id: uuid(),
+          name: col.name,
+          color: col.color,
+          tasks: [],
+        };
+      }),
+    };
     boardStore.addNewBoard(newBoard);
+  } else {
+    const updatedBoard: any = {
+      name,
+      columns: [...columns.value].map((col, idx) => {
+        return {
+          id: col.id,
+          name: col.name,
+          color: col.color,
+          tasks: board.value.columns.find((column) => column.id === col.id)
+            ?.tasks
+            ? board.value.columns.find((column) => column.id === col.id)?.tasks
+            : [],
+        };
+      }),
+    };
+    boardStore.updateCurrentBoard(updatedBoard);
   }
   layoutStore.setCurrentModal(Modal.NO_MODAL);
   layoutStore.setBoardFormState(FormState.CREATION);

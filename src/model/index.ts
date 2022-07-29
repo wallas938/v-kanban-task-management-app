@@ -48,11 +48,12 @@ export enum Modal {
   TASK_DETAIL_VIEW = "TASK DETAIL VIEW",
 }
 export interface Board {
-  id?: number;
+  id: string;
   name: string;
   columns: Column[];
 }
 export interface Column {
+  id: string;
   name: string;
   color: PaletteColor | null;
   tasks: Task[];
@@ -65,6 +66,7 @@ export interface Task {
   subtasks: Subtask[];
 }
 export interface Subtask {
+  id: string;
   title: string;
   isCompleted: boolean;
 }
