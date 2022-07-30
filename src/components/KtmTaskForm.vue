@@ -293,7 +293,7 @@ function onSubmit() {
           return {
             id: uuid(),
             title: subtask.title,
-            isCompleted: false,
+            isCompleted: subtask.isCompleted,
           };
         }),
         status: status.value,
