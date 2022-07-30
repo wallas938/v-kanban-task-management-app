@@ -19,7 +19,7 @@
 }
 
 .hide-for-mobile-and-tablet {
-    @include m.breakpoint-up("large") {
+    @include m.breakpoint-down("medium") {
         // 768px => 1439px
         display: none !important;
     }
