@@ -2,26 +2,39 @@
   <div class="delete-task-prompt" :class="themeMode">
     <h1>Delete This task?</h1>
     <p>
-      Are you sure you want to delete the ‘Build settings UI’ task and its
-      subtasks? This action cannot be reversed.
+      Are you sure you want to delete the ‘{{ currentTask?.title }}’ task and
+      its subtasks? This action cannot be reversed.
     </p>
     <div class="cta">
-      <button class="delete">Delete</button>
-      <button class="cancel">Cancel</button>
+      <button class="delete" @click="deleteCurrentTask">Delete</button>
+      <button class="cancel" @click="cancelDeletion">Cancel</button>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { ThemeMode } from "@/model";
+import { Modal, ThemeMode } from "@/model";
+import { useBoardStore } from "@/stores/board";
 import { useLayoutStore } from "@/stores/layout";
 import { computed } from "vue";
 
-const layout = useLayoutStore();
+const layoutStore = useLayoutStore();
+const boardStore = useBoardStore();
+
+const currentTask = computed(() => boardStore.getCurrentTask);
 const themeMode = computed(() => {
-  return layout.getThemeMode === ThemeMode.DARK
+  return layoutStore.getThemeMode === ThemeMode.DARK
     ? "delete-task-prompt--dark-mode"
     : "delete-task-prompt--light-mode";
 });
+
+function deleteCurrentTask() {
+  layoutStore.setCurrentModal(Modal.NO_MODAL);
+  boardStore.deleteCurrentTask();
+}
+
+function cancelDeletion() {
+  layoutStore.setCurrentModal(Modal.NO_MODAL);
+}
 </script>
 <style lang="scss" scoped>
 @use "../sass/colors" as c;

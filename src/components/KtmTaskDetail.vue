@@ -116,8 +116,7 @@ function toggleMenu() {
 }
 
 function deleteCurrentTask() {
-  layoutStore.setCurrentModal(Modal.NO_MODAL);
-  boardStore.deleteCurrentTask();
+  layoutStore.setCurrentModal(Modal.TASK_DELETE_PROMPT);
 }
 
 function editCurrentTaskByForm() {
