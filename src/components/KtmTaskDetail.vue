@@ -17,7 +17,7 @@
         </svg>
         <Transition>
           <div v-show="showMenu" class="menu">
-            <p @click="editCurrentTask">Edit Task</p>
+            <p @click="editCurrentTaskByForm">Edit Task</p>
             <p @click="deleteCurrentTask">Delete Task</p>
           </div>
         </Transition>
@@ -55,9 +55,9 @@
               />
             </svg>
           </div>
-          <s v-if="subtask.isCompleted"
-            ><p class="title">{{ subtask.title }}</p></s
-          >
+          <p v-if="subtask.isCompleted" class="title">
+            <s>{{ subtask.title }}</s>
+          </p>
           <p v-else class="title">{{ subtask.title }}</p>
           <!-- {{ subtask.title + ": " + subtask.isCompleted }} -->
         </div>
@@ -66,6 +66,7 @@
       <div class="task__status">
         <h2>Current Status</h2>
         <ktm-dropdown
+          @select="onSelect"
           :columnNames="boardColumnNames"
           :currentColumn="task?.status"
         ></ktm-dropdown>
@@ -82,11 +83,22 @@ import { useBoardStore } from "@/stores/board";
 
 const layoutStore = useLayoutStore();
 const boardStore = useBoardStore();
+const showMenu = ref(false);
 
+/* COMPUTED */
 const themeMode = computed(() => {
   return layoutStore.getThemeMode === ThemeMode.DARK
     ? "task--dark-mode"
     : "task--light-mode";
+});
+
+const subtasksText = computed(() => {
+  if (task.value) {
+    const competedTasks = task.value.subtasks.filter(
+      (subtask: Subtask) => subtask.isCompleted
+    ).length;
+    return `${competedTasks} of ${task.value.subtasks.length}`;
+  }
 });
 
 const task = computed(() => boardStore.getCurrentTask);
@@ -94,11 +106,9 @@ const boardColumnNames = computed(() =>
   boardStore.getCurrentBoard.columns.map((col) => col.name)
 );
 
-const showMenu = ref(false);
-
-// Function
+/* FUNCTIONS */
 function checkSubtask(index: number) {
-  console.log(index);
+  boardStore.checkSubtask(index);
 }
 
 function toggleMenu() {
@@ -110,20 +120,14 @@ function deleteCurrentTask() {
   boardStore.deleteCurrentTask();
 }
 
-function editCurrentTask() {
+function editCurrentTaskByForm() {
   layoutStore.setTaskFormState(FormState.EDITION);
   layoutStore.setCurrentModal(Modal.TASK_FORM_MODAL);
 }
 
-// Computed
-const subtasksText = computed(() => {
-  if (task.value) {
-    const competedTasks = task.value.subtasks.filter(
-      (subtask: Subtask) => subtask.isCompleted
-    ).length;
-    return `${competedTasks} of ${task.value.subtasks.length}`;
-  }
-});
+function onSelect(newStatus: { columnName: string; columnIndex: number }) {
+  boardStore.changeTaskStatus(newStatus.columnIndex);
+}
 </script>
 <style lang="scss" scoped>
 @use "../sass/colors" as c;

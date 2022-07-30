@@ -1,7 +1,6 @@
 import { ThemeMode, Modal } from "@/model";
 import type { Board, Task, Column } from "@/model";
 import { defineStore } from "pinia";
-import { v4 as uuid } from "uuid";
 
 export const useBoardStore = defineStore({
   id: "board",
@@ -78,6 +77,7 @@ export const useBoardStore = defineStore({
     ] as Board[],
     currentBoardIndex: 0,
     currentColumnIndex: 0,
+    currentTaskIndex: 0,
     currentTask: {} as Task | undefined,
   }),
   getters: {
@@ -86,6 +86,7 @@ export const useBoardStore = defineStore({
     getTaskBoard: (state) => state,
     getCurrentBoardIndex: (state) => state.currentBoardIndex,
     getCurrentColumnIndex: (state) => state.currentColumnIndex,
+    getCurrentTaskIndex: (state) => state.currentTaskIndex,
     getCurrentTask: (state) => state.currentTask,
   },
   actions: {
@@ -102,10 +103,11 @@ export const useBoardStore = defineStore({
     setCurrentBoard(index: number) {
       this.currentBoardIndex = index;
     },
-    setCurrentTask(columnIndex: number, taskId: string) {
-      this.currentTask = this.boards[this.currentBoardIndex].columns[
-        columnIndex
-      ].tasks.find((task: Task) => task.id === taskId);
+    setCurrentTask(columnIndex: number, taskIndex: number) {
+      this.currentTask =
+        this.boards[this.currentBoardIndex].columns[columnIndex].tasks[
+          taskIndex
+        ];
 
       this.currentColumnIndex = columnIndex;
     },
@@ -167,6 +169,46 @@ export const useBoardStore = defineStore({
         ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
         updatedTask,
       ];
+    },
+    checkSubtask(subtaskIndex: number) {
+      this.boards[this.currentBoardIndex].columns[
+        this.currentColumnIndex
+      ].tasks[this.currentTaskIndex].subtasks[subtaskIndex].isCompleted =
+        !this.boards[this.currentBoardIndex].columns[this.currentColumnIndex]
+          .tasks[this.currentTaskIndex].subtasks[subtaskIndex].isCompleted;
+    },
+    changeTaskStatus(columnIndex: number) {
+      /* ColumnId changing */
+      this.boards[this.currentBoardIndex].columns[
+        this.currentColumnIndex
+      ].tasks[this.currentTaskIndex].columnId =
+        this.boards[this.currentBoardIndex].columns[this.currentColumnIndex].id;
+
+      /* Column Name changing */
+      this.boards[this.currentBoardIndex].columns[
+        this.currentColumnIndex
+      ].tasks[this.currentTaskIndex].status =
+        this.boards[this.currentBoardIndex].columns[
+          this.currentColumnIndex
+        ].name;
+
+      /* REMOVED FROM THE PREVIOUS ONE */
+      this.boards[this.currentBoardIndex].columns[
+        this.currentColumnIndex
+      ].tasks = [
+        ...this.boards[this.currentBoardIndex].columns[
+          this.currentColumnIndex
+        ].tasks.filter((task) => task.id !== this.currentTask?.id),
+      ];
+
+      /* APPENDED TO THE NEW ONE */
+      if (this.currentTask) {
+        this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
+          ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
+          this.currentTask,
+        ];
+      }
+      this.currentColumnIndex = columnIndex;
     },
   },
 });
