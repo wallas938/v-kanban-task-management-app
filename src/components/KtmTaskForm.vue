@@ -79,6 +79,7 @@
         <ktm-dropdown
           @select="onSelect"
           :columnNames="boardColumnNames"
+          :currentColumn="status"
         ></ktm-dropdown>
       </div>
       <div class="submit">
@@ -96,7 +97,7 @@
 </template>
 
 <script lang="ts" setup>
-import { FormState, ThemeMode, type Column } from "@/model";
+import { FormState, Modal, ThemeMode, type Column } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
 import { computed, ref, unref } from "vue";
 import { useField, useForm, Field } from "vee-validate";
@@ -144,10 +145,13 @@ const themeMode = computed(() => {
     ? "task-form--dark-mode"
     : "task-form--light-mode";
 });
+const task = computed(() => boardStore.getCurrentTask);
+const currentColumn = computed(
+  () => boardStore.getCurrentBoard.columns[boardStore.getCurrentColumnIndex]
+);
 const taskFormState = computed(() => layoutStore.getTaskFormState);
 /* COMPUTED */
 
-// Define a validation schema
 const taskSchema = {
   title(value: string) {
     if (value && value.trim()) return true;
@@ -162,7 +166,7 @@ useForm({
 });
 
 //State
-const task = ref<{
+const taskField = ref<{
   id?: string;
   title: string;
   description: string;
@@ -174,6 +178,7 @@ const task = ref<{
   status: "",
   subtasks: [],
 });
+
 const { value: title, meta: titleMeta } = useField("title");
 const { value: description, meta: DescriptionMeta } = useField("description");
 
@@ -205,6 +210,7 @@ function setFormValues() {
   if (task.value) {
     title.value = task.value.title;
     description.value = task.value.description;
+    status.value = currentColumn.value.name;
     subtasks.value = task.value.subtasks.map((subtask) => {
       return {
         ...subtask,
@@ -238,6 +244,7 @@ function invalidateFieldState(index: number) {
 }
 function onSelect(newStatus: { columnName: string; columnIndex: number }) {
   status.value = newStatus.columnName;
+  console.log(newStatus.columnName);
   columnIndex.value = newStatus.columnIndex;
 }
 function onCreateSubtask() {
@@ -258,21 +265,46 @@ function onDeleteSubtask(index: number) {
 function onSubmit() {
   const t = title.value as string;
   const d = description.value as string;
-  const task: Task = {
-    id: uuid(),
-    title: t,
-    description: d,
-    columnId: boardStore.getCurrentBoard.columns[columnIndex.value].id,
-    subtasks: [...subtasks.value].map((s) => {
-      return {
-        id: uuid(),
-        title: s.title,
-        isCompleted: s.isCompleted,
+
+  if (layoutStore.getTaskFormState === FormState.CREATION) {
+    const task: Task = {
+      id: uuid(),
+      title: t,
+      description: d,
+      columnId: boardStore.getCurrentBoard.columns[columnIndex.value].id,
+      subtasks: [...subtasks.value].map((s) => {
+        return {
+          id: uuid(),
+          title: s.title,
+          isCompleted: s.isCompleted,
+        };
+      }),
+      status: status.value,
+    };
+    boardStore.addNewTask(task, columnIndex.value);
+  } else {
+    if (task.value) {
+      console.log(task.value.id);
+
+      const updatedTask: Task = {
+        id: task.value?.id,
+        title: t,
+        description: d,
+        columnId: boardStore.getCurrentBoard.columns[columnIndex.value].id,
+        subtasks: [...subtasks.value].map((subtask: any) => {
+          return {
+            id: uuid(),
+            title: subtask.title,
+            isCompleted: false,
+          };
+        }),
+        status: status.value,
       };
-    }),
-    status: status.value,
-  };
-  boardStore.addNewTask(task, columnIndex.value);
+      boardStore.updateCurrentTask(updatedTask, columnIndex.value);
+    }
+  }
+  layoutStore.setCurrentModal(Modal.NO_MODAL);
+  layoutStore.setTaskFormState(FormState.CREATION);
 }
 </script>
 

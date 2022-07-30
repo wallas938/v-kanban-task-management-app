@@ -53,7 +53,7 @@ const themeMode = computed(() => {
   display: flex;
   height: 100%;
   .column-item {
-    flex-basis: f.toRem(230, 12);
+    flex-basis: f.toRem(280, 12);
     flex-shrink: 0;
 
     .top {
@@ -79,10 +79,5 @@ const themeMode = computed(() => {
 }
 
 @include m.breakpoint-up(medium) {
-  .column-list {
-    .column-item {
-      flex-basis: f.toRem(280, 12);
-    }
-  }
 }
 </style>
