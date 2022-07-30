@@ -21,7 +21,9 @@
         <ktm-delete-board-prompt
           v-if="currentModal === Modal.BOARD_DELETE_PROMPT"
         ></ktm-delete-board-prompt>
-        <!-- <ktm-delete-task-prompt></ktm-delete-task-prompt> -->
+        <ktm-delete-task-prompt
+          v-if="currentModal === Modal.TASK_DELETE_PROMPT"
+        ></ktm-delete-task-prompt>
         <ktm-mobile-board-nav
           v-if="currentModal === Modal.BOARD_NAV_MODAL"
         ></ktm-mobile-board-nav>
@@ -35,6 +37,7 @@ import { computed } from "vue";
 import { FormState, ThemeMode } from "@/model";
 import KtmMobileBoardNav from "../KtmMobileBoardNav.vue";
 import KtmDeleteBoardPrompt from "../KtmDeleteBoardPrompt.vue";
+import KtmDeleteTaskPrompt from "../KtmDeleteTaskPrompt.vue";
 import KtmBoardForm from "../KtmBoardForm.vue";
 import KtmTaskForm from "../KtmTaskForm.vue";
 import KtmTaskDetail from "../KtmTaskDetail.vue";
@@ -50,6 +53,7 @@ const themeMode = computed(() =>
     : "modal--light-mode"
 );
 const currentModal = computed(() => layout.getCurrentModal);
+
 function hideModal() {
   resetAll();
 }
@@ -126,6 +130,11 @@ function resetAll() {
 /* Dropdown Animation */
 .modal-enter-from {
   opacity: 0;
+}
+
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.5s ease;
 }
 
 .modal-leave-to {
