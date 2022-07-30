@@ -24,10 +24,13 @@
         ></ktm-task-item>
       </div>
     </div>
+    <div class="add-new-column hide-for-mobile-and-tablet">
+      <h2 @click="addNewColumn">+ New Column</h2>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { ThemeMode } from "@/model";
+import { FormState, Modal, ThemeMode } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
 import { useBoardStore } from "@/stores/board";
 import { computed } from "vue";
@@ -40,9 +43,14 @@ const board = computed(() => boardStore.getCurrentBoard);
 
 const themeMode = computed(() => {
   return layoutStore.getThemeMode === ThemeMode.DARK
-    ? "task-item--dark-mode"
-    : "task-item--light-mode";
+    ? "column-list--dark-mode"
+    : "column-list--light-mode";
 });
+
+function addNewColumn() {
+  layoutStore.setBoardFormState(FormState.EDITION);
+  layoutStore.setCurrentModal(Modal.BOARD_FORM_MODAL);
+}
 </script>
 <style lang="scss" scoped>
 @use "../sass/mixins" as m;
@@ -56,6 +64,7 @@ const themeMode = computed(() => {
   .column-item {
     flex-basis: f.toRem(280, 12);
     flex-shrink: 0;
+    margin-right: f.toRem(24, 12);
 
     .top {
       display: flex;
@@ -73,9 +82,42 @@ const themeMode = computed(() => {
       }
     }
   }
+  .add-new-column {
+    flex-basis: f.toRem(280, 12);
+    flex-shrink: 0;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    h2 {
+      @include t.XLargeHeading;
+      cursor: pointer;
+      color: c.$MediumGrey;
+    }
 
-  .column-item {
-    margin-right: f.toRem(24, 12);
+    h2:hover {
+      color: c.$MainPurple;
+    }
+  }
+}
+
+.column-list--light-mode {
+  .add-new-column {
+    background: linear-gradient(
+      180deg,
+      #e9effa 0%,
+      rgba(233, 239, 250, 0.5) 100%
+    );
+  }
+}
+
+.column-list--dark-mode {
+  .add-new-column {
+    background: linear-gradient(
+      180deg,
+      rgba(43, 44, 55, 0.25) 0%,
+      rgba(43, 44, 55, 0.125) 100%
+    );
   }
 }
 
