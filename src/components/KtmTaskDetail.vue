@@ -17,7 +17,7 @@
         </svg>
         <Transition>
           <div v-show="showMenu" class="menu">
-            <p>Edit Task</p>
+            <p @click="editCurrentTask">Edit Task</p>
             <p @click="deleteCurrentTask">Delete Task</p>
           </div>
         </Transition>
@@ -75,7 +75,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { Modal, type Subtask, type Task } from "@/model";
+import { FormState, Modal, type Subtask, type Task } from "@/model";
 import { ThemeMode } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
 import { useBoardStore } from "@/stores/board";
@@ -108,6 +108,11 @@ function toggleMenu() {
 function deleteCurrentTask() {
   layoutStore.setCurrentModal(Modal.NO_MODAL);
   boardStore.deleteCurrentTask();
+}
+
+function editCurrentTask() {
+  layoutStore.setTaskFormState(FormState.EDITION);
+  layoutStore.setCurrentModal(Modal.TASK_FORM_MODAL);
 }
 
 // Computed
