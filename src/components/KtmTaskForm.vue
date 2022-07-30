@@ -284,8 +284,6 @@ function onSubmit() {
     boardStore.addNewTask(task, columnIndex.value);
   } else {
     if (task.value) {
-      console.log(task.value.id);
-
       const updatedTask: Task = {
         id: task.value?.id,
         title: t,

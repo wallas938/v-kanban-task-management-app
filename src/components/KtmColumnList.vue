@@ -18,7 +18,8 @@
         <ktm-task-item
           :task="task"
           :columnIndex="columnIndex"
-          v-for="(task, index) of column.tasks"
+          :taskIndex="taskIndex"
+          v-for="(task, taskIndex) of column.tasks"
           :key="task.id"
         ></ktm-task-item>
       </div>
