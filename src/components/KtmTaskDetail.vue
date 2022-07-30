@@ -126,7 +126,7 @@ function editCurrentTaskByForm() {
 }
 
 function onSelect(newStatus: { columnName: string; columnIndex: number }) {
-  boardStore.changeTaskStatus(newStatus.columnIndex);
+  boardStore.changeTaskStatus(newStatus.columnIndex, newStatus.columnName);
 }
 </script>
 <style lang="scss" scoped>

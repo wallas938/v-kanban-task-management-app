@@ -177,7 +177,7 @@ export const useBoardStore = defineStore({
         !this.boards[this.currentBoardIndex].columns[this.currentColumnIndex]
           .tasks[this.currentTaskIndex].subtasks[subtaskIndex].isCompleted;
     },
-    changeTaskStatus(columnIndex: number) {
+    changeTaskStatus(columnIndex: number, columnName: string) {
       /* ColumnId changing */
       this.boards[this.currentBoardIndex].columns[
         this.currentColumnIndex
@@ -187,10 +187,7 @@ export const useBoardStore = defineStore({
       /* Column Name changing */
       this.boards[this.currentBoardIndex].columns[
         this.currentColumnIndex
-      ].tasks[this.currentTaskIndex].status =
-        this.boards[this.currentBoardIndex].columns[
-          this.currentColumnIndex
-        ].name;
+      ].tasks[this.currentTaskIndex].status = columnName;
 
       /* REMOVED FROM THE PREVIOUS ONE */
       this.boards[this.currentBoardIndex].columns[
@@ -208,7 +205,21 @@ export const useBoardStore = defineStore({
           this.currentTask,
         ];
       }
+
+      /* UPDATED TASK INDEX */
+      const currentTaskIndex =
+        [...this.boards[this.currentBoardIndex].columns[columnIndex].tasks]
+          .length - 1;
+
+      /* UPDATED TASK */
+      this.currentTask =
+        this.boards[this.currentBoardIndex].columns[columnIndex].tasks[
+          currentTaskIndex
+        ];
+
       this.currentColumnIndex = columnIndex;
+
+      this.currentTaskIndex = currentTaskIndex;
     },
   },
 });
