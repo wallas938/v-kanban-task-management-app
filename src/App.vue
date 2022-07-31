@@ -62,7 +62,7 @@ function createBoard() {
       <!-- BOARD CONTENT -->
       <section class="columns">
         <div v-if="boardStore.getBoards.length < 1" class="no-columns">
-          <h1>You have no Boards avaiable, start creating a new Board</h1>
+          <h1>You have no Boards available, start creating a new Board</h1>
           <button @click="createBoard" class="create-column">
             + Add New Board
           </button>

@@ -183,7 +183,7 @@ const formTitle = computed(() =>
 
 const submitBtnText = computed(() =>
   layoutStore.getBoardFormState === FormState.CREATION
-    ? "Create New Task"
+    ? "Create New Board"
     : "Save Changes"
 );
 
