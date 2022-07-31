@@ -98,7 +98,6 @@ function dragover(
   ev: any,
   columnMeta: { columnIndex: number; columnName: string }
 ) {
-  console.log(ev.target);
   meta.value = {
     ...meta.value,
     columnIndex: columnMeta.columnIndex,

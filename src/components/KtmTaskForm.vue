@@ -244,7 +244,6 @@ function invalidateFieldState(index: number) {
 }
 function onSelect(newStatus: { columnName: string; columnIndex: number }) {
   status.value = newStatus.columnName;
-  console.log(newStatus.columnName);
   columnIndex.value = newStatus.columnIndex;
 }
 function onCreateSubtask() {

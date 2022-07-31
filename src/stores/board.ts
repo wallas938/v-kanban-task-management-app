@@ -5,7 +5,7 @@ import { defineStore } from "pinia";
 export const useBoardStore = defineStore({
   id: "board",
   state: () => ({
-    boards: [
+    /* boards: [
       {
         name: "My New Board",
         columns: [
@@ -264,7 +264,8 @@ export const useBoardStore = defineStore({
           },
         ],
       },
-    ] as Board[],
+    ]  as Board[]*/
+    boards: [] as Board[],
     currentBoardIndex: 0,
     currentColumnIndex: 0,
     currentTaskIndex: 0,
@@ -335,7 +336,6 @@ export const useBoardStore = defineStore({
           ...this.boards,
         ][this.currentBoardIndex].columns[columnIndex].tasks.map(
           (task: Task) => {
-            console.log(task.id === this.currentTask?.id);
             if (task.id === this.currentTask?.id) {
               return updatedTask;
             }
