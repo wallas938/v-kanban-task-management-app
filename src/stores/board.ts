@@ -110,6 +110,7 @@ export const useBoardStore = defineStore({
         ];
 
       this.currentColumnIndex = columnIndex;
+      this.currentTaskIndex = taskIndex;
     },
     deleteCurrentBoard(index: number) {
       this.boards = [...this.boards].filter(
