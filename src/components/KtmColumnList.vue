@@ -9,7 +9,6 @@
           columnName: column.name,
         })
       "
-      @dragenter.prevent="dragenter($event)"
       v-for="(column, columnIndex) of board.columns"
       :key="columnIndex"
     >
@@ -34,6 +33,7 @@
                 columnName: column.name,
               })
             "
+            @dragend="dragEnd($event)"
             :task="task"
             :columnIndex="columnIndex"
             :taskIndex="taskIndex"
@@ -106,7 +106,9 @@ function dragover(
   };
 }
 
-function dragenter(ev: any) {}
+function dragEnd(ev: any) {
+  ev.target.classList.remove("dragged");
+}
 </script>
 <style lang="scss" scoped>
 @use "../sass/mixins" as m;

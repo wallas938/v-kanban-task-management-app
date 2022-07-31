@@ -102,6 +102,7 @@ function createBoard() {
   flex-direction: column;
   main {
     position: relative;
+    overflow: auto;
     flex: 1;
     .no-columns {
       display: flex;
