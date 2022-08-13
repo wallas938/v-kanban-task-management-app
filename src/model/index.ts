@@ -37,6 +37,8 @@ export enum FieldValidity {
 export enum FormState {
   EDITION = "EDITION",
   CREATION = "CREATION",
+  AUTHENTIFICATION = "AUTHENTIFICATION",
+  REGISTRATION = "REGISTRATION",
 }
 
 export enum Modal {
