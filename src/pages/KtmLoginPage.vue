@@ -2,7 +2,11 @@
   <div class="login-page">
     <img :src="logoIcon" alt="app logo" />
     <form class="login-form">
-      <h1>Login In</h1>
+      <h1>
+        {{ formState === FormState.AUTHENTIFICATION ? "Log In" : "Sign Up" }}
+      </h1>
+      <p v-if="errorMessage">{{ errorMessage }}</p>
+      <p v-if="loadingState">LOADING ...</p>
       <div
         class="field email"
         :class="{
@@ -23,7 +27,7 @@
         <label for="password">Password</label>
         <input v-model="password" type="password" name="password" />
 
-        <small
+        <small v-if="formState === FormState.REGISTRATION"
           ><i
             >Minimum eight characters, at least one letter and one number</i
           ></small
@@ -51,7 +55,7 @@
         <div class="submit">
           <button
             type="button"
-            @click="standardLogin"
+            @click="standardSumbit"
             :disabled="!checkFormValidity"
             :class="{ disabled: !checkFormValidity }"
           >
@@ -83,11 +87,12 @@ import { FormState } from "@/model";
 import logoIcon from "../assets/logo-mobile.svg";
 import googleIcon from "../assets/google-icon.svg";
 import { useField, useForm } from "vee-validate";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useLayoutStore } from "@/stores/layout";
+import userService from "@/services/user.service";
 
 const layoutStore = useLayoutStore();
-
+const errorMessage = ref("");
 const formSchema = {
   email(value: string) {
     if (
@@ -111,16 +116,14 @@ useForm({
   validationSchema: formSchema,
 });
 
-const { value: email, meta: emailMeta } = useField("email");
-const { value: password, meta: passwordMeta } = useField("password");
+const { value: email, meta: emailMeta } = useField<string>("email");
+const { value: password, meta: passwordMeta } = useField<string>("password");
 const { value: passwordConfirm, meta: passwordConfirmMeta } =
   useField("passwordConfirm");
 
 /* Computed */
 const formState = computed(() => layoutStore.getHomeFormState);
-
-console.log(formState.value);
-
+const loadingState = computed(() => layoutStore.getLoadingState);
 const checkNonEqualPassword = computed(() => {
   if (password.value !== passwordConfirm.value) {
     return true;
@@ -147,9 +150,70 @@ const checkFormValidity = computed(() => {
   }
 });
 
-function standardLogin() {}
+function standardSumbit() {
+  switch (formState.value) {
+    case FormState.REGISTRATION:
+      registerStandard();
+      break;
+    case FormState.AUTHENTIFICATION:
+      signinStandard();
+      break;
+    default:
+      break;
+  }
+}
 
-function oAuthLogin() {}
+async function registerStandard() {
+  layoutStore.setLoadingState(true);
+  const result: any = await userService.registerStandard(
+    email.value,
+    password.value
+  );
+  if (result.data.user) {
+    layoutStore.setLoadingState(false);
+    return;
+  }
+  layoutStore.setLoadingState(false);
+}
+async function signinStandard() {
+  layoutStore.setLoadingState(true);
+  const result: any = await userService.signinStandard(
+    email.value,
+    password.value
+  );
+  if (result.data.user) {
+    layoutStore.setLoadingState(false);
+    return;
+  }
+  layoutStore.setLoadingState(false);
+}
+
+function handleSigninError(error: any) {
+  switch (error.code) {
+    case "auth/invalid-email":
+      errorMessage.value = "Invalid email or password was incorrect";
+      break;
+    case "auth/user-not-found":
+      errorMessage.value = "No account with that email was found";
+      break;
+    case "auth/wrong-password":
+      errorMessage.value = "Invalid email or password was incorrect";
+      break;
+    default:
+      errorMessage.value = "Invalid email or password was incorrect";
+      break;
+  }
+}
+
+async function oAuthLogin() {
+  layoutStore.setLoadingState(true);
+  const result: any = await userService.oAuthLogin();
+  if (result.data.user) {
+    layoutStore.setLoadingState(false);
+    return;
+  }
+  layoutStore.setLoadingState(false);
+}
 
 function toggleForm() {
   if (formState.value === FormState.AUTHENTIFICATION) {

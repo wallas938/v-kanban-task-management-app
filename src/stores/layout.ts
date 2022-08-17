@@ -9,6 +9,7 @@ export const useLayoutStore = defineStore({
     boardFormState: FormState.CREATION,
     taskFormState: FormState.CREATION,
     homeFormState: FormState.AUTHENTIFICATION,
+    isLoading: false,
   }),
   getters: {
     getThemeMode: ({ themeMode }) => themeMode,
@@ -16,6 +17,7 @@ export const useLayoutStore = defineStore({
     getBoardFormState: ({ boardFormState }) => boardFormState,
     getTaskFormState: ({ taskFormState }) => taskFormState,
     getHomeFormState: ({ homeFormState }) => homeFormState,
+    getLoadingState: ({ isLoading }) => isLoading,
   },
   actions: {
     toggle() {
@@ -32,8 +34,10 @@ export const useLayoutStore = defineStore({
       this.taskFormState = state;
     },
     setHomeFormState(state: FormState) {
-      console.log(state);
       this.homeFormState = state;
+    },
+    setLoadingState(state: boolean) {
+      this.isLoading = state;
     },
   },
 });
