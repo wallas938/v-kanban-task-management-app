@@ -10,6 +10,8 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
   },
   "dependencies": {
+    "dotenv": "^16.0.1",
+    "firebase": "^9.9.2",
     "pinia": "^2.0.14",
     "uuid": "^8.3.2",
     "vee-validate": "^4.5.11",
