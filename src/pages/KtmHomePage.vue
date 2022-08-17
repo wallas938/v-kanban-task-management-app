@@ -25,9 +25,7 @@ const noColumnsText = computed(() => {
     ? "Start creating a new Board"
     : "This board is empty. Create a new column to get started.";
 });
-const isModalActif = computed(() => {
-  return layoutStore.getCurrentModal !== Modal.NO_MODAL;
-});
+
 /* COMPUTED */
 
 function onHideSidebar() {
@@ -44,12 +42,6 @@ function createBoard() {
 </script>
 <template>
   <!-- Ajouter un wrapper pour l'animation de la modal -->
-  <!-- <button @click="show = !show">CLICK</button> -->
-  <!-- MODALS -->
-  <Teleport to="body">
-    <ktm-modal :show="isModalActif"></ktm-modal>
-  </Teleport>
-  <!-- MODALS -->
   <div class="home-page" :class="themeMode">
     <!-- HEADER -->
     <KTMHeader />

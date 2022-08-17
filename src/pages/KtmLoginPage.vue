@@ -5,8 +5,6 @@
       <h1>
         {{ formState === FormState.AUTHENTIFICATION ? "Log In" : "Sign Up" }}
       </h1>
-      <p v-if="errorMessage">{{ errorMessage }}</p>
-      <p v-if="loadingState">LOADING ...</p>
       <div
         class="field email"
         :class="{
@@ -169,7 +167,7 @@ async function registerStandard() {
     email.value,
     password.value
   );
-  if (result.data.user) {
+  if (result.data) {
     layoutStore.setLoadingState(false);
     return;
   }
@@ -181,7 +179,7 @@ async function signinStandard() {
     email.value,
     password.value
   );
-  if (result.data.user) {
+  if (result.data) {
     layoutStore.setLoadingState(false);
     return;
   }
@@ -208,7 +206,7 @@ function handleSigninError(error: any) {
 async function oAuthLogin() {
   layoutStore.setLoadingState(true);
   const result: any = await userService.oAuthLogin();
-  if (result.data.user) {
+  if (result.data) {
     layoutStore.setLoadingState(false);
     return;
   }
