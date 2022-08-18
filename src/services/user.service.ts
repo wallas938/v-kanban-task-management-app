@@ -9,37 +9,44 @@ import {
 
 const registerStandard = async (email: string, password: string) => {
   const auth = getAuth();
-  let result = { data: null };
+  let result = { data: null, serverMessage: null, errorCode: null };
   return createUserWithEmailAndPassword(auth, email, password)
     .then((data) => {
       return {
         ...result,
         data: data,
+        serverMessage: "Your are registered and connected !",
       };
     })
     .catch((error) => {
-      return result;
+      return {
+        ...result,
+        errorCode: handleSigninError(error),
+      };
     });
 };
 
 const signinStandard = async (email: string, password: string) => {
   const auth = getAuth();
-  let result = { data: null };
+  let result = { data: null, serverMessage: null, errorCode: null };
   return signInWithEmailAndPassword(auth, email, password)
     .then((data) => {
       return {
         ...result,
         data: data,
+        serverMessage: "Your are connected !",
       };
     })
     .catch((error) => {
-      return result;
-      /* handleSigninError(error); */
+      return {
+        ...result,
+        errorCode: handleSigninError(error),
+      };
     });
 };
 
 const oAuthLogin = async () => {
-  let result = { data: null };
+  let result = { data: null, serverMessage: null, errorCode: null };
   const provider = new GoogleAuthProvider();
   return signInWithPopup(getAuth(), provider)
     .then((data) => {
@@ -49,7 +56,10 @@ const oAuthLogin = async () => {
       };
     })
     .catch((error) => {
-      return result;
+      return {
+        ...result,
+        errorCode: handleSigninError(error),
+      };
     });
 };
 

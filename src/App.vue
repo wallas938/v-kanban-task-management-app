@@ -13,16 +13,32 @@ const isModalActif = computed(() => {
 });
 
 const isLoading = computed(() => layoutStore.getLoadingState);
-const message = computed(() => authStore.getServerMessage);
+const serverMessage = computed(() => authStore.getServerMessage);
+const errorMessage = computed(() => authStore.getErrorMessage);
 </script>
 <template>
   <Teleport to="body">
     <ktm-modal :show="isModalActif"></ktm-modal>
   </Teleport>
   <Teleport to="body">
-    <KTMLoadingSnackbar v-if="isLoading || message" />
+    <transition>
+      <KTMLoadingSnackbar v-if="isLoading || serverMessage || errorMessage" />
+    </transition>
   </Teleport>
   <router-view></router-view>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.v-enter-active,
+.v-leave-active {
+  position: absolute;
+  transition: all 0.4s ease-in-out;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+}
+</style>

@@ -1,5 +1,5 @@
+import KtmBoardPage from "@/pages/KtmBoardPage.vue";
 import KtmHomePage from "@/pages/KtmHomePage.vue";
-import KtmLoginPage from "@/pages/KtmLoginPage.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -11,11 +11,11 @@ const router = createRouter({
     },
     {
       path: "/login",
-      component: KtmLoginPage,
+      component: KtmHomePage,
     },
     {
       path: "/boards",
-      component: KtmHomePage,
+      component: KtmBoardPage,
     },
     { path: "/:pathMatch(.*)*", name: "NotFound", redirect: "login" },
   ],
