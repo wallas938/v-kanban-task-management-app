@@ -1,88 +1,223 @@
-<script setup lang="ts">
-import { computed, ref } from "vue";
-import { Modal, ThemeMode } from "@/model";
-import { useLayoutStore } from "@/stores/layout";
-import { useBoardStore } from "@/stores/board";
-
-/* Components */
-import KTMHeader from "@/components/layout/KTMHeader.vue";
-import KTMSidebar from "@/components/layout/KTMSidebar.vue";
-import KtmColumnList from "@/components/KtmColumnList.vue";
-
-const layoutStore = useLayoutStore();
-const boardStore = useBoardStore();
-const showSidebar = ref(true);
-
-/* COMPUTED */
-const boards = computed(() => boardStore.getBoards);
-const themeMode = computed(() => {
-  return layoutStore.getThemeMode === ThemeMode.DARK
-    ? "home-page--dark-mode"
-    : "home-page--light-mode";
-});
-const noColumnsText = computed(() => {
-  return boardStore.getBoards.length < 1
-    ? "Start creating a new Board"
-    : "This board is empty. Create a new column to get started.";
-});
-
-/* COMPUTED */
-
-function onHideSidebar() {
-  showSidebar.value = false;
-}
-
-function onShowSidebar() {
-  showSidebar.value = true;
-}
-
-function createBoard() {
-  layoutStore.setCurrentModal(Modal.BOARD_FORM_MODAL);
-}
-</script>
 <template>
-  <!-- Ajouter un wrapper pour l'animation de la modal -->
-  <div class="home-page" :class="themeMode">
-    <!-- HEADER -->
-    <KTMHeader />
-    <!-- HEADER -->
-    <!-- MAIN -->
-    <main>
-      <!-- TABLET AND DESKTOP SIDEBAR -->
-      <Transition name="sidebar">
-        <KTMSidebar v-if="showSidebar" @hide-sidebar="onHideSidebar" />
-      </Transition>
-      <!-- TABLET AND DESKTOP SIDEBAR -->
+  <div class="login-page">
+    <img :src="logoIcon" alt="app logo" />
+    <form class="login-form">
+      <h1>
+        {{ formState === FormState.AUTHENTIFICATION ? "Log In" : "Sign Up" }}
+      </h1>
+      <div
+        class="field email"
+        :class="{
+          'field--error':
+            !emailMeta.valid && emailMeta.dirty && !emailMeta.pending,
+        }"
+      >
+        <label for="email">Email</label>
+        <input v-model="email" type="email" name="email" />
+      </div>
+      <div
+        class="field password"
+        :class="{
+          'field--error':
+            !passwordMeta.valid && passwordMeta.dirty && !passwordMeta.pending,
+        }"
+      >
+        <label for="password">Password</label>
+        <input v-model="password" type="password" name="password" />
 
-      <!-- BOARD CONTENT -->
-      <section class="columns">
-        <div v-if="boardStore.getBoards.length < 1" class="no-columns">
-          <h1>You have no Boards available, start creating a new Board</h1>
-          <button @click="createBoard" class="create-column">
-            + Add New Board
+        <small v-if="formState === FormState.REGISTRATION"
+          ><i
+            >Minimum eight characters, at least one letter and one number</i
+          ></small
+        >
+      </div>
+      <Transition>
+        <div
+          v-if="formState === FormState.REGISTRATION"
+          class="field passwordConfirm"
+          :class="{
+            'passwordConfirmf--error':
+              checkNonEqualPassword && passwordConfirmMeta.dirty,
+          }"
+        >
+          <label for="passwordConfirm">Confirm Password</label>
+          <input
+            v-model="passwordConfirm"
+            type="password"
+            name="passwordConfirm"
+          />
+          <small><i>Enter password again</i></small>
+        </div>
+      </Transition>
+      <div class="cta">
+        <div class="submit">
+          <button
+            type="button"
+            @click="standardSumbit"
+            :disabled="!checkFormValidity"
+            :class="{ disabled: !checkFormValidity }"
+          >
+            {{
+              formState === FormState.AUTHENTIFICATION ? "Connexion" : "Signup"
+            }}
           </button>
         </div>
-        <KtmColumnList v-else />
-      </section>
-      <!-- BOARD CONTENT -->
-
-      <!-- HIDDEN SIDEBAR -->
-      <Transition name="hidden-sidebar">
-        <div v-if="!showSidebar" @click="onShowSidebar" class="hidden-sidebar">
-          <svg width="18" height="16" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M8.522 11.223a4.252 4.252 0 0 1-3.654-5.22l3.654 5.22ZM9 12.25A8.685 8.685 0 0 1 1.5 8a8.612 8.612 0 0 1 2.76-2.864l-.86-1.23A10.112 10.112 0 0 0 .208 7.238a1.5 1.5 0 0 0 0 1.524A10.187 10.187 0 0 0 9 13.75c.414 0 .828-.025 1.239-.074l-1-1.43A8.88 8.88 0 0 1 9 12.25Zm8.792-3.488a10.14 10.14 0 0 1-4.486 4.046l1.504 2.148a.375.375 0 0 1-.092.523l-.648.453a.375.375 0 0 1-.523-.092L3.19 1.044A.375.375 0 0 1 3.282.52L3.93.068a.375.375 0 0 1 .523.092l1.735 2.479A10.308 10.308 0 0 1 9 2.25c3.746 0 7.031 2 8.792 4.988a1.5 1.5 0 0 1 0 1.524ZM16.5 8a8.674 8.674 0 0 0-6.755-4.219A1.75 1.75 0 1 0 12.75 5v-.001a4.25 4.25 0 0 1-1.154 5.366l.834 1.192A8.641 8.641 0 0 0 16.5 8Z"
-              fill="#828FA3"
-            />
-          </svg>
+        <div class="login-google">
+          <button type="button" @click="oAuthLogin">
+            <img :src="googleIcon" alt="google icon" />
+          </button>
         </div>
-      </Transition>
-      <!-- HIDDEN SIDEBAR -->
-    </main>
-    <!-- MAIN -->
+        <div class="signup-btn">
+          <button type="button" @click="toggleForm">
+            {{
+              formState === FormState.AUTHENTIFICATION
+                ? "No account? Create one"
+                : "You already have an account ?"
+            }}
+          </button>
+        </div>
+      </div>
+    </form>
   </div>
 </template>
+<script lang="ts" setup>
+import { FormState } from "@/model";
+import logoIcon from "../assets/logo-mobile.svg";
+import googleIcon from "../assets/google-icon.svg";
+import { useField, useForm } from "vee-validate";
+import { computed, ref } from "vue";
+import { useLayoutStore } from "@/stores/layout";
+import userService from "@/services/user.service";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter, useRoute } from "vue-router";
 
+const layoutStore = useLayoutStore();
+const authStore = useAuthStore();
+const router = useRouter();
+
+const errorMessage = ref("");
+const formSchema = {
+  email(value: string) {
+    if (
+      value &&
+      value.trim() &&
+      value.match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)
+    )
+      return true;
+  },
+  password(value: string) {
+    if (
+      value &&
+      value.trim() &&
+      value.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)
+    )
+      return true;
+  },
+};
+
+useForm({
+  validationSchema: formSchema,
+});
+
+const { value: email, meta: emailMeta } = useField<string>("email");
+const { value: password, meta: passwordMeta } = useField<string>("password");
+const { value: passwordConfirm, meta: passwordConfirmMeta } =
+  useField("passwordConfirm");
+
+/* Computed */
+const formState = computed(() => layoutStore.getHomeFormState);
+const loadingState = computed(() => layoutStore.getLoadingState);
+const checkNonEqualPassword = computed(() => {
+  if (password.value !== passwordConfirm.value) {
+    return true;
+  }
+  return false;
+});
+
+const checkFormValidity = computed(() => {
+  switch (formState.value) {
+    case FormState.AUTHENTIFICATION:
+      if (emailMeta.valid && passwordMeta.valid) {
+        return true;
+      }
+      return false;
+    case FormState.REGISTRATION:
+      if (
+        !checkNonEqualPassword.value &&
+        emailMeta.valid &&
+        passwordMeta.valid
+      ) {
+        return true;
+      }
+      return false;
+  }
+});
+
+function standardSumbit() {
+  switch (formState.value) {
+    case FormState.REGISTRATION:
+      registerStandard();
+      break;
+    case FormState.AUTHENTIFICATION:
+      signinStandard();
+      break;
+    default:
+      break;
+  }
+}
+
+async function registerStandard() {
+  layoutStore.setLoadingState(true);
+  const result: any = await userService.registerStandard(
+    email.value,
+    password.value
+  );
+  if (result.data) {
+    layoutStore.setLoadingState(false);
+    authStore.setServerMessage(result.serverMessage);
+    router.push("boards");
+    return;
+  }
+  layoutStore.setLoadingState(false);
+  authStore.setErrorMessage(result.errorCode);
+}
+async function signinStandard() {
+  layoutStore.setLoadingState(true);
+  const result: any = await userService.signinStandard(
+    email.value,
+    password.value
+  );
+  if (result.data) {
+    layoutStore.setLoadingState(false);
+    authStore.setServerMessage(result.serverMessage);
+    router.push("boards");
+    return;
+  }
+  layoutStore.setLoadingState(false);
+  authStore.setErrorMessage(result.errorCode);
+}
+
+async function oAuthLogin() {
+  layoutStore.setLoadingState(true);
+  const result: any = await userService.oAuthLogin();
+  if (result.data) {
+    layoutStore.setLoadingState(false);
+    authStore.setServerMessage(result.serverMessage);
+    router.push("boards");
+    return;
+  }
+  layoutStore.setLoadingState(false);
+  authStore.setErrorMessage(result.errorCode);
+}
+
+function toggleForm() {
+  if (formState.value === FormState.AUTHENTIFICATION) {
+    layoutStore.setHomeFormState(FormState.REGISTRATION);
+    return;
+  }
+  layoutStore.setHomeFormState(FormState.AUTHENTIFICATION);
+}
+</script>
 <style lang="scss" scoped>
 @use "../sass/colors" as c;
 @use "../sass/mixins" as m;
@@ -90,189 +225,221 @@ function createBoard() {
 @use "../sass/layout/_index.scss" as l;
 @use "../sass/helpers/_functions.scss" as f;
 
-.home-page {
-  transition: all 0.5s ease-in-out;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  main {
-    position: relative;
-    overflow: auto;
-    flex: 1;
-    .no-columns {
+.login-page {
+  position: relative;
+  padding: f.toRem(145, 12) f.toRem(24, 12) f.toRem(24, 12) f.toRem(24, 12);
+  h1 {
+    @include t.XLargeHeading;
+    color: c.$MainPurple;
+    margin-bottom: f.toRem(40, 12);
+  }
+  > img {
+    position: absolute;
+    top: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: f.toRem(32, 12);
+    height: f.toRem(26, 12);
+  }
+
+  .login-form {
+    width: f.toRem(327, 12);
+    margin: 0 auto;
+    padding: f.toRem(24, 12) f.toRem(24, 12) f.toRem(24, 12) f.toRem(24, 12);
+    background-color: rgba($color: c.$LinesLight, $alpha: 1);
+    border-radius: f.toRem(6, 12);
+    .field {
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      margin-bottom: f.toRem(24, 12);
+    }
+
+    .field > label {
+      @include t.bodyMedium;
+      margin-bottom: f.toRem(8, 12);
+      color: c.$MainPurpleHover;
+    }
+
+    .field > input {
+      @include t.bodyMedium;
+      @include l.ktm-input;
+    }
+
+    .field > small {
+      color: c.$MediumGrey;
+      margin-top: f.toRem(8, 12);
+    }
+
+    .field--error {
+      position: relative;
+
+      &::after {
+        position: absolute;
+        content: "Wrong input";
+        color: c.$Red;
+        top: f.toRem(34.5, 12);
+        right: f.toRem(16, 12);
+      }
+
+      & > label {
+        color: c.$Red;
+      }
+
+      & > input {
+        outline: none;
+        border: 1px solid c.$Red !important;
+      }
+    }
+
+    .passwordConfirmf--error {
+      position: relative;
+
+      &::after {
+        position: absolute;
+        content: "Not equal";
+        color: c.$Red;
+        top: f.toRem(34.5, 12);
+        right: f.toRem(16, 12);
+      }
+
+      & > label {
+        color: c.$Red;
+      }
+
+      & > input {
+        outline: none;
+        border: 1px solid c.$Red !important;
+      }
+    }
+
+    .cta {
+      display: grid;
       align-items: center;
-      padding: f.toRem(211, 12) f.toRem(16, 12);
-
-      h1 {
-        @include t.largeHeading;
-        color: c.$MediumGrey;
-        text-align: center;
-        margin-bottom: f.toRem(25, 12);
-      }
-
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      grid-template-areas:
+        "submit  submit  google"
+        "no-account no-account no-account";
       button {
-        @include l.ktm-button;
-        @include l.ktm-btn-primary;
-        @include t.mediumHeading;
+        border: none;
+        @include t.smallButtonText;
         border-radius: f.toRem(24, 12);
-        padding: f.toRem(15, 12) f.toRem(18, 12) f.toRem(14, 12) f.toRem(17, 12);
+        padding: f.toRem(12, 12) f.toRem(15, 12);
       }
+      .submit {
+        grid-area: submit;
 
-      & > .create-column.create-column--disabled {
-        background-color: c.$MediumGrey;
-        color: rgba($color: c.$White, $alpha: 0.25);
+        > button {
+          @include l.ktm-btn-primary;
+          width: 100%;
+        }
+        > button.disabled {
+          background-color: c.$MediumGrey;
+          color: rgba($color: c.$White, $alpha: 0.25);
+        }
       }
-    }
+      .login-google {
+        grid-area: google;
+        display: flex;
+        justify-content: center;
+        > button {
+          background-color: c.$White;
+          padding: 4px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 100%;
+        }
 
-    .columns {
-      overflow: auto;
-      height: 100%;
-      padding: f.toRem(23, 12) f.toRem(16, 12);
-    }
-
-    .hidden-sidebar {
-      cursor: pointer;
-      position: absolute;
-      bottom: f.toRem(32, 12);
-      left: 0;
-      padding: f.toRem(19, 12) f.toRem(22, 12) f.toRem(18.78, 12)
-        f.toRem(18, 12);
-      border-radius: 0px 100px 100px 0px;
-      background-color: c.$MainPurple;
-
-      & > svg > path {
-        fill: c.$White;
+        > button > img {
+          width: f.toRem(32, 12);
+        }
       }
-
-      &:hover {
-        background-color: c.$MainPurpleHover;
-      }
-    }
-  }
-}
-.home-page--light-mode {
-  background-color: c.$LightGreyBG;
-}
-.home-page--dark-mode {
-  background-color: c.$VeryDarkGrey;
-}
-
-/* Animations */
-
-/* SIDEBAR ANIMATIONS */
-.sidebar-enter-active {
-  animation: s-translate-in 0.6s;
-}
-.sidebar-leave-active {
-  animation: s-translate-out 0.5s;
-}
-@keyframes s-translate-in {
-  0% {
-    transform: translateX(-261px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-@keyframes s-translate-out {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-261px);
-  }
-}
-
-@include m.breakpoint-up(large) {
-  @keyframes s-translate-in {
-    0% {
-      transform: translateX(-301px);
-    }
-    100% {
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes s-translate-out {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-301px);
-    }
-  }
-}
-
-/* SIDEBAR ANIMATIONS */
-
-/* HIDDEN SIDEBAR ANIMATIONS */
-
-.hidden-sidebar-enter-active {
-  animation: hs-translate-in 0.6s;
-}
-.hidden-sidebar-leave-active {
-  animation: hs-translate-out 0.5s;
-}
-@keyframes hs-translate-in {
-  0% {
-    transform: translateX(-56px);
-  }
-  60% {
-    transform: translateX(0);
-  }
-  90% {
-    transform: translateX(-5px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-@keyframes hs-translate-out {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-56px);
-  }
-}
-
-/* HIDDEN SIDEBAR ANIMATIONS */
-
-@include m.breakpoint-up(medium) {
-  .home-page {
-    display: flex;
-    flex-direction: column;
-    main {
-      flex: 1;
-      display: flex;
-      .columns {
-        width: 100%;
-        min-width: f.toRem(508, 12);
-        .no-columns {
-          padding: f.toRem(328, 12) f.toRem(24, 12) 0 f.toRem(24, 12);
-          h1 {
-            margin-bottom: f.toRem(24, 12);
-          }
+      .signup-btn {
+        margin-top: f.toRem(16, 12);
+        grid-area: no-account;
+        > button {
+          @include l.ktm-btn-secondary-light;
+          width: 100%;
         }
       }
     }
   }
 }
+.v-enter-active {
+  transition: all 0.6s ease;
+}
+.v-leave-active {
+  transition: all 0.3s ease;
+}
 
-@include m.breakpoint-up(large) {
-  .home-page {
-    main {
-      .columns {
-        .no-columns {
-          padding: f.toRem(364, 12) 0 0 0;
-          h1 {
-            margin-bottom: f.toRem(32, 12);
-          }
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+@include m.breakpoint-up(medium) {
+  .login-page {
+    padding: f.toRem(230, 12) f.toRem(0, 12) f.toRem(0, 12) f.toRem(0, 12);
+    h1 {
+      margin-bottom: f.toRem(40, 12);
+    }
+    > img {
+      top: 10rem;
+      width: f.toRem(48, 12);
+      height: f.toRem(36, 12);
+    }
+
+    .login-form {
+      width: f.toRem(480, 12);
+      padding: f.toRem(32, 12);
+      .field {
+        margin-bottom: f.toRem(24, 12);
+      }
+
+      .field > label {
+        @include t.bodyLarge;
+        margin-bottom: f.toRem(16, 12);
+      }
+
+      .field > input {
+        @include t.bodyLarge;
+        @include l.ktm-input;
+      }
+
+      .field--error {
+        &::after {
+          top: f.toRem(52.2, 12);
+          right: f.toRem(16, 12);
+        }
+
+        & > label {
+          color: c.$Red;
+        }
+
+        & > input {
+          outline: none;
+          border: 1px solid c.$Red !important;
+        }
+      }
+
+      .cta {
+        display: grid;
+        align-items: center;
+
+        button {
+          @include t.LargeButtonText;
+          padding: f.toRem(14, 12) f.toRem(15, 12);
+        }
+        .login {
+          grid-area: login;
+        }
+        .login-google {
+          grid-area: google;
+        }
+        .signup-btn {
+          grid-area: no-account;
         }
       }
     }
