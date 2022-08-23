@@ -4,8 +4,9 @@ import KTMLoadingSnackbar from "./components/layout/KTMLoadingSnackbar.vue";
 import { Modal } from "./model";
 import { useAuthStore } from "./stores/auth";
 import { useLayoutStore } from "./stores/layout";
+import { useInfoStore } from "./stores/message";
 const layoutStore = useLayoutStore();
-const authStore = useAuthStore();
+const infoStore = useInfoStore();
 
 /* Computed */
 const isModalActif = computed(() => {
@@ -13,8 +14,8 @@ const isModalActif = computed(() => {
 });
 
 const isLoading = computed(() => layoutStore.getLoadingState);
-const serverMessage = computed(() => authStore.getServerMessage);
-const errorMessage = computed(() => authStore.getErrorMessage);
+const serverMessage = computed(() => infoStore.getServerMessage);
+const errorMessage = computed(() => infoStore.getErrorMessage);
 </script>
 <template>
   <Teleport to="body">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { Modal, ThemeMode } from "@/model";
+import { computed, onMounted, ref } from "vue";
+import { Modal, ThemeMode, PaletteColor } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
 import { useBoardStore } from "@/stores/board";
 
@@ -8,13 +8,25 @@ import { useBoardStore } from "@/stores/board";
 import KTMHeader from "@/components/layout/KTMHeader.vue";
 import KTMSidebar from "@/components/layout/KTMSidebar.vue";
 import KtmColumnList from "@/components/KtmColumnList.vue";
+import { useAuthStore } from "@/stores/auth";
+import boardService from "@/services/board.service";
 
 const layoutStore = useLayoutStore();
 const boardStore = useBoardStore();
+const authStore = useAuthStore();
 const showSidebar = ref(true);
+
+onMounted(() => {
+  if(localStorage.getItem('uid')) {
+    /* Get All boards */
+    
+  }
+});
 
 /* COMPUTED */
 const boards = computed(() => boardStore.getBoards);
+const user = computed(() => authStore.getUser);
+
 const themeMode = computed(() => {
   return layoutStore.getThemeMode === ThemeMode.DARK
     ? "home-page--dark-mode"

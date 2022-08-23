@@ -93,14 +93,16 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, ref, unref } from "vue";
+import { computed, ref, unref, watch } from "vue";
 import { FormState, Modal, PaletteColor, type Board } from "@/model";
 import { useField, useForm } from "vee-validate";
 import { ThemeMode, FieldState, FieldValidity } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
 import { useBoardStore } from "@/stores/board";
 import { v4 as uuid } from "uuid";
+import { useAuthStore } from "@/stores/auth";
 const layoutStore = useLayoutStore();
+const authStore = useAuthStore();
 
 const themeMode = computed(() => {
   return layoutStore.getThemeMode === ThemeMode.DARK
@@ -279,7 +281,8 @@ function onSubmit() {
         };
       }),
     };
-    boardStore.addNewBoard(newBoard);
+    
+    authStore.getUser && boardStore.addNewBoard(newBoard, authStore.getUser?.uid);
   } else {
     const updatedBoard: any = {
       name,

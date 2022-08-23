@@ -90,12 +90,14 @@ import { useLayoutStore } from "@/stores/layout";
 import userService from "@/services/user.service";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter, useRoute } from "vue-router";
+import { useInfoStore } from "@/stores/message";
 
 const layoutStore = useLayoutStore();
 const authStore = useAuthStore();
+const infoStore = useInfoStore();
 const router = useRouter();
-
 const errorMessage = ref("");
+
 const formSchema = {
   email(value: string) {
     if (
@@ -166,56 +168,63 @@ function standardSumbit() {
   }
 }
 
-async function registerStandard() {
-  layoutStore.setLoadingState(true);
-  const result: any = await userService.registerStandard(
-    email.value,
-    password.value
-  );
-  if (result.data) {
-    layoutStore.setLoadingState(false);
-    authStore.setServerMessage(result.serverMessage);
-    router.push("boards");
-    return;
-  }
-  layoutStore.setLoadingState(false);
-  authStore.setErrorMessage(result.errorCode);
-}
-async function signinStandard() {
-  layoutStore.setLoadingState(true);
-  const result: any = await userService.signinStandard(
-    email.value,
-    password.value
-  );
-  if (result.data) {
-    layoutStore.setLoadingState(false);
-    authStore.setServerMessage(result.serverMessage);
-    router.push("boards");
-    return;
-  }
-  layoutStore.setLoadingState(false);
-  authStore.setErrorMessage(result.errorCode);
-}
-
-async function oAuthLogin() {
-  layoutStore.setLoadingState(true);
-  const result: any = await userService.oAuthLogin();
-  if (result.data) {
-    layoutStore.setLoadingState(false);
-    authStore.setServerMessage(result.serverMessage);
-    router.push("boards");
-    return;
-  }
-  layoutStore.setLoadingState(false);
-  authStore.setErrorMessage(result.errorCode);
-}
-
 function toggleForm() {
   if (formState.value === FormState.AUTHENTIFICATION) {
     layoutStore.setHomeFormState(FormState.REGISTRATION);
     return;
   }
   layoutStore.setHomeFormState(FormState.AUTHENTIFICATION);
+}
+
+/* Functions */
+// REGISTER
+async function registerStandard() {
+  layoutStore.setLoadingState(true);
+  const result: any = await userService.registerStandard(
+    email.value,
+    password.value
+  );
+  if (result.user) {
+    layoutStore.setLoadingState(false);
+    authStore.setUser(result.user);
+    infoStore.setServerMessage(result.serverMessage);
+    localStorage.setItem('uid', result.user.uid)
+    router.push("boards");
+    return;
+  }
+  layoutStore.setLoadingState(false);
+  infoStore.setErrorMessage(result.errorCode);
+}
+// AUTHENTICATION
+async function signinStandard() {
+  layoutStore.setLoadingState(true);
+  const result: any = await userService.signinStandard(
+    email.value,
+    password.value
+  );
+  if (result.user) {
+    layoutStore.setLoadingState(false);
+    infoStore.setServerMessage(result.serverMessage);
+    authStore.setUser(result.user);
+    router.push("boards");
+    return;
+  }
+  layoutStore.setLoadingState(false);
+  infoStore.setErrorMessage(result.errorCode);
+}
+// OAUTH-GOOGLE
+async function oAuthLogin() {
+  layoutStore.setLoadingState(true);
+  const result: any = await userService.oAuthLogin();
+  if (result.user) {
+    layoutStore.setLoadingState(false);
+    authStore.setUser(result.user);
+    infoStore.setServerMessage(result.serverMessage);
+    router.push("boards");
+    return;
+  }
+  layoutStore.setLoadingState(false);
+  infoStore.setErrorMessage(result.errorCode);
 }
 </script>
 <style lang="scss" scoped>

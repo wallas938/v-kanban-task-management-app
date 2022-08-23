@@ -50,11 +50,28 @@ export enum Modal {
   TASK_DELETE_PROMPT = "TASK DELETE PROMPT",
   TASK_DETAIL_VIEW = "TASK DETAIL VIEW",
 }
+
+export interface KtmUser {
+  accessToken: Promise<string>;
+  refreshToken: string;
+  email: string;
+  metadata: UserMetaData;
+  uid: string;
+}
+
+export interface UserMetaData {
+  createdAt: string;
+  creationTime: string;
+  lastLoginAt: string;
+  lastSignInTime: string;
+}
+
 export interface Board {
-  id: string;
+  id?: string;
   name: string;
   columns: Column[];
 }
+
 export interface Column {
   id: string;
   name: string;
