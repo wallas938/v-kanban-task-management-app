@@ -14,6 +14,7 @@ import KTMDropdown from "./components/layout/KTMDropdown.vue";
 import KTMModal from "./components/layout/KTMModal.vue";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { getDatabase } from "firebase/database";
 import KTMLoadingSnackbar from "./components/layout/KTMLoadingSnackbar.vue";
 import KTMLoadingEllipsis from "./components/layout/KTMLoadingEllipsis.vue";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -32,9 +33,9 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_MEASURMENT_ID,
 };
 
-initializeApp(firebaseConfig);
-export const pinia = createPinia();
-export const app = createApp(App);
+const appInit = initializeApp(firebaseConfig);
+const pinia = createPinia();
+const app = createApp(App);
 
 app.use(pinia);
 app.use(router);

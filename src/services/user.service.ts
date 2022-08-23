@@ -1,4 +1,5 @@
 import { useLayoutStore } from "./../stores/layout";
+import type { KtmUser } from "@/model";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -9,12 +10,22 @@ import {
 
 const registerStandard = async (email: string, password: string) => {
   const auth = getAuth();
-  let result = { data: null, serverMessage: null, errorCode: null };
+  let result = {
+    user: null as null | KtmUser,
+    serverMessage: null as null | string,
+    errorCode: null as null | string,
+  };
   return createUserWithEmailAndPassword(auth, email, password)
-    .then((data) => {
+    .then(async (data) => {
       return {
         ...result,
-        data: data,
+        user: {
+          accessToken: await data.user.getIdToken(),
+          refreshToken: data.user.refreshToken,
+          email: data.user.email,
+          metadata: data.user.metadata,
+          uid: data.user.uid,
+        },
         serverMessage: "Your are registered and connected !",
       };
     })
@@ -28,12 +39,18 @@ const registerStandard = async (email: string, password: string) => {
 
 const signinStandard = async (email: string, password: string) => {
   const auth = getAuth();
-  let result = { data: null, serverMessage: null, errorCode: null };
+  let result = { user: null, serverMessage: null, errorCode: null };
   return signInWithEmailAndPassword(auth, email, password)
-    .then((data) => {
+    .then(async (data) => {
       return {
         ...result,
-        data: data,
+        user: {
+          accessToken: await data.user.getIdToken(),
+          refreshToken: data.user.refreshToken,
+          email: data.user.email,
+          metadata: data.user.metadata,
+          uid: data.user.uid,
+        },
         serverMessage: "Your are connected !",
       };
     })
@@ -46,13 +63,19 @@ const signinStandard = async (email: string, password: string) => {
 };
 
 const oAuthLogin = async () => {
-  let result = { data: null, serverMessage: null, errorCode: null };
+  let result = { user: null, serverMessage: null, errorCode: null };
   const provider = new GoogleAuthProvider();
   return signInWithPopup(getAuth(), provider)
-    .then((data) => {
+    .then(async (data) => {
       return {
         ...result,
-        data: data,
+        user: {
+          accessToken: await data.user.getIdToken(),
+          refreshToken: data.user.refreshToken,
+          email: data.user.email,
+          metadata: data.user.metadata,
+          uid: data.user.uid,
+        },
       };
     })
     .catch((error) => {

@@ -1,6 +1,8 @@
 import { ThemeMode, Modal } from "@/model";
 import type { Board, Task, Column } from "@/model";
 import { defineStore } from "pinia";
+import boardService from "@/services/board.service";
+import { useInfoStore } from "./message";
 
 export const useBoardStore = defineStore({
   id: "board",
@@ -266,6 +268,7 @@ export const useBoardStore = defineStore({
       },
     ]  as Board[]*/
     boards: [] as Board[],
+    error: "",
     currentBoardIndex: 0,
     currentColumnIndex: 0,
     currentTaskIndex: 0,
@@ -275,15 +278,31 @@ export const useBoardStore = defineStore({
     getBoards: (state) => state.boards,
     getCurrentBoard: (state) => state.boards[state.currentBoardIndex],
     getTaskBoard: (state) => state,
+    getBoardError: (state) => state.error,
     getCurrentBoardIndex: (state) => state.currentBoardIndex,
     getCurrentColumnIndex: (state) => state.currentColumnIndex,
     getCurrentTaskIndex: (state) => state.currentTaskIndex,
     getCurrentTask: (state) => state.currentTask,
   },
   actions: {
-    addNewBoard(board: Board) {
-      this.boards = [...this.boards, board];
-      this.currentBoardIndex = this.boards.length - 1;
+    async addNewBoard(board: Board, userId: string) {
+      /* Persist Boards into firebase cloud */
+      const infoStore = useInfoStore();
+      const result = await boardService.postBoards(userId, [
+        ...this.boards,
+        board,
+      ]);
+      if (result.ok) {
+        /* After Persistance success, boards state is updated */
+        this.boards = [...this.boards, board];
+        this.currentBoardIndex = this.boards.length - 1;
+        infoStore.setErrorMessage(result.serverMessage);
+        return;
+      }
+
+      /* After Persistance failed, an error message is displayed */
+      infoStore.setErrorMessage(result.errorMessage);
+      /* user.value && boardService.getBoards(user.value?.uid); */
     },
     addNewTask(task: Task, columnIndex: number) {
       this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [

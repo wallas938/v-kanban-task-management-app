@@ -12,18 +12,18 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { useAuthStore } from "@/stores/auth";
 import { useLayoutStore } from "@/stores/layout";
 import KTMLoadingEllipsis from "./KTMLoadingEllipsis.vue";
 import { computed } from "vue";
+import { useInfoStore } from "@/stores/message";
 
 const layoutStore = useLayoutStore();
-const authStore = useAuthStore();
+const infoStore = useInfoStore();
 
 /* Computed */
 const isLoading = computed(() => layoutStore.getLoadingState);
-const serverMessage = computed(() => authStore.getServerMessage);
-const errorMessage = computed(() => authStore.getErrorMessage);
+const serverMessage = computed(() => infoStore.getServerMessage);
+const errorMessage = computed(() => infoStore.getErrorMessage);
 </script>
 <style lang="scss" scoped>
 @use "../../sass/colors" as c;
