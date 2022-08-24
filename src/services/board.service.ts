@@ -1,4 +1,5 @@
-import type { Board } from "@/model";
+import type { Board, Column, Subtask, Task } from "@/model";
+import { useBoardStore } from "@/stores/board";
 import {
   child,
   DataSnapshot,
@@ -36,9 +37,36 @@ const getBoards = (userId: string) => {
   const db = getDatabase();
   const dbRef = ref(db, `users/${userId}`);
 
-  onValue(dbRef, (snapshot: DataSnapshot) => {
-    const data = snapshot.val();
-    console.log(data);
+  return onValue(
+    dbRef,
+    (snapshot) => {
+      const { boards } = snapshot.val();
+      return formatBoardsData(boards)
+    },
+    {
+      onlyOnce: true,
+    }
+  );
+};
+
+const formatBoardsData = (boards: Board[]) => {
+  return boards.map((b: Board) => {
+    return {
+      ...b,
+      columns: b.columns.map((c: Column) => {
+        return {
+          ...c,
+          tasks: c.tasks
+            ? c.tasks.map((t: Task) => {
+                return {
+                  ...t,
+                  subtasks: t.subtasks ? t.subtasks : [],
+                };
+              })
+            : [],
+        };
+      }),
+    };
   });
 };
 

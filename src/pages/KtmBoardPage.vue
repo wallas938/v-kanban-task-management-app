@@ -10,18 +10,19 @@ import KTMSidebar from "@/components/layout/KTMSidebar.vue";
 import KtmColumnList from "@/components/KtmColumnList.vue";
 import { useAuthStore } from "@/stores/auth";
 import boardService from "@/services/board.service";
+import userService from "@/services/user.service";
 
 const layoutStore = useLayoutStore();
 const boardStore = useBoardStore();
 const authStore = useAuthStore();
 const showSidebar = ref(true);
 
-onMounted(() => {
-  if(localStorage.getItem('uid')) {
-    /* Get All boards */
-    
+/* onMounted(() => {
+  const userId = localStorage.getItem("uid");
+  if (userId) {
+    const boards = boardService.getBoards(userId);
   }
-});
+}); */
 
 /* COMPUTED */
 const boards = computed(() => boardStore.getBoards);

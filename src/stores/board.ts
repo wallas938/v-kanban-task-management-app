@@ -431,5 +431,8 @@ export const useBoardStore = defineStore({
 
       this.currentTaskIndex = currentTaskIndex;
     },
+    setBoards(boards: Board[]) {
+      this.boards = boards;
+    }
   },
 });
