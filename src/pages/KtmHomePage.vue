@@ -204,8 +204,9 @@ async function signinStandard() {
   );
   if (result.user) {
     layoutStore.setLoadingState(false);
-    infoStore.setServerMessage(result.serverMessage);
     authStore.setUser(result.user);
+    infoStore.setServerMessage(result.serverMessage);
+    localStorage.setItem('uid', result.user.uid)
     router.push("boards");
     return;
   }
@@ -220,6 +221,7 @@ async function oAuthLogin() {
     layoutStore.setLoadingState(false);
     authStore.setUser(result.user);
     infoStore.setServerMessage(result.serverMessage);
+    localStorage.setItem('uid', result.user.uid)
     router.push("boards");
     return;
   }
