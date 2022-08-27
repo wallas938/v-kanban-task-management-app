@@ -1,12 +1,14 @@
 import { useLayoutStore } from "./../stores/layout";
-import type { KtmUser } from "@/model";
+import type { KtmUser, UserMetaData } from "@/model";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  onAuthStateChanged,
 } from "firebase/auth";
+import { useAuthStore } from "@/stores/auth";
 
 const registerStandard = async (email: string, password: string) => {
   const auth = getAuth();
@@ -99,8 +101,31 @@ function handleSigninError(error: any) {
   }
 }
 
+const isUserLoggedIn = async () => {
+  const auth = getAuth();
+  return onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const authStore = useAuthStore();
+      const usr: any = {
+        accessToken: user.getIdToken(),
+        refreshToken: user.refreshToken,
+        email: user.email,
+        metadata: user.metadata,
+        uid: user.uid,
+      };
+      authStore.setUser(usr);
+      return new Promise((resolve, reject) => {
+        resolve(true)
+      });
+    }
+  });
+};
+
 export default {
   registerStandard,
   signinStandard,
   oAuthLogin,
+  isUserLoggedIn,
 };
