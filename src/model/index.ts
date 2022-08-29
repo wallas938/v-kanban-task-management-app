@@ -52,7 +52,7 @@ export enum Modal {
 }
 
 export interface KtmUser {
-  accessToken: Promise<string>;
+  accessToken: string;
   refreshToken: string;
   email: string;
   metadata: UserMetaData;

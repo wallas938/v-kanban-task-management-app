@@ -1,12 +1,14 @@
 import { useLayoutStore } from "./../stores/layout";
-import type { KtmUser } from "@/model";
+import type { KtmUser, UserMetaData } from "@/model";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  onAuthStateChanged,
 } from "firebase/auth";
+import { useAuthStore } from "@/stores/auth";
 
 const registerStandard = async (email: string, password: string) => {
   const auth = getAuth();
@@ -15,8 +17,17 @@ const registerStandard = async (email: string, password: string) => {
     serverMessage: null as null | string,
     errorCode: null as null | string,
   };
+  let user;
   return createUserWithEmailAndPassword(auth, email, password)
     .then(async (data) => {
+      user = {
+        accessToken: await data.user.getIdToken(),
+        refreshToken: data.user.refreshToken,
+        email: data.user.email ? data.user.email : "",
+        metadata: data.user.metadata,
+        uid: data.user.uid,
+      };
+      storeUserIntoLocalStorage(user);
       return {
         ...result,
         user: {
@@ -40,17 +51,20 @@ const registerStandard = async (email: string, password: string) => {
 const signinStandard = async (email: string, password: string) => {
   const auth = getAuth();
   let result = { user: null, serverMessage: null, errorCode: null };
+  let user;
   return signInWithEmailAndPassword(auth, email, password)
     .then(async (data) => {
+      user = {
+        accessToken: await data.user.getIdToken(),
+        refreshToken: data.user.refreshToken,
+        email: data.user.email ? data.user.email : "",
+        metadata: data.user.metadata,
+        uid: data.user.uid,
+      };
+      storeUserIntoLocalStorage(user);
       return {
         ...result,
-        user: {
-          accessToken: await data.user.getIdToken(),
-          refreshToken: data.user.refreshToken,
-          email: data.user.email,
-          metadata: data.user.metadata,
-          uid: data.user.uid,
-        },
+        user,
         serverMessage: "Your are connected !",
       };
     })
@@ -65,8 +79,17 @@ const signinStandard = async (email: string, password: string) => {
 const oAuthLogin = async () => {
   let result = { user: null, serverMessage: null, errorCode: null };
   const provider = new GoogleAuthProvider();
+  let user;
   return signInWithPopup(getAuth(), provider)
     .then(async (data) => {
+      user = {
+        accessToken: await data.user.getIdToken(),
+        refreshToken: data.user.refreshToken,
+        email: data.user.email ? data.user.email : "",
+        metadata: data.user.metadata,
+        uid: data.user.uid,
+      };
+      storeUserIntoLocalStorage(user);
       return {
         ...result,
         user: {
@@ -99,8 +122,25 @@ function handleSigninError(error: any) {
   }
 }
 
+function storeUserIntoLocalStorage(user: any) {
+  localStorage.setItem("usr", JSON.stringify(user));
+}
+
+function removeUserFromLocalStorage() {
+  localStorage.removeItem("usr");
+}
+
+function getUserFromLocalStorage(): any {
+  let usr = localStorage.getItem("usr");
+  if (usr) {
+    return JSON.parse(usr);
+  }
+  return usr;
+}
+
 export default {
   registerStandard,
   signinStandard,
   oAuthLogin,
+  getUserFromLocalStorage
 };

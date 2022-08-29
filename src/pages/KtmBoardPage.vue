@@ -17,13 +17,6 @@ const boardStore = useBoardStore();
 const authStore = useAuthStore();
 const showSidebar = ref(true);
 
-/* onMounted(() => {
-  const userId = localStorage.getItem("uid");
-  if (userId) {
-    const boards = boardService.getBoards(userId);
-  }
-}); */
-
 /* COMPUTED */
 const boards = computed(() => boardStore.getBoards);
 const user = computed(() => authStore.getUser);
