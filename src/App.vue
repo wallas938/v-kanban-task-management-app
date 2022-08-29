@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { getAuth, onAuthStateChanged } from "@firebase/auth";
+import { computed, onMounted } from "vue";
 import KTMLoadingSnackbar from "./components/layout/KTMLoadingSnackbar.vue";
 import { Modal } from "./model";
 import { useAuthStore } from "./stores/auth";
 import { useLayoutStore } from "./stores/layout";
 import { useInfoStore } from "./stores/message";
+const authStore = useAuthStore();
 const layoutStore = useLayoutStore();
 const infoStore = useInfoStore();
 
+/* INITIALISATIONS */
 /* Computed */
 const isModalActif = computed(() => {
   return layoutStore.getCurrentModal !== Modal.NO_MODAL;

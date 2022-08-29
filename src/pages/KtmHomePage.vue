@@ -81,7 +81,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { FormState } from "@/model";
+import { FormState, type KtmUser } from "@/model";
 import logoIcon from "../assets/logo-mobile.svg";
 import googleIcon from "../assets/google-icon.svg";
 import { useField, useForm } from "vee-validate";
@@ -188,7 +188,6 @@ async function registerStandard() {
     layoutStore.setLoadingState(false);
     authStore.setUser(result.user);
     infoStore.setServerMessage(result.serverMessage);
-    localStorage.setItem('uid', result.user.uid)
     router.push("boards");
     return;
   }
@@ -206,7 +205,6 @@ async function signinStandard() {
     layoutStore.setLoadingState(false);
     authStore.setUser(result.user);
     infoStore.setServerMessage(result.serverMessage);
-    localStorage.setItem('uid', result.user.uid)
     router.push("boards");
     return;
   }
@@ -221,7 +219,6 @@ async function oAuthLogin() {
     layoutStore.setLoadingState(false);
     authStore.setUser(result.user);
     infoStore.setServerMessage(result.serverMessage);
-    localStorage.setItem('uid', result.user.uid)
     router.push("boards");
     return;
   }
