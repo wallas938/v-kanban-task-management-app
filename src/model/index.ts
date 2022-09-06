@@ -55,15 +55,7 @@ export interface KtmUser {
   accessToken: string;
   refreshToken: string;
   email: string;
-  metadata: UserMetaData;
-  uid: string;
-}
-
-export interface UserMetaData {
-  createdAt: string;
-  creationTime: string;
-  lastLoginAt: string;
-  lastSignInTime: string;
+  _id: string;
 }
 
 export interface Board {

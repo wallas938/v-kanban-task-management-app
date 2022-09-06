@@ -63,7 +63,7 @@
           </button>
         </div>
         <div class="login-google">
-          <button type="button" @click="oAuthLogin">
+          <button type="button">
             <img :src="googleIcon" alt="google icon" />
           </button>
         </div>
@@ -179,25 +179,31 @@ function toggleForm() {
 /* Functions */
 // REGISTER
 async function registerStandard() {
+  let result: any;
   layoutStore.setLoadingState(true);
-  const result: any = await userService.registerStandard(
-    email.value,
-    password.value
-  );
-  if (result.user) {
+  try {
+    result = await userService.registerStandard(email.value, password.value);
+    console.log(result);
+    
+    if (result.ok) {
+      layoutStore.setLoadingState(false);
+      authStore.setUser(result.user);
+      infoStore.setServerMessage(result.serverMessage);
+      router.push("boards");
+      return;
+    } else {
+      layoutStore.setLoadingState(false);
+      infoStore.setErrorMessage(result.serverMessage);
+    }
+  } catch (error) {
     layoutStore.setLoadingState(false);
-    authStore.setUser(result.user);
-    infoStore.setServerMessage(result.serverMessage);
-    router.push("boards");
-    return;
+    infoStore.setErrorMessage(result.serverMessage);
   }
-  layoutStore.setLoadingState(false);
-  infoStore.setErrorMessage(result.errorCode);
 }
 // AUTHENTICATION
 async function signinStandard() {
-  layoutStore.setLoadingState(true);
-  const result: any = await userService.signinStandard(
+  /* layoutStore.setLoadingState(true);
+   const result: any = await userService.signinStandard(
     email.value,
     password.value
   );
@@ -207,12 +213,12 @@ async function signinStandard() {
     infoStore.setServerMessage(result.serverMessage);
     router.push("boards");
     return;
-  }
+  } 
   layoutStore.setLoadingState(false);
-  infoStore.setErrorMessage(result.errorCode);
+  infoStore.setErrorMessage(result.errorCode); */
 }
 // OAUTH-GOOGLE
-async function oAuthLogin() {
+/* async function oAuthLogin() {
   layoutStore.setLoadingState(true);
   const result: any = await userService.oAuthLogin();
   if (result.user) {
@@ -224,7 +230,7 @@ async function oAuthLogin() {
   }
   layoutStore.setLoadingState(false);
   infoStore.setErrorMessage(result.errorCode);
-}
+} */
 </script>
 <style lang="scss" scoped>
 @use "../sass/colors" as c;
