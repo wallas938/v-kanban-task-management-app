@@ -25,7 +25,7 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach(async (to, from) => {
+/* router.beforeEach(async (to, from) => {
   const authStore = useAuthStore();
   const user = userService.getUserFromLocalStorage();
   if (to.meta.requiresAuth && !user) {
@@ -36,6 +36,6 @@ router.beforeEach(async (to, from) => {
       query: { redirect: to.fullPath },
     };
   }
-});
+}); */
 
 export default router;
