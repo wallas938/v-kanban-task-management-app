@@ -183,11 +183,12 @@ async function registerStandard() {
   layoutStore.setLoadingState(true);
   try {
     result = await userService.registerStandard(email.value, password.value);
-    console.log(result);
-    
+
     if (result.ok) {
-      layoutStore.setLoadingState(false);
+      console.log(result.user);
       authStore.setUser(result.user);
+      layoutStore.setLoadingState(false);
+
       infoStore.setServerMessage(result.serverMessage);
       router.push("boards");
       return;
@@ -202,20 +203,27 @@ async function registerStandard() {
 }
 // AUTHENTICATION
 async function signinStandard() {
-  /* layoutStore.setLoadingState(true);
-   const result: any = await userService.signinStandard(
-    email.value,
-    password.value
-  );
-  if (result.user) {
+  let result: any;
+  layoutStore.setLoadingState(true);
+  try {
+    result = await userService.signinStandard(email.value, password.value);
+
+    if (result.ok) {
+      console.log(result.user);
+      authStore.setUser(result.user);
+      layoutStore.setLoadingState(false);
+
+      infoStore.setServerMessage(result.serverMessage);
+      router.push("boards");
+      return;
+    } else {
+      layoutStore.setLoadingState(false);
+      infoStore.setErrorMessage(result.serverMessage);
+    }
+  } catch (error) {
     layoutStore.setLoadingState(false);
-    authStore.setUser(result.user);
-    infoStore.setServerMessage(result.serverMessage);
-    router.push("boards");
-    return;
-  } 
-  layoutStore.setLoadingState(false);
-  infoStore.setErrorMessage(result.errorCode); */
+    infoStore.setErrorMessage(result.serverMessage);
+  }
 }
 // OAUTH-GOOGLE
 /* async function oAuthLogin() {

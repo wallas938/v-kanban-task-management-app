@@ -13,6 +13,8 @@ export const useAuthStore = defineStore({
   actions: {
     setUser(user: KtmUser) {
       this.user = user;
+
+      console.log(this.user);
     },
   },
 });
