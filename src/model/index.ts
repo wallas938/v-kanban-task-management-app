@@ -59,18 +59,21 @@ export interface KtmUser {
 }
 
 export interface Board {
-  id?: string;
+  _id?: string;
+  userId?: string;
   name: string;
   columns: Column[];
 }
 
 export interface Column {
+  _id?: string;
   id: string;
   name: string;
   color: PaletteColor | null;
   tasks: Task[];
 }
 export interface Task {
+  _id?: string;
   id: string;
   title: string;
   description: string;
@@ -79,6 +82,7 @@ export interface Task {
   subtasks: Subtask[];
 }
 export interface Subtask {
+  _id?: string;
   id: string;
   title: string;
   isCompleted: boolean;
