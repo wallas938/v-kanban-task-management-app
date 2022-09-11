@@ -270,19 +270,20 @@ function onSubmit() {
 
   if (layoutStore.getBoardFormState === FormState.CREATION) {
     const newBoard: Board = {
-      id: uuid(),
       name,
+      userId: authStore.getUser?._id,
       columns: [...columns.value].map((col, idx) => {
         return {
           id: uuid(),
           name: col.name,
-          color: col.color,
+          color: col.color ? col.color : PaletteColor.MAUVE,
           tasks: [],
         };
       }),
     };
-    
-    authStore.getUser && boardStore.addNewBoard(newBoard, authStore.getUser?.uid);
+
+    authStore.getUser &&
+      boardStore.addNewBoard(newBoard, authStore.getUser?._id);
   } else {
     const updatedBoard: any = {
       name,

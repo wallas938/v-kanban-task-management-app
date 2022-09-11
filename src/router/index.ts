@@ -20,16 +20,18 @@ const router = createRouter({
       path: "/boards",
       component: KtmBoardPage,
       meta: { requiresAuth: true },
+      /* beforeEnter: async (to, from) => {
+        // reject the navigation
+        return await userService.autoLogin();
+      }, */
     },
     { path: "/:pathMatch(.*)*", name: "NotFound", redirect: "login" },
   ],
 });
 
 /* router.beforeEach(async (to, from) => {
-  const authStore = useAuthStore();
-  const user = userService.getUserFromLocalStorage();
-  if (to.meta.requiresAuth && !user) {
-    authStore.setUser(user);
+  const access_token = userService.getRefreshTokenFromLocalStorage();
+  if (to.meta.requiresAuth) {
     return {
       path: "/login",
       // save the location we were at to come back later

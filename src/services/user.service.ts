@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/stores/auth";
 const registerStandard = async (
   email: string,
   password: string
@@ -90,20 +91,11 @@ const signinStandard = async (
     });
 };
 
-const oAuthLogin = async () => {};
+const autoLogin = async () => {
+  setTimeout(() => {}, 4000);
+};
 
-/* function handleSigninError(error: any) {
-  switch (error.code) {
-    case "auth/invalid-email":
-      return "Invalid email or password was incorrect";
-    case "auth/user-not-found":
-      return "No account with that email was found";
-    case "auth/wrong-password":
-      return "Invalid email or password was incorrect";
-    default:
-      return "Invalid email or password was incorrect";
-  }
-} */
+const oAuthLogin = async () => {};
 
 function storeAccessTokenIntoLocalStorage(accTok: string) {
   localStorage.setItem("access_token", accTok);
@@ -117,16 +109,26 @@ function removeUserFromLocalStorage() {
   localStorage.removeItem("usr");
 }
 
-function getUserFromLocalStorage(): any {
-  let usr = localStorage.getItem("usr");
-  if (usr) {
-    return JSON.parse(usr);
+function getAccessTokenFromLocalStorage(): any {
+  let access_token = localStorage.getItem("access_token");
+  if (access_token) {
+    return access_token;
   }
-  return usr;
+  return null;
+}
+
+function getRefreshTokenFromLocalStorage(): any {
+  let refresh_token = localStorage.getItem("refresh_token");
+  if (refresh_token) {
+    return refresh_token;
+  }
+  return null;
 }
 
 export default {
   registerStandard,
   signinStandard,
-  getUserFromLocalStorage,
+  autoLogin,
+  getAccessTokenFromLocalStorage,
+  getRefreshTokenFromLocalStorage,
 };

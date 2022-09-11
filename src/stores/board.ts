@@ -286,23 +286,15 @@ export const useBoardStore = defineStore({
   },
   actions: {
     async addNewBoard(board: Board, userId: string) {
-      /* Persist Boards into firebase cloud */
       const infoStore = useInfoStore();
-      const result = await boardService.postBoards(userId, [
-        ...this.boards,
-        board,
-      ]);
+      const result: any = await boardService.postBoards(userId, board);
       if (result.ok) {
-        /* After Persistance success, boards state is updated */
-        this.boards = [...this.boards, board];
+        this.boards = [...this.boards, result.board];
         this.currentBoardIndex = this.boards.length - 1;
-        infoStore.setErrorMessage(result.serverMessage);
+        infoStore.setServerMessage(result.serverMessage);
         return;
       }
-
-      /* After Persistance failed, an error message is displayed */
       infoStore.setErrorMessage(result.errorMessage);
-      /* user.value && boardService.getBoards(user.value?.uid); */
     },
     addNewTask(task: Task, columnIndex: number) {
       this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
@@ -433,6 +425,6 @@ export const useBoardStore = defineStore({
     },
     setBoards(boards: Board[]) {
       this.boards = boards;
-    }
+    },
   },
 });
