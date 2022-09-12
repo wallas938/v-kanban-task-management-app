@@ -1,10 +1,19 @@
 import type { Board, Column, Subtask, Task } from "@/model";
-import { useBoardStore } from "@/stores/board";
-const postBoards = async (userId: string, board: Board): Promise<any> => {
+
+interface AccessData {
+  access_token: string;
+  refresh_token: string;
+}
+const postBoards = async (
+  board: Board,
+  access_data: AccessData
+): Promise<any> => {
   const init: RequestInit = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": access_data.access_token,
+      "rf_t": access_data.refresh_token,
     },
     body: JSON.stringify({ board }),
   };
@@ -13,6 +22,13 @@ const postBoards = async (userId: string, board: Board): Promise<any> => {
     .then((res: any) => res.json())
     .then((data) => {
       return data;
+    })
+    .then((err) => {
+      return {
+        errorMessage: "An error occured",
+        ok: false,
+        error: err
+      }
     });
 };
 const getBoards = (userId: string) => {};

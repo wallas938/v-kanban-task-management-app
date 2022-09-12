@@ -12,15 +12,12 @@ export const useInfoStore = defineStore({
   },
   actions: {
     setServerMessage(serverMessage: string) {
-      /* HERE !!!! */
       this.serverMessage = serverMessage;
       setTimeout(() => {
         this.serverMessage = null;
       }, 3000);
     },
     setErrorMessage(errorMessage: string) {
-      /* HERE !!!! */
-      console.log(errorMessage);
       this.errorMessage = errorMessage;
 
       setTimeout(() => {

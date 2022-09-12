@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/stores/auth";
 import { ThemeMode, Modal } from "@/model";
 import type { Board, Task, Column } from "@/model";
 import { defineStore } from "pinia";
@@ -287,7 +288,14 @@ export const useBoardStore = defineStore({
   actions: {
     async addNewBoard(board: Board, userId: string) {
       const infoStore = useInfoStore();
-      const result: any = await boardService.postBoards(userId, board);
+      const authStore = useAuthStore();
+      let result: any;
+      if (authStore.getUser) {
+        result = await boardService.postBoards(board, {
+          access_token: authStore.getUser?.accessToken,
+          refresh_token: authStore.getUser?.refreshToken,
+        });
+      }
       if (result.ok) {
         this.boards = [...this.boards, result.board];
         this.currentBoardIndex = this.boards.length - 1;
