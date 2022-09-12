@@ -37,7 +37,6 @@ const registerStandard = async (
       };
     })
     .catch((err) => {
-      console.log(err);
       return {
         serverMessage: "An error occured",
         error: err,
@@ -83,7 +82,6 @@ const signinStandard = async (
       };
     })
     .catch((err) => {
-      console.log(err);
       return {
         serverMessage: "An error occured",
         error: err,
