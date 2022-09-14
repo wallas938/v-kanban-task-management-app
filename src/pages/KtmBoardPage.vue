@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from "vue";
 import { Modal, ThemeMode, PaletteColor } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
 import { useBoardStore } from "@/stores/board";
-
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router";
 /* Components */
 import KTMHeader from "@/components/layout/KTMHeader.vue";
 import KTMSidebar from "@/components/layout/KTMSidebar.vue";
@@ -31,6 +31,10 @@ const noColumnsText = computed(() => {
     ? "Start creating a new Board"
     : "This board is empty. Create a new column to get started.";
 });
+
+/* INITIALISATION */
+
+onMounted(() => {});
 
 /* COMPUTED */
 

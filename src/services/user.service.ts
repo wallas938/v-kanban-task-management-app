@@ -21,11 +21,11 @@ const registerStandard = async (
         };
       }
 
-      storeAccessTokenIntoLocalStorage(payload.access_token);
-      storeRefreshTokenIntoLocalStorage(payload.refresh_token);
+      storeAccessTokenIntoLocalStorage(payload.accessToken);
+      storeRefreshTokenIntoLocalStorage(payload.refreshToken);
       let user = {
-        accessToken: payload.access_token,
-        refreshToken: payload.refresh_token,
+        accessToken: payload.accessToken,
+        refreshToken: payload.refreshToken,
         email: payload.email ? payload.email : "",
         _id: payload._id,
       };
@@ -65,14 +65,15 @@ const signinStandard = async (
           serverMessage: payload.message,
         };
       }
+      console.log(payload);
 
-      storeAccessTokenIntoLocalStorage(payload.access_token);
-      storeRefreshTokenIntoLocalStorage(payload.refresh_token);
+      storeAccessTokenIntoLocalStorage(payload.user.accessToken);
+      storeRefreshTokenIntoLocalStorage(payload.user.refreshToken);
       let user = {
-        accessToken: payload.access_token,
-        refreshToken: payload.refresh_token,
-        email: payload.email ? payload.email : "",
-        _id: payload._id,
+        accessToken: payload.user.accessToken,
+        refreshToken: payload.user.refreshToken,
+        email: payload.user.email ? payload.user.email : "",
+        _id: payload.user._id,
       };
 
       return {
@@ -93,6 +94,36 @@ const autoLogin = async () => {
   setTimeout(() => {}, 4000);
 };
 
+const getUser = async (
+  data_access: {
+    accessToken: string;
+    refreshToken: string;
+  },
+): Promise<any>  => {
+  const init: RequestInit = {
+    method: "GET",
+  };
+
+  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users?access_token=${data_access.accessToken}&refresh_token=${data_access.refreshToken}`, init)
+    .then((res: Response) => {
+      return res.json();
+    })
+    .then((payload) => {
+      if (!payload.ok) {
+        return {
+          serverMessage: "Authentication is required",
+        }
+      }
+      return payload
+    })
+    .catch((err) => {
+      return {
+        serverMessage: "An error occured",
+        error: err,
+      };
+    });
+}
+
 const oAuthLogin = async () => {};
 
 function storeAccessTokenIntoLocalStorage(accTok: string) {
@@ -108,17 +139,17 @@ function removeUserFromLocalStorage() {
 }
 
 function getAccessTokenFromLocalStorage(): any {
-  let access_token = localStorage.getItem("access_token");
-  if (access_token) {
-    return access_token;
+  let accessToken = localStorage.getItem("access_token");
+  if (accessToken) {
+    return accessToken;
   }
   return null;
 }
 
 function getRefreshTokenFromLocalStorage(): any {
-  let refresh_token = localStorage.getItem("refresh_token");
-  if (refresh_token) {
-    return refresh_token;
+  let refreshToken = localStorage.getItem("refresh_token");
+  if (refreshToken) {
+    return refreshToken;
   }
   return null;
 }
@@ -127,6 +158,7 @@ export default {
   registerStandard,
   signinStandard,
   autoLogin,
+  getUser,
   getAccessTokenFromLocalStorage,
   getRefreshTokenFromLocalStorage,
 };

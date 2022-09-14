@@ -209,7 +209,6 @@ async function signinStandard() {
     result = await userService.signinStandard(email.value, password.value);
 
     if (result.ok) {
-      console.log(result.user);
       authStore.setUser(result.user);
       layoutStore.setLoadingState(false);
 
