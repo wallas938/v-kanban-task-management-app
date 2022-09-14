@@ -1,3 +1,4 @@
+import { useLayoutStore } from './layout';
 import { useAuthStore } from "@/stores/auth";
 import { ThemeMode, Modal } from "@/model";
 import type { Board, Task, Column } from "@/model";
@@ -289,19 +290,24 @@ export const useBoardStore = defineStore({
     async addNewBoard(board: Board, userId: string) {
       const infoStore = useInfoStore();
       const authStore = useAuthStore();
+      const layoutStore = useLayoutStore();
       let result: any;
+      layoutStore.setLoadingState(true);
+      console.log(authStore.getUser);
       if (authStore.getUser) {
         result = await boardService.postBoards(board, {
-          access_token: authStore.getUser?.accessToken,
-          refresh_token: authStore.getUser?.refreshToken,
+          accessToken: authStore.getUser?.accessToken,
+          refreshToken: authStore.getUser?.refreshToken,
         });
       }
       if (result.ok) {
         this.boards = [...this.boards, result.board];
         this.currentBoardIndex = this.boards.length - 1;
+        layoutStore.setLoadingState(false);
         infoStore.setServerMessage(result.serverMessage);
         return;
       }
+      layoutStore.setLoadingState(false);
       infoStore.setErrorMessage(result.errorMessage);
     },
     addNewTask(task: Task, columnIndex: number) {

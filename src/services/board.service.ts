@@ -1,8 +1,8 @@
 import type { Board, Column, Subtask, Task } from "@/model";
 
 interface AccessData {
-  access_token: string;
-  refresh_token: string;
+  accessToken: string;
+  refreshToken: string;
 }
 const postBoards = async (
   board: Board,
@@ -12,8 +12,8 @@ const postBoards = async (
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": access_data.access_token,
-      "rf_t": access_data.refresh_token,
+      "Authorization": access_data.accessToken,
+      "rf_t": access_data.refreshToken,
     },
     body: JSON.stringify({ board }),
   };
@@ -23,7 +23,7 @@ const postBoards = async (
     .then((data) => {
       return data;
     })
-    .then((err) => {
+    .catch((err) => {
       return {
         errorMessage: "An error occured",
         ok: false,
@@ -31,7 +31,30 @@ const postBoards = async (
       }
     });
 };
-const getBoards = (userId: string) => {};
+const getBoards = async (userId: String,
+  access_data: AccessData): Promise<any> => {
+  const init: RequestInit = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": access_data.accessToken,
+      "rf_t": access_data.refreshToken,
+    },
+  };
+
+  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/boards?userId=${userId}`, init)
+    .then((res: any) => res.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((err) => {
+      return {
+        errorMessage: "An error occured",
+        ok: false,
+        error: err
+      }
+    });
+};
 
 const formatBoardsData = (boards: Board[]) => {
   return boards.map((b: Board) => {
