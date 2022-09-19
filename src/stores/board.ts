@@ -310,11 +310,7 @@ export const useBoardStore = defineStore({
       infoStore.setErrorMessage(result.errorMessage);
     },
     async addNewTask(task: Task, columnIndex: number) {
-      /* this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
-        ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
-        task,
-      ]; */
-
+/* Création d'une copy du Board pour persistance en bdd */
       const boardsStringifiedCopy = JSON.stringify(this.boards[this.currentBoardIndex]);
       
       const boardsCopy = JSON.parse(boardsStringifiedCopy);
@@ -325,7 +321,7 @@ export const useBoardStore = defineStore({
       ];
 
       boardsCopy.columns[columnIndex].tasks = updatedTask
-
+/* Fin de la création d'une copy du Board pour persistance en bdd */
       
 
       const infoStore = useInfoStore();
@@ -341,10 +337,12 @@ export const useBoardStore = defineStore({
         });
 
         if (result.ok) {
+          /* Modification réel du Board apres persistance en bdd */
           this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
             ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
             task,
           ];
+          /* Fin de la modification réel du Board apres persistance en bdd */
           layoutStore.setLoadingState(false);
         infoStore.setServerMessage(result.serverMessage);
         return;

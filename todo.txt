@@ -1,1 +1,1 @@
-- Faire manip de pre sauvegarde avant modification de l'état pour l'ajout d'un nouveau post (comme pour nouvelle tache)
+Gerer ajout d'une subtask
