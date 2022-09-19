@@ -293,9 +293,8 @@ export const useBoardStore = defineStore({
       const layoutStore = useLayoutStore();
       let result: any;
       layoutStore.setLoadingState(true);
-      console.log(authStore.getUser);
       if (authStore.getUser) {
-        result = await boardService.postBoards(board, {
+        result = await boardService.postBoard(board, {
           accessToken: authStore.getUser?.accessToken,
           refreshToken: authStore.getUser?.refreshToken,
         });
@@ -310,11 +309,52 @@ export const useBoardStore = defineStore({
       layoutStore.setLoadingState(false);
       infoStore.setErrorMessage(result.errorMessage);
     },
-    addNewTask(task: Task, columnIndex: number) {
-      this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
+    async addNewTask(task: Task, columnIndex: number) {
+      /* this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
         ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
         task,
+      ]; */
+
+      const boardsStringifiedCopy = JSON.stringify(this.boards[this.currentBoardIndex]);
+      
+      const boardsCopy = JSON.parse(boardsStringifiedCopy);
+
+      const updatedTask = [
+        ...boardsCopy.columns[columnIndex].tasks,
+        task,
       ];
+
+      boardsCopy.columns[columnIndex].tasks = updatedTask
+
+      
+
+      const infoStore = useInfoStore();
+      const authStore = useAuthStore();
+      const layoutStore = useLayoutStore();
+      let result: any;
+      layoutStore.setLoadingState(true);
+
+      if (authStore.getUser) {
+        result = await boardService.updateBoard(boardsCopy, {
+          accessToken: authStore.getUser?.accessToken,
+          refreshToken: authStore.getUser?.refreshToken,
+        });
+
+        if (result.ok) {
+          this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
+            ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
+            task,
+          ];
+          layoutStore.setLoadingState(false);
+        infoStore.setServerMessage(result.serverMessage);
+        return;
+        }
+
+        layoutStore.setLoadingState(false);
+        infoStore.setServerMessage(result.errorMessage);
+      }
+
+
     },
     setCurrentBoard(index: number) {
       this.currentBoardIndex = index;

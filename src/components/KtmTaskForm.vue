@@ -165,20 +165,6 @@ useForm({
   validationSchema: taskSchema,
 });
 
-//State
-const taskField = ref<{
-  id?: string;
-  title: string;
-  description: string;
-  status: string;
-  subtasks: Subtask[];
-}>({
-  title: "",
-  description: "",
-  status: "",
-  subtasks: [],
-});
-
 const { value: title, meta: titleMeta } = useField("title");
 const { value: description, meta: DescriptionMeta } = useField("description");
 

@@ -65,7 +65,6 @@ const signinStandard = async (
           serverMessage: payload.message,
         };
       }
-      console.log(payload);
 
       storeAccessTokenIntoLocalStorage(payload.user.accessToken);
       storeRefreshTokenIntoLocalStorage(payload.user.refreshToken);
