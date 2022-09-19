@@ -4,7 +4,7 @@ interface AccessData {
   accessToken: string;
   refreshToken: string;
 }
-const postBoards = async (
+const postBoard = async (
   board: Board,
   access_data: AccessData
 ): Promise<any> => {
@@ -31,6 +31,36 @@ const postBoards = async (
       }
     });
 };
+
+const updateBoard = async (board: Board,
+  access_data: AccessData): Promise<any> => {
+    const init: RequestInit = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": access_data.accessToken,
+        "rf_t": access_data.refreshToken,
+      },
+      body: JSON.stringify({ board }),
+    };
+    return await fetch(`${import.meta.env.VITE_DEV_API_URI}/boards/${board._id}`, init)
+    .then((res: any) => res.json())
+    .then((data) => {
+      return {
+        ok: data.ok,
+        serverMessage: data.message,
+        board: data.board
+      };
+    })
+    .catch((err) => {
+      return {
+        errorMessage: "An error occured",
+        ok: false,
+        error: err
+      }
+    });
+};
+
 const getBoards = async (userId: String,
   access_data: AccessData): Promise<any> => {
   const init: RequestInit = {
@@ -78,6 +108,7 @@ const formatBoardsData = (boards: Board[]) => {
 };
 
 export default {
-  postBoards,
+  postBoard,
   getBoards,
+  updateBoard
 };

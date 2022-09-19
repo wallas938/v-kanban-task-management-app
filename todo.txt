@@ -1,2 +1,1 @@
-- Crée un loading component
-- Finir la gestion des messages a affichés
+- Faire manip de pre sauvegarde avant modification de l'état pour l'ajout d'un nouveau post (comme pour nouvelle tache)
