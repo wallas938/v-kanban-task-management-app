@@ -351,8 +351,6 @@ export const useBoardStore = defineStore({
         layoutStore.setLoadingState(false);
         infoStore.setServerMessage(result.errorMessage);
       }
-
-
     },
     setCurrentBoard(index: number) {
       this.currentBoardIndex = index;
@@ -366,12 +364,42 @@ export const useBoardStore = defineStore({
       this.currentColumnIndex = columnIndex;
       this.currentTaskIndex = taskIndex;
     },
-    deleteCurrentBoard(index: number) {
-      this.boards = [...this.boards].filter(
+    async deleteCurrentBoard(index: number) {
+
+      const infoStore = useInfoStore();
+      const authStore = useAuthStore();
+      const layoutStore = useLayoutStore();
+      let result: any;
+      const boardId = this.boards[index]._id;
+      layoutStore.setLoadingState(true);
+
+      if (authStore.getUser && boardId) {
+        result = await boardService.deleteBoard(boardId, {
+          accessToken: authStore.getUser?.accessToken,
+          refreshToken: authStore.getUser?.refreshToken,
+        });
+
+        if (result.ok) {
+          /* Suppression du Board apres persistance en base de donnée */
+          this.boards = [...this.boards].filter(
+            (_: Board, idx: number) => idx !== index
+          );
+          this.currentBoardIndex =
+            this.boards.length - 1 < 0 ? 0 : this.boards.length - 1;
+          /* Fin de la suppression du Board apres persistance en base de donnée */
+          layoutStore.setLoadingState(false);
+          infoStore.setServerMessage(result.serverMessage);
+        return;
+        }
+
+        layoutStore.setLoadingState(false);
+        infoStore.setServerMessage(result.errorMessage);
+      }
+      /* this.boards = [...this.boards].filter(
         (board: Board, idx: number) => idx !== index
       );
       this.currentBoardIndex =
-        this.boards.length - 1 < 0 ? 0 : this.boards.length - 1;
+        this.boards.length - 1 < 0 ? 0 : this.boards.length - 1; */
     },
     deleteCurrentTask() {
       this.boards[this.currentBoardIndex].columns[
