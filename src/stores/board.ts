@@ -401,16 +401,42 @@ export const useBoardStore = defineStore({
       this.currentBoardIndex =
         this.boards.length - 1 < 0 ? 0 : this.boards.length - 1; */
     },
-    deleteCurrentTask() {
-      this.boards[this.currentBoardIndex].columns[
-        this.currentColumnIndex
-      ].tasks = [...this.boards][this.currentBoardIndex].columns[
-        this.currentColumnIndex
-      ].tasks.filter(
-        (task: Task, idx: number) => task.id !== this.currentTask?.id
-      );
+    async deleteCurrentTask() {
+      const boardId = this.boards[this.currentBoardIndex]._id;
+      const columnIdx = this.currentColumnIndex;
+      const taskIdx = +this.boards[this.currentBoardIndex].columns[columnIdx].tasks.findIndex(t => t.id === this.currentTask?.id);
+      const infoStore = useInfoStore();
+      const authStore = useAuthStore();
+      const layoutStore = useLayoutStore();
+      let result: any;
+      layoutStore.setLoadingState(true);
+      if (authStore.getUser && boardId) {
+        
+        result = await boardService.deleteTask(boardId, this.currentColumnIndex, taskIdx, {
+          accessToken: authStore.getUser?.accessToken,
+          refreshToken: authStore.getUser?.refreshToken,
+        })
+  
+        if (result.ok) {
+          this.boards[this.currentBoardIndex].columns[
+            this.currentColumnIndex
+          ].tasks = [...this.boards][this.currentBoardIndex].columns[
+            this.currentColumnIndex
+          ].tasks.filter(
+            (task: Task, idx: number) => task.id !== this.currentTask?.id
+          );
+    
+          this.currentTask = {} as Task;
+          
+          layoutStore.setLoadingState(false);
+          infoStore.setServerMessage(result.serverMessage);
+        return;
+        }
 
-      this.currentTask = {} as Task;
+        layoutStore.setLoadingState(false);
+        infoStore.setServerMessage(result.errorMessage);
+        
+      }
     },
     updateCurrentBoard(updatedBoard: Board) {
       this.boards = [...this.boards].map((board: Board, idx: number) => {
