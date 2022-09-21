@@ -88,6 +88,36 @@ const deleteBoard = async (boardId: string,
     });
 };
 
+const deleteTask = async (boardId: string,
+  columnIdx: number,
+  taskIdx: number,
+  access_data: AccessData): Promise<any> => {
+    const init: RequestInit = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": access_data.accessToken,
+        "rf_t": access_data.refreshToken,
+      },
+    };
+    return await fetch(`${import.meta.env.VITE_DEV_API_URI}/boards/${boardId}/columns/${columnIdx}/tasks/${taskIdx}`, init)
+    .then((res: any) => res.json())
+    .then((data) => {
+      return {
+        ok: data.ok,
+        serverMessage: data.message,
+        board: data.board
+      };
+    })
+    .catch((err) => {
+      return {
+        errorMessage: "An error occured",
+        ok: false,
+        error: err
+      }
+    });
+};
+
 const getBoards = async (userId: String,
   access_data: AccessData): Promise<any> => {
   const init: RequestInit = {
@@ -138,5 +168,6 @@ export default {
   postBoard,
   getBoards,
   updateBoard,
-  deleteBoard
+  deleteBoard,
+  deleteTask
 };
