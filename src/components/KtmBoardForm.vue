@@ -115,6 +115,7 @@ const boardFormMode = computed(() => layoutStore.getBoardFormState);
 const board = computed(() => boardStore.getCurrentBoard);
 const columns = ref<
   {
+    _id?: string;
     id?: string;
     name: string;
     color: PaletteColor | null;
@@ -205,6 +206,7 @@ function setFormValues() {
     boardName.value = board.value.name;
     columns.value = board.value.columns.map((column) => {
       return {
+        _id: column._id,
         id: column.id,
         name: column.name,
         color: column.color,
@@ -254,6 +256,7 @@ function closePallete() {
 }
 function onCreateColumn() {
   columns.value.push({
+    id: uuid(),
     name: "",
     color: null,
     validity: FieldValidity.INVALID,
@@ -274,7 +277,7 @@ function onSubmit() {
       userId: authStore.getUser?._id,
       columns: [...columns.value].map((col, idx) => {
         return {
-          id: uuid(),
+          id: col.id ? col.id : uuid(),
           name: col.name,
           color: col.color ? col.color : PaletteColor.MAUVE,
           tasks: [],
@@ -287,8 +290,11 @@ function onSubmit() {
   } else {
     const updatedBoard: any = {
       name,
+      _id: board.value._id,
+      userId: authStore.getUser?._id,
       columns: [...columns.value].map((col, idx) => {
         return {
+          _id: col._id,
           id: col.id,
           name: col.name,
           color: col.color,
