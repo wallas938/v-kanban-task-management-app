@@ -292,22 +292,24 @@ export const useBoardStore = defineStore({
       const authStore = useAuthStore();
       const layoutStore = useLayoutStore();
       let result: any;
-      layoutStore.setLoadingState(true);
       if (authStore.getUser) {
+        layoutStore.setLoadingState(true);
         result = await boardService.postBoard(board, {
           accessToken: authStore.getUser?.accessToken,
           refreshToken: authStore.getUser?.refreshToken,
         });
-      }
-      if (result.ok) {
-        this.boards = [...this.boards, result.board];
-        this.currentBoardIndex = this.boards.length - 1;
+
+        if (result.ok) {
+          this.boards = [...this.boards, result.board];
+          this.currentBoardIndex = this.boards.length - 1;
+          layoutStore.setLoadingState(false);
+          infoStore.setServerMessage(result.serverMessage);
+          return;
+        }
         layoutStore.setLoadingState(false);
-        infoStore.setServerMessage(result.serverMessage);
-        return;
+        infoStore.setErrorMessage(result.errorMessage);
       }
-      layoutStore.setLoadingState(false);
-      infoStore.setErrorMessage(result.errorMessage);
+      
     },
     async addNewTask(task: Task, columnIndex: number) {
 /* Création d'une copy du Board pour persistance en bdd */
@@ -328,9 +330,9 @@ export const useBoardStore = defineStore({
       const authStore = useAuthStore();
       const layoutStore = useLayoutStore();
       let result: any;
-      layoutStore.setLoadingState(true);
-
+      
       if (authStore.getUser) {
+        layoutStore.setLoadingState(true);
         result = await boardService.updateBoard(boardsCopy, {
           accessToken: authStore.getUser?.accessToken,
           refreshToken: authStore.getUser?.refreshToken,
@@ -409,8 +411,8 @@ export const useBoardStore = defineStore({
       const authStore = useAuthStore();
       const layoutStore = useLayoutStore();
       let result: any;
-      layoutStore.setLoadingState(true);
       if (authStore.getUser && boardId) {
+        layoutStore.setLoadingState(true);
         
         result = await boardService.deleteTask(boardId, this.currentColumnIndex, taskIdx, {
           accessToken: authStore.getUser?.accessToken,
@@ -438,13 +440,38 @@ export const useBoardStore = defineStore({
         
       }
     },
-    updateCurrentBoard(updatedBoard: Board) {
-      this.boards = [...this.boards].map((board: Board, idx: number) => {
-        if (idx === this.currentBoardIndex) {
-          return updatedBoard;
+    async updateCurrentBoard(updatedBoard: Board) {
+      const infoStore = useInfoStore();
+      const authStore = useAuthStore();
+      const layoutStore = useLayoutStore();
+      let result: any;
+      const boardId = this.boards[this.currentBoardIndex]._id;
+      
+      if (authStore.getUser && boardId) {
+        layoutStore.setLoadingState(true);
+        result = await boardService.updateBoard(updatedBoard, {
+          accessToken: authStore.getUser?.accessToken,
+          refreshToken: authStore.getUser?.refreshToken,
+        })
+
+        if(result.ok) {
+          this.boards = [...this.boards].map((board: Board, idx: number) => {
+            if (idx === this.currentBoardIndex) {
+              return updatedBoard;
+            }
+            return board;
+          });
+          console.log(result.serverMessage);
+          
+          layoutStore.setLoadingState(false);
+          infoStore.setServerMessage(result.serverMessage);
+          return;
         }
-        return board;
-      });
+
+        layoutStore.setLoadingState(false);
+        infoStore.setServerMessage(result.errorMessage);
+        
+    }
     },
     updateCurrentTask(updatedTask: Task, columnIndex: number) {
       /* STAY IN THE SAME COLUMN */
