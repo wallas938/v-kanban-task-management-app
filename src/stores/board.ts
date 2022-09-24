@@ -473,8 +473,67 @@ export const useBoardStore = defineStore({
         
     }
     },
-    updateCurrentTask(updatedTask: Task, columnIndex: number) {
-      /* STAY IN THE SAME COLUMN */
+    async updateCurrentTask(updatedTask: Task, columnIndex: number) {
+      const infoStore = useInfoStore();
+      const authStore = useAuthStore();
+      const layoutStore = useLayoutStore();
+      let result: any;
+      const taskIdx = +this.boards[this.currentBoardIndex].columns[this.currentColumnIndex].tasks.findIndex(t => {        
+       console.log(t);
+       
+        return t.id === updatedTask?.id
+      });
+      const boardId = this.boards[this.currentBoardIndex]._id;
+      
+      if (authStore.getUser && boardId) {
+        layoutStore.setLoadingState(true);
+        result = await boardService.updateTask(updatedTask, boardId, this.currentColumnIndex, columnIndex, taskIdx, {
+          accessToken: authStore.getUser?.accessToken,
+          refreshToken: authStore.getUser?.refreshToken,
+        })
+
+        if (result.ok) {
+          if (columnIndex === this.currentColumnIndex) {
+            this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
+              ...this.boards,
+            ][this.currentBoardIndex].columns[columnIndex].tasks.map(
+              (task: Task) => {
+                if (task.id === this.currentTask?.id) {
+                  return updatedTask;
+                }
+                return task;
+              }
+            );
+            return;
+          }
+          //COLUMN CHANGING
+    
+          // REMOVED FROM THE PREVIOUS ONE
+          this.boards[this.currentBoardIndex].columns[
+            this.currentColumnIndex
+          ].tasks = [
+            ...this.boards[this.currentBoardIndex].columns[
+              this.currentColumnIndex
+            ].tasks.filter((task) => task.id !== updatedTask.id),
+          ];
+    
+          // APPENDED TO THE NEW ONE
+          this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
+            ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
+            updatedTask,
+          ];
+          layoutStore.setLoadingState(false);
+          infoStore.setServerMessage(result.serverMessage);
+          return;
+        }
+        layoutStore.setLoadingState(false);
+        infoStore.setServerMessage(result.errorMessage);
+        
+      }
+
+      layoutStore.setLoadingState(false);
+          infoStore.setServerMessage(result.errorMessage);
+      /* // STAY IN THE SAME COLUMN
       if (columnIndex === this.currentColumnIndex) {
         this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
           ...this.boards,
@@ -488,9 +547,9 @@ export const useBoardStore = defineStore({
         );
         return;
       }
-      /* COLUMN CHANGING */
+      //COLUMN CHANGING
 
-      /* REMOVED FROM THE PREVIOUS ONE */
+      // REMOVED FROM THE PREVIOUS ONE
       this.boards[this.currentBoardIndex].columns[
         this.currentColumnIndex
       ].tasks = [
@@ -499,11 +558,11 @@ export const useBoardStore = defineStore({
         ].tasks.filter((task) => task.id !== updatedTask.id),
       ];
 
-      /* APPENDED TO THE NEW ONE */
+      // APPENDED TO THE NEW ONE
       this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
         ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
         updatedTask,
-      ];
+      ]; */
     },
     checkSubtask(subtaskIndex: number) {
       this.boards[this.currentBoardIndex].columns[

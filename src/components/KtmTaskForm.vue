@@ -168,7 +168,16 @@ useForm({
 const { value: title, meta: titleMeta } = useField("title");
 const { value: description, meta: DescriptionMeta } = useField("description");
 
-const subtasks = ref([
+const subtasks = ref<
+  {
+    _id?: string;
+    id?: string;
+    title: string;
+    isCompleted: boolean;
+    validity: FieldValidity;
+    state: FieldState;
+  }[]
+>([
   {
     title: "",
     isCompleted: false,
@@ -194,12 +203,16 @@ function checkFormMode() {
 }
 function setFormValues() {
   if (task.value) {
+    task.value
     title.value = task.value.title;
     description.value = task.value.description;
     status.value = currentColumn.value.name;
     subtasks.value = task.value.subtasks.map((subtask) => {
       return {
-        ...subtask,
+        _id: subtask._id,
+        id: subtask.id,
+        title: subtask.title,
+        isCompleted: subtask.isCompleted,
         state: FieldState.PENDING,
         validity: FieldValidity.VALID,
       };
@@ -234,6 +247,7 @@ function onSelect(newStatus: { columnName: string; columnIndex: number }) {
 }
 function onCreateSubtask() {
   subtasks.value.push({
+    id: uuid(),
     title: "",
     isCompleted: false,
     validity: FieldValidity.INVALID,
@@ -271,18 +285,23 @@ function onSubmit() {
     if (task.value) {
       const updatedTask: Task = {
         id: task.value?.id,
+        _id: task.value._id,
         title: t,
         description: d,
         columnId: boardStore.getCurrentBoard.columns[columnIndex.value].id,
         subtasks: [...subtasks.value].map((subtask: any) => {
           return {
-            id: uuid(),
+            _id: subtask._id,
+            id: subtask.id,
             title: subtask.title,
             isCompleted: subtask.isCompleted,
           };
         }),
         status: status.value,
       };
+
+      console.log(updatedTask);
+      
       boardStore.updateCurrentTask(updatedTask, columnIndex.value);
     }
   }
