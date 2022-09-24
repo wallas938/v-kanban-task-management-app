@@ -35,7 +35,7 @@ const postBoard = async (
 const updateBoard = async (board: Board,
   access_data: AccessData): Promise<any> => {
     const init: RequestInit = {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "Authorization": access_data.accessToken,
@@ -50,6 +50,38 @@ const updateBoard = async (board: Board,
         ok: data.ok,
         serverMessage: data.message,
         board: data.board
+      };
+    })
+    .catch((err) => {
+      return {
+        errorMessage: "An error occured",
+        ok: false,
+        error: err
+      }
+    });
+};
+const updateTask = async (task: Task,
+  boardId: string,
+  oldColumnIndex: number,
+  columnIndex: number,
+  taskIndex: number,
+  access_data: AccessData): Promise<any> => {
+    const init: RequestInit = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": access_data.accessToken,
+        "rf_t": access_data.refreshToken,
+      },
+      body: JSON.stringify({ task, oldColumnIndex }),
+    };
+    
+    return await fetch(`${import.meta.env.VITE_DEV_API_URI}/boards/${boardId}/columns/${columnIndex}/tasks/${taskIndex}`, init)
+    .then((res: any) => res.json())
+    .then((data) => {
+      return {
+        ok: data.ok,
+        serverMessage: data.message,
       };
     })
     .catch((err) => {
@@ -87,7 +119,6 @@ const deleteBoard = async (boardId: string,
       }
     });
 };
-
 const deleteTask = async (boardId: string,
   columnIdx: number,
   taskIdx: number,
@@ -117,7 +148,6 @@ const deleteTask = async (boardId: string,
       }
     });
 };
-
 const getBoards = async (userId: String,
   access_data: AccessData): Promise<any> => {
   const init: RequestInit = {
@@ -142,7 +172,6 @@ const getBoards = async (userId: String,
       }
     });
 };
-
 const formatBoardsData = (boards: Board[]) => {
   return boards.map((b: Board) => {
     return {
@@ -169,5 +198,6 @@ export default {
   getBoards,
   updateBoard,
   deleteBoard,
-  deleteTask
+  deleteTask,
+  updateTask
 };
