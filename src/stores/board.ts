@@ -313,16 +313,16 @@ export const useBoardStore = defineStore({
     },
     async addNewTask(task: Task, columnIndex: number) {
 /* Création d'une copy du Board pour persistance en bdd */
-      const boardsStringifiedCopy = JSON.stringify(this.boards[this.currentBoardIndex]);
+      const boardStringifiedCopy = JSON.stringify(this.boards[this.currentBoardIndex]);
       
-      const boardsCopy = JSON.parse(boardsStringifiedCopy);
+      const boardCopy = JSON.parse(boardStringifiedCopy);
 
       const updatedTask = [
-        ...boardsCopy.columns[columnIndex].tasks,
+        ...boardCopy.columns[columnIndex].tasks,
         task,
       ];
 
-      boardsCopy.columns[columnIndex].tasks = updatedTask
+      boardCopy.columns[columnIndex].tasks = updatedTask
 /* Fin de la création d'une copy du Board pour persistance en bdd */
       
 
@@ -333,7 +333,7 @@ export const useBoardStore = defineStore({
       
       if (authStore.getUser) {
         layoutStore.setLoadingState(true);
-        result = await boardService.updateBoard(boardsCopy, {
+        result = await boardService.updateBoard(boardCopy, {
           accessToken: authStore.getUser?.accessToken,
           refreshToken: authStore.getUser?.refreshToken,
         });
@@ -461,7 +461,6 @@ export const useBoardStore = defineStore({
             }
             return board;
           });
-          console.log(result.serverMessage);
           
           layoutStore.setLoadingState(false);
           infoStore.setServerMessage(result.serverMessage);
@@ -478,11 +477,7 @@ export const useBoardStore = defineStore({
       const authStore = useAuthStore();
       const layoutStore = useLayoutStore();
       let result: any;
-      const taskIdx = +this.boards[this.currentBoardIndex].columns[this.currentColumnIndex].tasks.findIndex(t => {        
-       console.log(t);
-       
-        return t.id === updatedTask?.id
-      });
+      const taskIdx = +this.boards[this.currentBoardIndex].columns[this.currentColumnIndex].tasks.findIndex(t => t.id === updatedTask?.id);
       const boardId = this.boards[this.currentBoardIndex]._id;
       
       if (authStore.getUser && boardId) {
@@ -530,60 +525,90 @@ export const useBoardStore = defineStore({
         infoStore.setServerMessage(result.errorMessage);
         
       }
+    },
+    async checkSubtask(subtaskIndex: number) {
+      /* Création d'une copy du Board pour persistance en bdd */
+      const boardStringifiedCopy = JSON.stringify(this.boards[this.currentBoardIndex]);
+            
+      const boardCopy = JSON.parse(boardStringifiedCopy);
 
-      layoutStore.setLoadingState(false);
-          infoStore.setServerMessage(result.errorMessage);
-      /* // STAY IN THE SAME COLUMN
-      if (columnIndex === this.currentColumnIndex) {
-        this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
-          ...this.boards,
-        ][this.currentBoardIndex].columns[columnIndex].tasks.map(
-          (task: Task) => {
-            if (task.id === this.currentTask?.id) {
-              return updatedTask;
-            }
-            return task;
-          }
-        );
-        return;
+        boardCopy.columns[this.currentColumnIndex].tasks[this.currentTaskIndex].subtasks[subtaskIndex].isCompleted = !boardCopy.columns[this.currentColumnIndex].tasks[this.currentTaskIndex].subtasks[subtaskIndex].isCompleted;
+
+      /* Fin de la création d'une copy du Board pour persistance en bdd */
+      const infoStore = useInfoStore();
+      const authStore = useAuthStore();
+      const layoutStore = useLayoutStore();
+      const boardId = this.boards[this.currentBoardIndex]._id;
+      let result: any;
+      let updatedTask: any;
+      if (authStore.getUser && boardId) {
+        layoutStore.setLoadingState(true);
+        updatedTask = boardCopy.columns[this.currentColumnIndex].tasks[this.currentTaskIndex]
+        result = await boardService.updateTask(updatedTask, boardId, this.currentColumnIndex, this.currentColumnIndex, this.currentTaskIndex, {
+          accessToken: authStore.getUser?.accessToken,
+          refreshToken: authStore.getUser?.refreshToken,
+        });
+
+        if(result.ok) {
+          this.boards[this.currentBoardIndex].columns[
+            this.currentColumnIndex
+          ].tasks[this.currentTaskIndex].subtasks[subtaskIndex].isCompleted =
+            !this.boards[this.currentBoardIndex].columns[this.currentColumnIndex]
+              .tasks[this.currentTaskIndex].subtasks[subtaskIndex].isCompleted;
+
+              layoutStore.setLoadingState(false);
+          return;
+        }
+
+        layoutStore.setLoadingState(false);
+          infoStore.setServerMessage(result.serverMessage);
       }
-      //COLUMN CHANGING
-
-      // REMOVED FROM THE PREVIOUS ONE
-      this.boards[this.currentBoardIndex].columns[
-        this.currentColumnIndex
-      ].tasks = [
-        ...this.boards[this.currentBoardIndex].columns[
-          this.currentColumnIndex
-        ].tasks.filter((task) => task.id !== updatedTask.id),
-      ];
-
-      // APPENDED TO THE NEW ONE
-      this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
-        ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
-        updatedTask,
-      ]; */
+      
     },
-    checkSubtask(subtaskIndex: number) {
-      this.boards[this.currentBoardIndex].columns[
+    async changeTaskStatus(columnIndex: number, columnName: string) {
+
+      const infoStore = useInfoStore();
+      const authStore = useAuthStore();
+      const layoutStore = useLayoutStore();
+      let result: any;
+/*       const taskIdx = +this.boards[this.currentBoardIndex].columns[this.currentColumnIndex].tasks.findIndex(t => t.id === updatedTask?.id); */
+      const boardStringifiedCopy = JSON.stringify(this.boards[this.currentBoardIndex]);
+            
+      const boardCopy: Board = JSON.parse(boardStringifiedCopy);
+
+      boardCopy.columns[
         this.currentColumnIndex
-      ].tasks[this.currentTaskIndex].subtasks[subtaskIndex].isCompleted =
-        !this.boards[this.currentBoardIndex].columns[this.currentColumnIndex]
-          .tasks[this.currentTaskIndex].subtasks[subtaskIndex].isCompleted;
-    },
-    changeTaskStatus(columnIndex: number, columnName: string) {
-      /* ColumnId changing */
+      ].tasks[this.currentTaskIndex].columnId =
+      boardCopy.columns[this.currentColumnIndex].id;
+
+      boardCopy.columns[
+        this.currentColumnIndex
+      ].tasks[this.currentTaskIndex].status = columnName
+
+      const updatedTask = boardCopy.columns[
+        this.currentColumnIndex
+      ].tasks[this.currentTaskIndex]
+
+      if (authStore.getUser && boardCopy._id) {
+        layoutStore.setLoadingState(true);
+        result = await boardService.updateTask(updatedTask, boardCopy._id, this.currentColumnIndex, columnIndex, this.currentTaskIndex, {
+          accessToken: authStore.getUser?.accessToken,
+          refreshToken: authStore.getUser?.refreshToken,
+        })
+
+        if(result.ok) {
+          // ColumnId changing
       this.boards[this.currentBoardIndex].columns[
         this.currentColumnIndex
       ].tasks[this.currentTaskIndex].columnId =
         this.boards[this.currentBoardIndex].columns[this.currentColumnIndex].id;
 
-      /* Column Name changing */
+      // Column Name changing
       this.boards[this.currentBoardIndex].columns[
         this.currentColumnIndex
       ].tasks[this.currentTaskIndex].status = columnName;
 
-      /* REMOVED FROM THE PREVIOUS ONE */
+      // REMOVED FROM THE PREVIOUS ONE
       this.boards[this.currentBoardIndex].columns[
         this.currentColumnIndex
       ].tasks = [
@@ -592,20 +617,20 @@ export const useBoardStore = defineStore({
         ].tasks.filter((task) => task.id !== this.currentTask?.id),
       ];
 
-      /* APPENDED TO THE NEW ONE */
+      // APPENDED TO THE NEW ONE
       if (this.currentTask) {
         this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
-          ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
           this.currentTask,
+          ...this.boards[this.currentBoardIndex].columns[columnIndex].tasks,
         ];
       }
 
-      /* UPDATED TASK INDEX */
+      // UPDATED TASK INDEX
       const currentTaskIndex =
         [...this.boards[this.currentBoardIndex].columns[columnIndex].tasks]
           .length - 1;
 
-      /* UPDATED TASK */
+      // UPDATED TASK
       this.currentTask =
         this.boards[this.currentBoardIndex].columns[columnIndex].tasks[
           currentTaskIndex
@@ -614,6 +639,13 @@ export const useBoardStore = defineStore({
       this.currentColumnIndex = columnIndex;
 
       this.currentTaskIndex = currentTaskIndex;
+      layoutStore.setLoadingState(false);
+        return
+        }
+        layoutStore.setLoadingState(false);
+        infoStore.setServerMessage(result.errorMessage);
+      }
+      
     },
     setBoards(boards: Board[]) {
       this.boards = boards;

@@ -34,11 +34,11 @@
           class="field"
           v-for="(subtask, index) in task?.subtasks"
           :key="index"
+          @click="checkSubtask(index)"
         >
           <div
             class="checkbox"
             :class="{ 'checkbox--checked': subtask.isCompleted }"
-            @click="checkSubtask(index)"
           >
             <svg
               v-if="subtask.isCompleted"
