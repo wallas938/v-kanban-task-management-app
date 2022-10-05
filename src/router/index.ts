@@ -24,7 +24,6 @@ const router = createRouter({
       path: "/boards",
       component: KtmBoardPage,
       name: "boards",
-      meta: { requiresAuth: true },
     },
     { path: "/:pathMatch(.*)*", name: "NotFound", redirect: "login" },
   ],
@@ -34,40 +33,74 @@ router.beforeEach(async (to, from) => {
   const authStore = useAuthStore();
       const boardStore = useBoardStore();
       const layoutStore = useLayoutStore();
-  if(to.path !== "/login") {
-    try {
-      const accessToken = userService.getAccessTokenFromLocalStorage();
-      const refreshToken = userService.getRefreshTokenFromLocalStorage();
-      
-      layoutStore.setLoadingState(true)
-      if (to.meta.requiresAuth && accessToken) {
-        const { user, ok } = await userService.getUser({
-          accessToken,
-          refreshToken
-        });
-  
-        if(ok) {
-          authStore.setUser(user);
-          const access_data = {
-            accessToken,
-            refreshToken
-          }
-          const { boards, ok } = await boardService.getBoards(user._id, access_data);
+      if(to.path !== "/login") {
+
+        try {
+          const accessToken = userService.getAccessTokenFromLocalStorage();
+          const refreshToken = userService.getRefreshTokenFromLocalStorage();
           
-          if(ok) {
-            boardStore.setBoards(boards);
+          layoutStore.setLoadingState(true)
+          if (accessToken) {
+            const { user, ok } = await userService.getUser({
+              accessToken,
+              refreshToken
+            });
+      
+            if(ok) {
+              authStore.setUser(user);
+              const access_data = {
+                accessToken,
+                refreshToken
+              }
+              const { boards, ok } = await boardService.getBoards(user._id, access_data);
+              
+              if(ok) {
+                boardStore.setBoards(boards);
+                layoutStore.setLoadingState(false)
+              }
+            }
+          } else {
+            layoutStore.setLoadingState(false)
+            return "/login"
+          }
+        } catch (error) {
+          layoutStore.setLoadingState(false)
+          return "/login"
+        }
+      } else{
+        try {
+          const accessToken = userService.getAccessTokenFromLocalStorage();
+          const refreshToken = userService.getRefreshTokenFromLocalStorage();
+          
+          layoutStore.setLoadingState(true)
+          if (accessToken && from.path !== "/boards") {
+            const { user, ok } = await userService.getUser({
+              accessToken,
+              refreshToken
+            });
+      
+            if(ok) {
+              authStore.setUser(user);
+              const access_data = {
+                accessToken,
+                refreshToken
+              }
+              const { boards, ok } = await boardService.getBoards(user._id, access_data);
+              
+              if(ok) {
+                boardStore.setBoards(boards);
+                layoutStore.setLoadingState(false)
+                return "/boards"
+              }
+            }
+          } else {
             layoutStore.setLoadingState(false)
           }
+        } catch (error) {
+          layoutStore.setLoadingState(false)
+          return "/login"
         }
-      } else {
-        layoutStore.setLoadingState(false)
-        return "/login"
       }
-    } catch (error) {
-      layoutStore.setLoadingState(false)
-      return "/login"
-    }
-  }
 });
 
 export default router;

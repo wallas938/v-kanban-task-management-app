@@ -488,6 +488,7 @@ export const useBoardStore = defineStore({
         })
 
         if (result.ok) {
+
           if (columnIndex === this.currentColumnIndex) {
             this.boards[this.currentBoardIndex].columns[columnIndex].tasks = [
               ...this.boards,
@@ -499,7 +500,6 @@ export const useBoardStore = defineStore({
                 return task;
               }
             );
-            return;
           }
           //COLUMN CHANGING
     
@@ -542,25 +542,21 @@ export const useBoardStore = defineStore({
       let result: any;
       let updatedTask: any;
       if (authStore.getUser && boardId) {
-        layoutStore.setLoadingState(true);
         updatedTask = boardCopy.columns[this.currentColumnIndex].tasks[this.currentTaskIndex]
         result = await boardService.updateTask(updatedTask, boardId, this.currentColumnIndex, this.currentColumnIndex, this.currentTaskIndex, {
           accessToken: authStore.getUser?.accessToken,
           refreshToken: authStore.getUser?.refreshToken,
         });
-
+        
         if(result.ok) {
           this.boards[this.currentBoardIndex].columns[
             this.currentColumnIndex
           ].tasks[this.currentTaskIndex].subtasks[subtaskIndex].isCompleted =
             !this.boards[this.currentBoardIndex].columns[this.currentColumnIndex]
               .tasks[this.currentTaskIndex].subtasks[subtaskIndex].isCompleted;
-
-              layoutStore.setLoadingState(false);
           return;
         }
 
-        layoutStore.setLoadingState(false);
           infoStore.setServerMessage(result.serverMessage);
       }
       
@@ -590,7 +586,6 @@ export const useBoardStore = defineStore({
       ].tasks[this.currentTaskIndex]
 
       if (authStore.getUser && boardCopy._id) {
-        layoutStore.setLoadingState(true);
         result = await boardService.updateTask(updatedTask, boardCopy._id, this.currentColumnIndex, columnIndex, this.currentTaskIndex, {
           accessToken: authStore.getUser?.accessToken,
           refreshToken: authStore.getUser?.refreshToken,
@@ -639,10 +634,8 @@ export const useBoardStore = defineStore({
       this.currentColumnIndex = columnIndex;
 
       this.currentTaskIndex = currentTaskIndex;
-      layoutStore.setLoadingState(false);
         return
         }
-        layoutStore.setLoadingState(false);
         infoStore.setServerMessage(result.errorMessage);
       }
       

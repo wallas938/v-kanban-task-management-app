@@ -32,6 +32,9 @@
         </ul>
       </nav>
       <div class="cta">
+        <div class="logout">
+          <img @click="logout" :src="shutdown" alt="logout icon" />
+        </div>
         <div class="theme-switch">
           <img :src="lightIcon" alt="light-icon" />
           <div
@@ -59,11 +62,15 @@
 <script lang="ts" setup>
 import lightIcon from "../../assets/icon-light-theme.svg";
 import darkIcon from "../../assets/icon-dark-theme.svg";
+import shutdown from "../../assets/shutdown.png";
 import { useLayoutStore } from "@/stores/layout";
 import { Modal, ThemeMode } from "@/model";
 import { computed } from "vue";
 import { useBoardStore } from "@/stores/board";
+import userService from "@/services/user.service";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const emits = defineEmits<{
   (e: "hide-sidebar"): void;
 }>();
@@ -99,6 +106,13 @@ function createBoard() {
 
 function setCurrentBoard(index: number) {
   boardStore.setCurrentBoard(index);
+}
+
+function logout() {
+  userService.logout();
+  boardStore.setCurrentBoard(0);
+  layoutStore.setCurrentModal(Modal.NO_MODAL);
+  router.push("login");
 }
 </script>
 <style lang="scss" scoped>
@@ -170,6 +184,17 @@ function setCurrentBoard(index: number) {
       position: relative;
       padding-left: f.toRem(13, 12);
       padding-right: f.toRem(12, 12);
+
+      .logout {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 2rem;
+        > img {
+          width: 24px;
+          height: 24px;
+          cursor: pointer;
+        }
+      }
       .theme-switch {
         transition: all 0.5s ease-in-out;
         border-radius: f.toRem(6, 12);

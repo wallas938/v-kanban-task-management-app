@@ -1,6 +1,9 @@
 <template>
   <div class="mobile-board-nav hide-for-tablet-and-desktop" :class="themeMode">
-    <h2>ALL BOARDS ({{ boards.length }})</h2>
+    <h2>
+      ALL BOARDS ({{ boards.length }})
+      <img @click="logout" :src="shutdown" alt="logout icon" />
+    </h2>
     <nav>
       <ul>
         <li
@@ -47,13 +50,17 @@
 <script lang="ts" setup>
 import lightIcon from "../assets/icon-light-theme.svg";
 import darkIcon from "../assets/icon-dark-theme.svg";
+import shutdown from "../assets/shutdown.png";
 import { computed } from "vue";
 import { Modal, ThemeMode } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
 import { useBoardStore } from "@/stores/board";
+import userService from "@/services/user.service";
+import { useRouter } from "vue-router";
 
 const layoutStore = useLayoutStore();
 const boardStore = useBoardStore();
+const router = useRouter();
 
 const themeMode = computed(() => {
   return layoutStore.getThemeMode === ThemeMode.DARK
@@ -82,6 +89,13 @@ function setCurrentBoard(index: number) {
   boardStore.setCurrentBoard(index);
   layoutStore.setCurrentModal(Modal.NO_MODAL);
 }
+
+function logout() {
+  userService.logout();
+  boardStore.setCurrentBoard(0);
+  layoutStore.setCurrentModal(Modal.NO_MODAL);
+  router.push("login");
+}
 </script>
 <style lang="scss" scoped>
 @use "../sass/mixins" as m;
@@ -97,7 +111,7 @@ function setCurrentBoard(index: number) {
   flex-direction: column;
   box-shadow: 0px 10px 20px rgba(54, 78, 126, 0.25);
   h2 {
-    padding-left: f.toRem(24, 12);
+    padding: 0 f.toRem(24, 12);
     font-size: f.toRem(12, 12);
     font-weight: 700;
     font-style: normal;
@@ -105,6 +119,14 @@ function setCurrentBoard(index: number) {
     letter-spacing: 2.4px;
     margin-bottom: f.toRem(19, 12);
     color: c.$MediumGrey;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    > img {
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
   }
 
   nav {
