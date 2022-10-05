@@ -10,7 +10,7 @@ const registerStandard = async (
     },
     body: JSON.stringify({ email, password }),
   };
-  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users/signup`, init)
+  return await fetch(`https://w-kanban-server.herokuapp.com/api/users/signup`, init)
     .then((res: Response) => {
       return res.json();
     })
@@ -55,7 +55,7 @@ const signinStandard = async (
     },
     body: JSON.stringify({ email, password }),
   };
-  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users/signin`, init)
+  return await fetch(`https://w-kanban-server.herokuapp.com/api/users/signin`, init)
     .then((res: Response) => {
       return res.json();
     })
@@ -103,7 +103,7 @@ const getUser = async (
     method: "GET",
   };
 
-  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users?access_token=${data_access.accessToken}&refresh_token=${data_access.refreshToken}`, init)
+  return await fetch(`https://w-kanban-server.herokuapp.com/api/users?access_token=${data_access.accessToken}&refresh_token=${data_access.refreshToken}`, init)
     .then((res: Response) => {
       return res.json();
     })
@@ -123,6 +123,10 @@ const getUser = async (
     });
 }
 
+const logout = () => {
+  cleanLocalStorage();
+}
+
 const oAuthLogin = async () => {};
 
 function storeAccessTokenIntoLocalStorage(accTok: string) {
@@ -133,8 +137,9 @@ function storeRefreshTokenIntoLocalStorage(rfrs_tok: string) {
   localStorage.setItem("refresh_token", rfrs_tok);
 }
 
-function removeUserFromLocalStorage() {
-  localStorage.removeItem("usr");
+function cleanLocalStorage() {
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
 }
 
 function getAccessTokenFromLocalStorage(): any {
@@ -157,6 +162,7 @@ export default {
   registerStandard,
   signinStandard,
   autoLogin,
+  logout,
   getUser,
   getAccessTokenFromLocalStorage,
   getRefreshTokenFromLocalStorage,

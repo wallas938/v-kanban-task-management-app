@@ -147,7 +147,8 @@ function createNewTask() {
   display: grid;
   align-items: center;
   grid-template-columns:
-    f.toRem(24+16, 12) minmax(f.toRem(143+92, 12), auto) f.toRem(48+16, 12)
+    f.toRem(24+16, 12) minmax(f.toRem(143+92, 12), auto)
+    f.toRem(48+16, 12)
     f.toRem(5, 12);
   grid-template-rows: 1fr;
   grid-template-areas: "brand board-name new-task board-action";

@@ -203,7 +203,7 @@ function checkFormMode() {
 }
 function setFormValues() {
   if (task.value) {
-    task.value
+    task.value;
     title.value = task.value.title;
     description.value = task.value.description;
     status.value = currentColumn.value.name;
@@ -300,8 +300,6 @@ function onSubmit() {
         status: status.value,
       };
 
-      console.log(updatedTask);
-      
       boardStore.updateCurrentTask(updatedTask, columnIndex.value);
     }
   }
