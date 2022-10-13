@@ -20,7 +20,8 @@ const registerStandard = async (
           serverMessage: payload.message,
         };
       }
-
+      console.log(payload);
+      
       storeAccessTokenIntoLocalStorage(payload.accessToken);
       storeRefreshTokenIntoLocalStorage(payload.refreshToken);
       let user = {

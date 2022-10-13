@@ -38,7 +38,7 @@ router.beforeEach(async (to, from) => {
         try {
           const accessToken = userService.getAccessTokenFromLocalStorage();
           const refreshToken = userService.getRefreshTokenFromLocalStorage();
-          
+          console.log(accessToken);
           layoutStore.setLoadingState(true)
           if (accessToken) {
             const { user, ok } = await userService.getUser({
@@ -71,6 +71,7 @@ router.beforeEach(async (to, from) => {
         try {
           const accessToken = userService.getAccessTokenFromLocalStorage();
           const refreshToken = userService.getRefreshTokenFromLocalStorage();
+          console.log(accessToken);
           
           layoutStore.setLoadingState(true)
           if (accessToken && from.path !== "/boards") {
