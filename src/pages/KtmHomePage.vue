@@ -187,11 +187,12 @@ async function registerStandard() {
     if (result.ok) {
       console.log(result.user);
       authStore.setUser(result.user);
+      authStore.setAccessToken(result.accessToken);
+      authStore.setRefreshToken(result.refreshToken);
       layoutStore.setLoadingState(false);
 
       infoStore.setServerMessage(result.serverMessage);
       router.push("boards");
-      return;
     } else {
       layoutStore.setLoadingState(false);
       infoStore.setErrorMessage(result.serverMessage);
@@ -210,6 +211,8 @@ async function signinStandard() {
 
     if (result.ok) {
       authStore.setUser(result.user);
+      authStore.setAccessToken(result.accessToken);
+      authStore.setRefreshToken(result.refreshToken);
       layoutStore.setLoadingState(false);
 
       infoStore.setServerMessage(result.serverMessage);

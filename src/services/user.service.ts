@@ -10,7 +10,8 @@ const registerStandard = async (
     },
     body: JSON.stringify({ email, password }),
   };
-  return await fetch(`https://w-kanban-server.herokuapp.com/api/users/signup`, init)
+  /* return await fetch(`https://w-kanban-server.herokuapp.com/api/users/signup`, init) */
+  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users/signup`, init)
     .then((res: Response) => {
       return res.json();
     })
@@ -20,17 +21,15 @@ const registerStandard = async (
           serverMessage: payload.message,
         };
       }
-      console.log(payload);
-      
+
       storeAccessTokenIntoLocalStorage(payload.accessToken);
       storeRefreshTokenIntoLocalStorage(payload.refreshToken);
       let user = {
         accessToken: payload.accessToken,
         refreshToken: payload.refreshToken,
-        email: payload.email ? payload.email : "",
-        _id: payload._id,
+        email: payload.user.email ? payload.user.email : "",
+        _id: payload.user._id,
       };
-
       return {
         ok: true,
         user,
@@ -56,7 +55,8 @@ const signinStandard = async (
     },
     body: JSON.stringify({ email, password }),
   };
-  return await fetch(`https://w-kanban-server.herokuapp.com/api/users/signin`, init)
+  /* return await fetch(`https://w-kanban-server.herokuapp.com/api/users/signin`, init) */
+  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users/signin`, init)
     .then((res: Response) => {
       return res.json();
     })
@@ -67,11 +67,11 @@ const signinStandard = async (
         };
       }
 
-      storeAccessTokenIntoLocalStorage(payload.user.accessToken);
-      storeRefreshTokenIntoLocalStorage(payload.user.refreshToken);
+      storeAccessTokenIntoLocalStorage(payload.accessToken);
+      storeRefreshTokenIntoLocalStorage(payload.refreshToken);
       let user = {
-        accessToken: payload.user.accessToken,
-        refreshToken: payload.user.refreshToken,
+        accessToken: payload.accessToken,
+        refreshToken: payload.refreshToken,
         email: payload.user.email ? payload.user.email : "",
         _id: payload.user._id,
       };
@@ -91,7 +91,7 @@ const signinStandard = async (
 };
 
 const autoLogin = async () => {
-  setTimeout(() => {}, 4000);
+  setTimeout(() => { }, 4000);
 };
 
 const getUser = async (
@@ -99,12 +99,13 @@ const getUser = async (
     accessToken: string;
     refreshToken: string;
   },
-): Promise<any>  => {
+): Promise<any> => {
   const init: RequestInit = {
     method: "GET",
   };
 
-  return await fetch(`https://w-kanban-server.herokuapp.com/api/users?access_token=${data_access.accessToken}&refresh_token=${data_access.refreshToken}`, init)
+  /* return await fetch(`https://w-kanban-server.herokuapp.com/api/users?access_token=${data_access.accessToken}&refresh_token=${data_access.refreshToken}`, init) */
+  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users?access_token=${data_access.accessToken}&refresh_token=${data_access.refreshToken}`, init)
     .then((res: Response) => {
       return res.json();
     })
@@ -128,7 +129,7 @@ const logout = () => {
   cleanLocalStorage();
 }
 
-const oAuthLogin = async () => {};
+const oAuthLogin = async () => { };
 
 function storeAccessTokenIntoLocalStorage(accTok: string) {
   localStorage.setItem("access_token", accTok);
