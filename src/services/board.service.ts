@@ -18,7 +18,8 @@ const postBoard = async (
     body: JSON.stringify({ board }),
   };
 
-  return await fetch(`https://w-kanban-server.herokuapp.com/api/boards`, init)
+  /* return await fetch(`https://w-kanban-server.herokuapp.com/api/boards`, init) */
+  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/boards`, init)
     .then((res: any) => res.json())
     .then((data) => {
       return data;
@@ -34,16 +35,17 @@ const postBoard = async (
 
 const updateBoard = async (board: Board,
   access_data: AccessData): Promise<any> => {
-    const init: RequestInit = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": access_data.accessToken,
-        "rf_t": access_data.refreshToken,
-      },
-      body: JSON.stringify({ board }),
-    };
-    return await fetch(`https://w-kanban-server.herokuapp.com/api/boards/${board._id}`, init)
+  const init: RequestInit = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": access_data.accessToken,
+      "rf_t": access_data.refreshToken,
+    },
+    body: JSON.stringify({ board }),
+  };
+  /* return await fetch(`https://w-kanban-server.herokuapp.com/api/boards/${board._id}`, init) */
+  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/boards/${board._id}`, init)
     .then((res: any) => res.json())
     .then((data) => {
       return {
@@ -66,17 +68,18 @@ const updateTask = async (task: Task,
   columnIndex: number,
   taskIndex: number,
   access_data: AccessData): Promise<any> => {
-    const init: RequestInit = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": access_data.accessToken,
-        "rf_t": access_data.refreshToken,
-      },
-      body: JSON.stringify({ task, oldColumnIndex }),
-    };
-    
-    return await fetch(`https://w-kanban-server.herokuapp.com/api/boards/${boardId}/columns/${columnIndex}/tasks/${taskIndex}`, init)
+  const init: RequestInit = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": access_data.accessToken,
+      "rf_t": access_data.refreshToken,
+    },
+    body: JSON.stringify({ task, oldColumnIndex }),
+  };
+
+  /* return await fetch(`https://w-kanban-server.herokuapp.com/api/boards/${boardId}/columns/${columnIndex}/tasks/${taskIndex}`, init) */
+  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/boards/${boardId}/columns/${columnIndex}/tasks/${taskIndex}`, init)
     .then((res: any) => res.json())
     .then((data) => {
       return {
@@ -94,15 +97,16 @@ const updateTask = async (task: Task,
 };
 const deleteBoard = async (boardId: string,
   access_data: AccessData): Promise<any> => {
-    const init: RequestInit = {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": access_data.accessToken,
-        "rf_t": access_data.refreshToken,
-      },
-    };
-    return await fetch(`https://w-kanban-server.herokuapp.com/api/boards/${boardId}`, init)
+  const init: RequestInit = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": access_data.accessToken,
+      "rf_t": access_data.refreshToken,
+    },
+  };
+  /* return await fetch(`https://w-kanban-server.herokuapp.com/api/boards/${boardId}`, init) */
+  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/boards/${boardId}`, init)
     .then((res: any) => res.json())
     .then((data) => {
       return {
@@ -123,15 +127,16 @@ const deleteTask = async (boardId: string,
   columnIdx: number,
   taskIdx: number,
   access_data: AccessData): Promise<any> => {
-    const init: RequestInit = {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": access_data.accessToken,
-        "rf_t": access_data.refreshToken,
-      },
-    };
-    return await fetch(`https://w-kanban-server.herokuapp.com/api/boards/${boardId}/columns/${columnIdx}/tasks/${taskIdx}`, init)
+  const init: RequestInit = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": access_data.accessToken,
+      "rf_t": access_data.refreshToken,
+    },
+  };
+  /* return await fetch(`https://w-kanban-server.herokuapp.com/api/boards/${boardId}/columns/${columnIdx}/tasks/${taskIdx}`, init) */
+  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/boards/${boardId}/columns/${columnIdx}/tasks/${taskIdx}`, init)
     .then((res: any) => res.json())
     .then((data) => {
       return {
@@ -159,7 +164,8 @@ const getBoards = async (userId: String,
     },
   };
 
-  return await fetch(`https://w-kanban-server.herokuapp.com/api/boards?userId=${userId}`, init)
+  /* return await fetch(`https://w-kanban-server.herokuapp.com/api/boards?userId=${userId}`, init) */
+  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/boards?userId=${userId}`, init)
     .then((res: any) => res.json())
     .then((data) => {
       return data;
@@ -181,11 +187,11 @@ const formatBoardsData = (boards: Board[]) => {
           ...c,
           tasks: c.tasks
             ? c.tasks.map((t: Task) => {
-                return {
-                  ...t,
-                  subtasks: t.subtasks ? t.subtasks : [],
-                };
-              })
+              return {
+                ...t,
+                subtasks: t.subtasks ? t.subtasks : [],
+              };
+            })
             : [],
         };
       }),
