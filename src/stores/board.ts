@@ -587,8 +587,8 @@ export const useBoardStore = defineStore({
 
       if (authStore.getUser && boardCopy._id) {
         result = await boardService.updateTask(updatedTask, boardCopy._id, this.currentColumnIndex, columnIndex, this.currentTaskIndex, {
-          accessToken: authStore.getUser?.accessToken,
-          refreshToken: authStore.getUser?.refreshToken,
+          accessToken: authStore.getAccessToken,
+          refreshToken: authStore.getRefreshToken,
         })
 
         if (result.ok) {
