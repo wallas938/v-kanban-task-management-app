@@ -8,9 +8,10 @@ const registerStandard = async (
     headers: {
       "Content-Type": "application/json",
     },
+    mode: "cors",
     body: JSON.stringify({ email, password }),
   };
-  return await fetch(`${import.meta.env.VITE_PROD_API_URI}/users/signup`, init)
+  return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users/signup`, init)
     /* return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users/signup`, init) */
     .then((res: Response) => {
       return res.json();
