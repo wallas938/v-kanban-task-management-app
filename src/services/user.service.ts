@@ -10,8 +10,8 @@ const registerStandard = async (
     },
     body: JSON.stringify({ email, password }),
   };
-  return await fetch(`${import.meta.env.VITE_PROD_API_URI}/users/signup`, init)
-    /* return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users/signup`, init) */
+  // return await fetch(`${import.meta.env.VITE_PROD_API_URI}/users/signup`, init)
+    return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users/signup`, init)
     .then((res: Response) => {
       return res.json();
     })
@@ -55,8 +55,8 @@ const signinStandard = async (
     },
     body: JSON.stringify({ email, password }),
   };
-  return await fetch(`${import.meta.env.VITE_PROD_API_URI}/users/signin`, init)
-    /* return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users/signin`, init) */
+  // return await fetch(`${import.meta.env.VITE_PROD_API_URI}/users/signin`, init)
+    return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users/signin`, init)
     .then((res: Response) => {
       return res.json();
     })
@@ -104,8 +104,8 @@ const getUser = async (
     method: "GET",
   };
 
-  return await fetch(`${import.meta.env.VITE_PROD_API_URI}/users?access_token=${data_access.accessToken}&refresh_token=${data_access.refreshToken}`, init)
-    /* return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users?access_token=${data_access.accessToken}&refresh_token=${data_access.refreshToken}`, init) */
+  // return await fetch(`${import.meta.env.VITE_PROD_API_URI}/users?access_token=${data_access.accessToken}&refresh_token=${data_access.refreshToken}`, init)
+    return await fetch(`${import.meta.env.VITE_DEV_API_URI}/users?access_token=${data_access.accessToken}&refresh_token=${data_access.refreshToken}`, init)
     .then((res: Response) => {
       return res.json();
     })
