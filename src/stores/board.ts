@@ -317,12 +317,10 @@ export const useBoardStore = defineStore({
 
       const boardCopy = JSON.parse(boardStringifiedCopy);
 
-      const updatedTask = [
+      boardCopy.columns[columnIndex].tasks = [
         ...boardCopy.columns[columnIndex].tasks,
         task,
-      ];
-
-      boardCopy.columns[columnIndex].tasks = updatedTask
+      ]
       /* Fin de la création d'une copy du Board pour persistance en bdd */
 
 
@@ -346,7 +344,7 @@ export const useBoardStore = defineStore({
           ];
           /* Fin de la modification réel du Board apres persistance en bdd */
           layoutStore.setLoadingState(false);
-          infoStore.setServerMessage("a new Task added");
+          infoStore.setServerMessage("A new Task added");
           return;
         // }
 
@@ -390,7 +388,7 @@ export const useBoardStore = defineStore({
               this.boards.length - 1 < 0 ? 0 : this.boards.length - 1;
           /* Fin de la suppression du Board apres persistance en base de donnée */
           layoutStore.setLoadingState(false);
-          infoStore.setServerMessage(result.serverMessage);
+          infoStore.setServerMessage(`${this.boards[index].name} Board deleted`);
           return;
         // }
       // }
@@ -428,7 +426,7 @@ export const useBoardStore = defineStore({
           this.currentTask = {} as Task;
 
           layoutStore.setLoadingState(false);
-          infoStore.setServerMessage(result.serverMessage);
+          infoStore.setServerMessage("Current Task has been deleted");
           return;
         // }
       // }
@@ -456,7 +454,7 @@ export const useBoardStore = defineStore({
           });
 
           layoutStore.setLoadingState(false);
-          infoStore.setServerMessage(result.serverMessage);
+          infoStore.setServerMessage("Your Board has been updated");
           return;
         // }
 
@@ -508,7 +506,7 @@ export const useBoardStore = defineStore({
             updatedTask,
           ];
           layoutStore.setLoadingState(false);
-          infoStore.setServerMessage(result.serverMessage);
+          infoStore.setServerMessage("Task updated");
           return;
         // }
       // }
