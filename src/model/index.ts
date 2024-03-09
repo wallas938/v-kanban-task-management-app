@@ -60,7 +60,6 @@ export interface KtmUser {
 
 export interface Board {
   _id?: string;
-  userId?: string;
   name: string;
   columns: Column[];
 }

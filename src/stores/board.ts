@@ -287,7 +287,7 @@ export const useBoardStore = defineStore({
     getCurrentTask: (state) => state.currentTask,
   },
   actions: {
-    async addNewBoard(board: Board, userId: string) {
+    async addNewBoard(board: Board) {
       const infoStore = useInfoStore();
       // const authStore = useAuthStore();
       const layoutStore = useLayoutStore();
@@ -300,10 +300,10 @@ export const useBoardStore = defineStore({
       // });
 
       // if (result.ok) {
-      this.boards = [...this.boards, result.board];
+      this.boards = [...this.boards, board];
       this.currentBoardIndex = this.boards.length - 1;
       layoutStore.setLoadingState(false);
-      infoStore.setServerMessage(result.serverMessage);
+      infoStore.setServerMessage("An new Board was created");
       return;
       // }
       // layoutStore.setLoadingState(false);
