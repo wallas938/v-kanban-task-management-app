@@ -35,7 +35,7 @@
             <transition name="pallete">
               <div
                 v-if="
-                  colIndex === palletesData.columnIndex && palletesData.show
+                  colIndex === palettesData.columnIndex && palettesData.show
                 "
                 class="color-pallete"
               >
@@ -54,7 +54,7 @@
               type="text"
             />
             <span
-              @click="handlePalleteDisplaying(colIndex)"
+              @click="handlePaletteDisplaying(colIndex)"
               :style="{
                 backgroundColor: column.color ? column.color : 'transparent',
               }"
@@ -136,7 +136,7 @@ const columns = ref<
     state: FieldState.PENDING,
   },
 ]);
-const palletesData = ref<{ columnIndex: number; show: boolean }>({
+const palettesData = ref<{ columnIndex: number; show: boolean }>({
   columnIndex: 0,
   show: false,
 });
@@ -238,21 +238,21 @@ function validateFieldState(index: number) {
 function invalidateFieldState(index: number) {
   columns.value[index].validity = FieldValidity.INVALID;
 }
-function handlePalleteDisplaying(index: number) {
-  if (palletesData.value.columnIndex === index) {
-    palletesData.value.show = !palletesData.value.show;
+function handlePaletteDisplaying(index: number) {
+  if (palettesData.value.columnIndex === index) {
+    palettesData.value.show = !palettesData.value.show;
     return;
   }
-  palletesData.value.show = true;
-  palletesData.value.columnIndex = index;
+  palettesData.value.show = true;
+  palettesData.value.columnIndex = index;
 }
 function updateColColor(index: number, clrIndex: number) {
   columns.value[index].color = paletteColors[clrIndex];
   closePallete();
 }
 function closePallete() {
-  palletesData.value.show = false;
-  palletesData.value.columnIndex = 0;
+  palettesData.value.show = false;
+  palettesData.value.columnIndex = 0;
 }
 function onCreateColumn() {
   columns.value.push({
