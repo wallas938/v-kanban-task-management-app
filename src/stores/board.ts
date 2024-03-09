@@ -346,7 +346,7 @@ export const useBoardStore = defineStore({
           ];
           /* Fin de la modification réel du Board apres persistance en bdd */
           layoutStore.setLoadingState(false);
-          infoStore.setServerMessage(result.serverMessage);
+          infoStore.setServerMessage("a new Task added");
           return;
         // }
 
