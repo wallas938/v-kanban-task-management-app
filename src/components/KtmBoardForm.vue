@@ -286,7 +286,7 @@ function onSubmit() {
     };
 
     // authStore.getUser &&
-    //   boardStore.addNewBoard(newBoard, authStore.getUser?._id);
+      boardStore.addNewBoard(newBoard);
   } else {
     const updatedBoard: any = {
       name,
