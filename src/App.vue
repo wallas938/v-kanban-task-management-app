@@ -3,10 +3,10 @@ import { getAuth, onAuthStateChanged } from "@firebase/auth";
 import { computed, onMounted } from "vue";
 import KTMLoadingSnackbar from "./components/layout/KTMLoadingSnackbar.vue";
 import { Modal } from "./model";
-import { useAuthStore } from "./stores/auth";
+// import { useAuthStore } from "./stores/auth";
 import { useLayoutStore } from "./stores/layout";
 import { useInfoStore } from "./stores/message";
-const authStore = useAuthStore();
+// const authStore = useAuthStore();
 const layoutStore = useLayoutStore();
 const infoStore = useInfoStore();
 

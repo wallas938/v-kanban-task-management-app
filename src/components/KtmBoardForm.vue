@@ -100,9 +100,9 @@ import { ThemeMode, FieldState, FieldValidity } from "@/model";
 import { useLayoutStore } from "@/stores/layout";
 import { useBoardStore } from "@/stores/board";
 import { v4 as uuid } from "uuid";
-import { useAuthStore } from "@/stores/auth";
+// import { useAuthStore } from "@/stores/auth";
 const layoutStore = useLayoutStore();
-const authStore = useAuthStore();
+// const authStore = useAuthStore();
 
 const themeMode = computed(() => {
   return layoutStore.getThemeMode === ThemeMode.DARK
@@ -274,7 +274,7 @@ function onSubmit() {
   if (layoutStore.getBoardFormState === FormState.CREATION) {
     const newBoard: Board = {
       name,
-      userId: authStore.getUser?._id,
+      // userId: authStore.getUser?._id,
       columns: [...columns.value].map((col, idx) => {
         return {
           id: col.id ? col.id : uuid(),
@@ -285,13 +285,13 @@ function onSubmit() {
       }),
     };
 
-    authStore.getUser &&
-      boardStore.addNewBoard(newBoard, authStore.getUser?._id);
+    // authStore.getUser &&
+    //   boardStore.addNewBoard(newBoard, authStore.getUser?._id);
   } else {
     const updatedBoard: any = {
       name,
       _id: board.value._id,
-      userId: authStore.getUser?._id,
+      // userId: authStore.getUser?._id,
       columns: [...columns.value].map((col, idx) => {
         return {
           _id: col._id,

@@ -57,9 +57,9 @@ import { computed, ref } from "vue";
 import KtmTaskItem from "./KtmTaskItem.vue";
 
 interface MetaData {
-  taskIndex: number;
-  columnIndex: number;
-  columnName: string;
+  taskIndex: number | string;
+  columnIndex: number | string;
+  columnName: any;
 }
 
 const layoutStore = useLayoutStore();
@@ -81,26 +81,26 @@ function addNewColumn() {
 
 function dragStart(
   ev: any,
-  evMeta: { taskIndex: number; columnIndex: number; columnName: string }
+  evMeta: { taskIndex: number | string; columnIndex: number | string; columnName: string }
 ) {
   ev.target.classList.add("dragged");
   meta.value = evMeta;
-  boardStore.setCurrentTask(meta.value.columnIndex, meta.value.taskIndex);
+  boardStore.setCurrentTask(+meta.value.columnIndex, +meta.value.taskIndex);
 }
 
 function drop(ev: any) {
   ev.target.classList.remove("dragged");
-  boardStore.changeTaskStatus(meta.value.columnIndex, meta.value.columnName);
+  boardStore.changeTaskStatus(+meta.value.columnIndex, meta.value.columnName);
   meta.value = {} as MetaData;
 }
 
 function dragover(
   ev: any,
-  columnMeta: { columnIndex: number; columnName: string }
+  columnMeta: { columnIndex: string | number; columnName: any }
 ) {
   meta.value = {
     ...meta.value,
-    columnIndex: columnMeta.columnIndex,
+    columnIndex: +columnMeta.columnIndex,
     columnName: columnMeta.columnName,
   };
 }

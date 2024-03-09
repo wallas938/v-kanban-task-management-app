@@ -107,8 +107,8 @@ const boardColumnNames = computed(() =>
 );
 
 /* FUNCTIONS */
-function checkSubtask(index: number) {
-  boardStore.checkSubtask(index);
+function checkSubtask(index: number | string) {
+  boardStore.checkSubtask(+index);
 }
 
 function toggleMenu() {

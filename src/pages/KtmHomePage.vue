@@ -1,85 +1,85 @@
-<template>
-  <div class="login-page">
-    <img :src="logoIcon" alt="app logo" />
-    <form class="login-form">
-      <h1>
-        {{ formState === FormState.AUTHENTIFICATION ? "Log In" : "Sign Up" }}
-      </h1>
-      <div
-        class="field email"
-        :class="{
-          'field--error':
-            !emailMeta.valid && emailMeta.dirty && !emailMeta.pending,
-        }"
-      >
-        <label for="email">Email</label>
-        <input v-model="email" type="email" name="email" />
-      </div>
-      <div
-        class="field password"
-        :class="{
-          'field--error':
-            !passwordMeta.valid && passwordMeta.dirty && !passwordMeta.pending,
-        }"
-      >
-        <label for="password">Password</label>
-        <input v-model="password" type="password" name="password" />
+<!--<template>-->
+<!--  <div class="login-page">-->
+<!--    <img :src="logoIcon" alt="app logo" />-->
+<!--    <form class="login-form">-->
+<!--      <h1>-->
+<!--        {{ formState === FormState.AUTHENTIFICATION ? "Log In" : "Sign Up" }}-->
+<!--      </h1>-->
+<!--      <div-->
+<!--        class="field email"-->
+<!--        :class="{-->
+<!--          'field&#45;&#45;error':-->
+<!--            !emailMeta.valid && emailMeta.dirty && !emailMeta.pending,-->
+<!--        }"-->
+<!--      >-->
+<!--        <label for="email">Email</label>-->
+<!--        <input v-model="email" type="email" name="email" />-->
+<!--      </div>-->
+<!--      <div-->
+<!--        class="field password"-->
+<!--        :class="{-->
+<!--          'field&#45;&#45;error':-->
+<!--            !passwordMeta.valid && passwordMeta.dirty && !passwordMeta.pending,-->
+<!--        }"-->
+<!--      >-->
+<!--        <label for="password">Password</label>-->
+<!--        <input v-model="password" type="password" name="password" />-->
 
-        <small v-if="formState === FormState.REGISTRATION"
-          ><i
-            >Minimum eight characters, at least one letter and one number</i
-          ></small
-        >
-      </div>
-      <Transition>
-        <div
-          v-if="formState === FormState.REGISTRATION"
-          class="field passwordConfirm"
-          :class="{
-            'passwordConfirmf--error':
-              checkNonEqualPassword && passwordConfirmMeta.dirty,
-          }"
-        >
-          <label for="passwordConfirm">Confirm Password</label>
-          <input
-            v-model="passwordConfirm"
-            type="password"
-            name="passwordConfirm"
-          />
-          <small><i>Enter password again</i></small>
-        </div>
-      </Transition>
-      <div class="cta">
-        <div class="submit">
-          <button
-            type="button"
-            @click="standardSumbit"
-            :disabled="!checkFormValidity"
-            :class="{ disabled: !checkFormValidity }"
-          >
-            {{
-              formState === FormState.AUTHENTIFICATION ? "Connexion" : "Signup"
-            }}
-          </button>
-        </div>
-        <div class="login-google">
-          <button type="button">
-            <img :src="googleIcon" alt="google icon" />
-          </button>
-        </div>
-        <div class="signup-btn">
-          <button type="button" @click="toggleForm">
-            {{
-              formState === FormState.AUTHENTIFICATION
-                ? "No account? Create one"
-                : "You already have an account ?"
-            }}
-          </button>
-        </div>
-      </div>
-    </form>
-  </div>
-</template>
+<!--        <small v-if="formState === FormState.REGISTRATION"-->
+<!--          ><i-->
+<!--            >Minimum eight characters, at least one letter and one number</i-->
+<!--          ></small-->
+<!--        >-->
+<!--      </div>-->
+<!--      <Transition>-->
+<!--        <div-->
+<!--          v-if="formState === FormState.REGISTRATION"-->
+<!--          class="field passwordConfirm"-->
+<!--          :class="{-->
+<!--            'passwordConfirmf&#45;&#45;error':-->
+<!--              checkNonEqualPassword && passwordConfirmMeta.dirty,-->
+<!--          }"-->
+<!--        >-->
+<!--          <label for="passwordConfirm">Confirm Password</label>-->
+<!--          <input-->
+<!--            v-model="passwordConfirm"-->
+<!--            type="password"-->
+<!--            name="passwordConfirm"-->
+<!--          />-->
+<!--          <small><i>Enter password again</i></small>-->
+<!--        </div>-->
+<!--      </Transition>-->
+<!--      <div class="cta">-->
+<!--        <div class="submit">-->
+<!--          <button-->
+<!--            type="button"-->
+<!--            @click="standardSumbit"-->
+<!--            :disabled="!checkFormValidity"-->
+<!--            :class="{ disabled: !checkFormValidity }"-->
+<!--          >-->
+<!--            {{-->
+<!--              formState === FormState.AUTHENTIFICATION ? "Connexion" : "Signup"-->
+<!--            }}-->
+<!--          </button>-->
+<!--        </div>-->
+<!--        <div class="login-google">-->
+<!--          <button type="button">-->
+<!--            <img :src="googleIcon" alt="google icon" />-->
+<!--          </button>-->
+<!--        </div>-->
+<!--        <div class="signup-btn">-->
+<!--          <button type="button" @click="toggleForm">-->
+<!--            {{-->
+<!--              formState === FormState.AUTHENTIFICATION-->
+<!--                ? "No account? Create one"-->
+<!--                : "You already have an account ?"-->
+<!--            }}-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </form>-->
+<!--  </div>-->
+<!--</template>-->
 <script lang="ts" setup>
 import { FormState, type KtmUser } from "@/model";
 import logoIcon from "../assets/logo-mobile.svg";
@@ -87,13 +87,13 @@ import googleIcon from "../assets/google-icon.svg";
 import { useField, useForm } from "vee-validate";
 import { computed, ref } from "vue";
 import { useLayoutStore } from "@/stores/layout";
-import userService from "@/services/user.service";
-import { useAuthStore } from "@/stores/auth";
+// import userService from "@/services/user.service";
+// import { useAuthStore } from "@/stores/auth";
 import { useRouter, useRoute } from "vue-router";
 import { useInfoStore } from "@/stores/message";
 
 const layoutStore = useLayoutStore();
-const authStore = useAuthStore();
+// const authStore = useAuthStore();
 const infoStore = useInfoStore();
 const router = useRouter();
 const errorMessage = ref("");
@@ -155,18 +155,18 @@ const checkFormValidity = computed(() => {
   }
 });
 
-function standardSumbit() {
-  switch (formState.value) {
-    case FormState.REGISTRATION:
-      registerStandard();
-      break;
-    case FormState.AUTHENTIFICATION:
-      signinStandard();
-      break;
-    default:
-      break;
-  }
-}
+// function standardSumbit() {
+//   switch (formState.value) {
+//     case FormState.REGISTRATION:
+//       registerStandard();
+//       break;
+//     case FormState.AUTHENTIFICATION:
+//       signinStandard();
+//       break;
+//     default:
+//       break;
+//   }
+// }
 
 function toggleForm() {
   if (formState.value === FormState.AUTHENTIFICATION) {
@@ -178,55 +178,55 @@ function toggleForm() {
 
 /* Functions */
 // REGISTER
-async function registerStandard() {
-  let result: any;
-  layoutStore.setLoadingState(true);
-  try {
-    result = await userService.registerStandard(email.value, password.value);
-
-    if (result.ok) {
-      console.log(result.user);
-      authStore.setUser(result.user);
-      authStore.setAccessToken(result.accessToken);
-      authStore.setRefreshToken(result.refreshToken);
-      layoutStore.setLoadingState(false);
-
-      infoStore.setServerMessage(result.serverMessage);
-      router.push("boards");
-    } else {
-      layoutStore.setLoadingState(false);
-      infoStore.setErrorMessage(result.serverMessage);
-    }
-  } catch (error) {
-    layoutStore.setLoadingState(false);
-    infoStore.setErrorMessage(result.serverMessage);
-  }
-}
+// async function registerStandard() {
+//   let result: any;
+//   layoutStore.setLoadingState(true);
+//   try {
+//     result = await userService.registerStandard(email.value, password.value);
+//
+//     if (result.ok) {
+//       console.log(result.user);
+//       authStore.setUser(result.user);
+//       authStore.setAccessToken(result.accessToken);
+//       authStore.setRefreshToken(result.refreshToken);
+//       layoutStore.setLoadingState(false);
+//
+//       infoStore.setServerMessage(result.serverMessage);
+//       router.push("boards");
+//     } else {
+//       layoutStore.setLoadingState(false);
+//       infoStore.setErrorMessage(result.serverMessage);
+//     }
+//   } catch (error) {
+//     layoutStore.setLoadingState(false);
+//     infoStore.setErrorMessage(result.serverMessage);
+//   }
+// }
 // AUTHENTICATION
-async function signinStandard() {
-  let result: any;
-  layoutStore.setLoadingState(true);
-  try {
-    result = await userService.signinStandard(email.value, password.value);
-
-    if (result.ok) {
-      authStore.setUser(result.user);
-      authStore.setAccessToken(result.accessToken);
-      authStore.setRefreshToken(result.refreshToken);
-      layoutStore.setLoadingState(false);
-
-      infoStore.setServerMessage(result.serverMessage);
-      router.push("boards");
-      return;
-    } else {
-      layoutStore.setLoadingState(false);
-      infoStore.setErrorMessage(result.serverMessage);
-    }
-  } catch (error) {
-    layoutStore.setLoadingState(false);
-    infoStore.setErrorMessage(result.serverMessage);
-  }
-}
+// async function signinStandard() {
+//   let result: any;
+//   layoutStore.setLoadingState(true);
+//   try {
+//     result = await userService.signinStandard(email.value, password.value);
+//
+//     if (result.ok) {
+//       authStore.setUser(result.user);
+//       authStore.setAccessToken(result.accessToken);
+//       authStore.setRefreshToken(result.refreshToken);
+//       layoutStore.setLoadingState(false);
+//
+//       infoStore.setServerMessage(result.serverMessage);
+//       router.push("boards");
+//       return;
+//     } else {
+//       layoutStore.setLoadingState(false);
+//       infoStore.setErrorMessage(result.serverMessage);
+//     }
+//   } catch (error) {
+//     layoutStore.setLoadingState(false);
+//     infoStore.setErrorMessage(result.serverMessage);
+//   }
+// }
 // OAUTH-GOOGLE
 /* async function oAuthLogin() {
   layoutStore.setLoadingState(true);
