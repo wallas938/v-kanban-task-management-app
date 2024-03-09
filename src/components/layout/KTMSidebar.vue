@@ -67,7 +67,7 @@ import { useLayoutStore } from "@/stores/layout";
 import { Modal, ThemeMode } from "@/model";
 import { computed } from "vue";
 import { useBoardStore } from "@/stores/board";
-import userService from "@/services/user.service";
+// import userService from "@/services/user.service";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -104,12 +104,12 @@ function createBoard() {
   layoutStore.setCurrentModal(Modal.BOARD_FORM_MODAL);
 }
 
-function setCurrentBoard(index: number) {
-  boardStore.setCurrentBoard(index);
+function setCurrentBoard(index: number | string) {
+  boardStore.setCurrentBoard(+index);
 }
 
 function logout() {
-  userService.logout();
+  // userService.logout();
   boardStore.setCurrentBoard(0);
   layoutStore.setCurrentModal(Modal.NO_MODAL);
   router.push("login");

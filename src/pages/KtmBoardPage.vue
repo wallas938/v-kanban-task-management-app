@@ -8,18 +8,18 @@ import { onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router";
 import KTMHeader from "@/components/layout/KTMHeader.vue";
 import KTMSidebar from "@/components/layout/KTMSidebar.vue";
 import KtmColumnList from "@/components/KtmColumnList.vue";
-import { useAuthStore } from "@/stores/auth";
+// import { useAuthStore } from "@/stores/auth";
 import boardService from "@/services/board.service";
-import userService from "@/services/user.service";
+// import userService from "@/services/user.service";
 
 const layoutStore = useLayoutStore();
 const boardStore = useBoardStore();
-const authStore = useAuthStore();
+// const authStore = useAuthStore();
 const showSidebar = ref(true);
 
 /* COMPUTED */
 const boards = computed(() => boardStore.getBoards);
-const user = computed(() => authStore.getUser);
+// const user = computed(() => authStore.getUser);
 
 const themeMode = computed(() => {
   return layoutStore.getThemeMode === ThemeMode.DARK

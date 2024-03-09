@@ -2,9 +2,9 @@ import { useLayoutStore } from './../stores/layout';
 import { useBoardStore } from './../stores/board';
 import KtmBoardPage from "@/pages/KtmBoardPage.vue";
 import KtmHomePage from "@/pages/KtmHomePage.vue";
-import userService from "@/services/user.service";
+// import userService from "@/services/user.service";
 import { createRouter, createWebHistory } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
+// import { useAuthStore } from "@/stores/auth";
 import boardService from "@/services/board.service";
 
 const router = createRouter({
