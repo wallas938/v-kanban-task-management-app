@@ -86,7 +86,7 @@ function createBoard() {
 }
 
 function setCurrentBoard(index: number | string) {
-  boardStore.setCurrentBoard(index);
+  boardStore.setCurrentBoard(+index);
   layoutStore.setCurrentModal(Modal.NO_MODAL);
 }
 
